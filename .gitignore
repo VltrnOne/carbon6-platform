@@ -1,0 +1,34 @@
+# Installation artifacts
+.install-state.json
+installation.log
+*.log
+
+# Environment
+.env
+.env.local
+
+# Database
+*.db
+*.db-journal
+
+# Node
+node_modules/
+.next/
+dist/
+build/
+
+# OS
+.DS_Store
+.Trash/
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary
+tmp/
+temp/
+*.tmp
