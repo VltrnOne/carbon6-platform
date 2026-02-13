@@ -1,0 +1,32 @@
+{
+  "name": "carbon6-platform",
+  "version": "1.0.0",
+  "description": "Carbon6 Platform - Unified installation system for Carbon Collective SDK and Platform",
+  "main": "remote-install.sh",
+  "scripts": {
+    "test": "echo \"No tests configured\" && exit 0",
+    "install:local": "bash remote-install.sh",
+    "verify": "command -v carbon && carbon --version || echo 'carbon command not found'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VltrnOne/carbon6-platform.git"
+  },
+  "keywords": [
+    "carbon6",
+    "carbon-collective",
+    "vltrn",
+    "creator-platform",
+    "installer",
+    "sdk"
+  ],
+  "author": "VLTRN Council - Carbon Domain",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VltrnOne/carbon6-platform/issues"
+  },
+  "homepage": "https://github.com/VltrnOne/carbon6-platform#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
