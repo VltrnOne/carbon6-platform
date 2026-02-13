@@ -1,0 +1,35 @@
+name: Test Installation Script
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-install:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Test script syntax
+      run: bash -n remote-install.sh
+
+    - name: Check script is executable
+      run: test -x remote-install.sh
+
+    - name: Shellcheck (Linux only)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y shellcheck
+        shellcheck remote-install.sh || true
