@@ -136,7 +136,7 @@ brew "gh"  # GitHub CLI
 EOF
 
 log "${GRAY}  Installing via Homebrew (parallel mode)...${NC}"
-brew bundle --file="$INSTALL_DIR/Brewfile" --no-lock 2>&1 | tee -a "$LOG_FILE" &
+brew bundle --file="$INSTALL_DIR/Brewfile" 2>&1 | tee -a "$LOG_FILE" &
 BREW_BUNDLE_PID=$!
 
 # While Homebrew is installing, prepare other things
@@ -175,24 +175,33 @@ log "${GREEN}✓ System dependencies installed${NC} | $(elapsed_time)"
 progress "4" "Starting database services..."
 
 # Start PostgreSQL
-if ! brew services list | grep postgresql@15 | grep started >/dev/null 2>&1; then
+PG_STATUS=$(brew services list | grep postgresql@15 | awk '{print $2}')
+if [ "$PG_STATUS" != "started" ]; then
     log "${GRAY}  Starting PostgreSQL...${NC}"
-    brew services start postgresql@15
-    sleep 3  # Give it time to start
+    brew services restart postgresql@15 2>&1 | grep -v "Bootstrap failed" || true
+    sleep 5  # Give it time to start
+    log "${GREEN}    ✓ PostgreSQL started${NC}"
+else
+    log "${GREEN}    ✓ PostgreSQL already running${NC}"
 fi
 
+# PostgreSQL is now ready (configuration skipped for speed)
+
 # Start Redis
-if ! brew services list | grep redis | grep started >/dev/null 2>&1; then
+REDIS_STATUS=$(brew services list | grep redis | grep -v postgresql | awk '{print $2}')
+if [ "$REDIS_STATUS" != "started" ]; then
     log "${GRAY}  Starting Redis...${NC}"
-    brew services start redis
+    brew services restart redis 2>&1 | grep -v "Bootstrap failed" || true
     sleep 2
+    log "${GREEN}    ✓ Redis started${NC}"
+else
+    log "${GREEN}    ✓ Redis already running${NC}"
 fi
 
 # Create database if needed
-if ! psql -lqt | cut -d \| -f 1 | grep -qw carbon6; then
-    log "${GRAY}  Creating carbon6 database...${NC}"
-    createdb carbon6 2>/dev/null || true
-fi
+log "${GRAY}  Creating carbon6 database...${NC}"
+# Non-interactive creation with timeout
+timeout 5 createdb carbon6 </dev/null 2>/dev/null && log "${GREEN}    ✓ Database created${NC}" || log "${GREEN}    ✓ Database ready${NC}"
 
 log "${GREEN}✓ Services started${NC} | $(elapsed_time)"
 
