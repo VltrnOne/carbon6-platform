@@ -1,9 +1,18 @@
 # Carbon6 Platform - Git Ignore
 
+# Installation artifacts
+.install-state.json
+installation.log
+*.log
+
 # Environment
 .env
 .env.local
 .env.*.local
+
+# Database
+*.db
+*.db-journal
 
 # Dependencies
 node_modules/
@@ -20,7 +29,6 @@ out/
 
 # Logs
 logs/
-*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -33,6 +41,7 @@ pnpm-debug.log*
 ._*
 .Spotlight-V100
 .Trashes
+.Trash/
 ehthumbs.db
 Thumbs.db
 
@@ -56,7 +65,7 @@ tmp/
 temp/
 *.tmp
 
-# Local scripts
-start-*.sh
-build-*.sh
-deploy-*.sh
+# Local scripts (optional - uncomment if needed)
+# start-*.sh
+# build-*.sh
+# deploy-*.sh
