@@ -19,9 +19,11 @@
 
 ---
 
-## 🚀 Quick Start - Choose Your Path
+## 🚀 Quick Start - Choose Your Platform
 
-### Option A: OiS Lite (Recommended for Quick Start)
+### macOS / Linux
+
+#### Option A: OiS Lite (Recommended for Quick Start)
 
 **Simple, fast, terminal-based installation:**
 
@@ -38,9 +40,7 @@ curl -sSL https://raw.githubusercontent.com/VltrnOne/carbon6-platform/main/remot
 
 **Requirements:** Node.js 18+, Git
 
----
-
-### Option B: Full Production Installation
+#### Option B: Full Production Installation (macOS)
 
 **Complete setup with database, security, monitoring:**
 
@@ -49,19 +49,40 @@ curl -sSL https://raw.githubusercontent.com/VltrnOne/carbon6-platform/main/remot
 git clone https://github.com/VltrnOne/carbon6-platform.git
 cd carbon6-platform
 
-# Run interactive installer
-./install-carbon6.sh
+# Fast installer (< 20 minutes)
+./install-carbon6-fast.sh
 ```
 
-**Installs in ~40-65 minutes:**
+**Installs in 15-20 minutes:**
 - ✅ PostgreSQL 15 + Redis 7
-- ✅ PM2 cluster mode
-- ✅ 462 Council agents
-- ✅ Ed25519 + JWT security
-- ✅ 88x™ Chairman Console
-- ✅ Automated backups & monitoring
+- ✅ Bun package manager (10x faster)
+- ✅ Parallel installation
+- ✅ Optimized for speed
 
 **Requirements:** macOS 12+, 8GB RAM, 10GB disk
+
+---
+
+### Windows 10/11
+
+#### Fast Installation (PowerShell)
+
+**Open PowerShell as Administrator and run:**
+
+```powershell
+irm https://raw.githubusercontent.com/VltrnOne/carbon6-platform/main/install-carbon6-windows.ps1 | iex
+```
+
+**Installs in 15-20 minutes:**
+- ✅ Chocolatey package manager
+- ✅ Bun (10x faster than npm)
+- ✅ PostgreSQL 15
+- ✅ Memurai (Redis for Windows)
+- ✅ Express + WebSocket server
+
+**Requirements:** Windows 10+, PowerShell 5.1+, 4GB RAM, 5GB disk
+
+**📖 Full Windows Guide:** [INSTALL_WINDOWS.md](INSTALL_WINDOWS.md)
 
 ---
 
@@ -255,12 +276,12 @@ open http://localhost:3006/console
 
 | Component | Minimum | Recommended |
 |-----------|---------|-------------|
-| **OS** | macOS 10.15+, Ubuntu 20.04+ | Latest |
+| **OS** | macOS 10.15+, Ubuntu 20.04+, Windows 10+ | Latest |
 | **Node.js** | 18.x | 20.x (LTS) |
 | **RAM** | 512 MB | 2 GB |
 | **Disk** | 100 MB | 500 MB |
 
-### Full Production
+### Full Production (macOS)
 
 | Component | Minimum | Recommended |
 |-----------|---------|-------------|
@@ -268,6 +289,16 @@ open http://localhost:3006/console
 | **Node.js** | 20.x | 20.x (LTS) |
 | **RAM** | 8 GB | 16 GB |
 | **Disk** | 10 GB | 20 GB |
+| **Database** | PostgreSQL 15 | PostgreSQL 15 |
+
+### Full Production (Windows)
+
+| Component | Minimum | Recommended |
+|-----------|---------|-------------|
+| **OS** | Windows 10 (Build 19041+) | Windows 11 |
+| **PowerShell** | 5.1 | 7.x |
+| **RAM** | 4 GB | 8 GB |
+| **Disk** | 5 GB | 10 GB |
 | **Database** | PostgreSQL 15 | PostgreSQL 15 |
 
 ---
