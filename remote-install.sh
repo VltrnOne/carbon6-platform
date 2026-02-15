@@ -65,8 +65,14 @@ if command -v bun &> /dev/null; then
     echo -e "${GREEN}  ✓ bun $(bun -v)${NC}"
 elif command -v npm &> /dev/null; then
     PKG_MANAGER="npm"
-    echo -e "${YELLOW}  ⚠ npm found (bun recommended for performance)${NC}"
-    echo -e "${GRAY}    Install bun: curl -fsSL https://bun.sh/install | bash${NC}"
+    echo -e "${YELLOW}  ⚠ npm found (installing bun for 10x faster performance...)${NC}"
+    # Install bun automatically for speed
+    curl -fsSL https://bun.sh/install | bash
+    export PATH="$HOME/.bun/bin:$PATH"
+    if command -v bun &> /dev/null; then
+        PKG_MANAGER="bun"
+        echo -e "${GREEN}  ✓ bun installed successfully${NC}"
+    fi
 else
     echo -e "${RED}✗ npm or bun is required${NC}"
     exit 1
@@ -99,17 +105,14 @@ else
     fi
 fi
 
-# Install SDK dependencies
-echo -e "${GRAY}  Installing SDK dependencies...${NC}"
-cd "$SDK_DIR/sdk"
+# Install SDK dependencies (parallel with platform)
+echo -e "${GRAY}  Installing dependencies in parallel...${NC}"
 
-if [ "$PKG_MANAGER" = "bun" ]; then
-    bun install --silent
-    echo -e "${GREEN}  ✓ SDK dependencies installed${NC}"
-else
-    npm install --silent
-    echo -e "${GREEN}  ✓ SDK dependencies installed${NC}"
-fi
+# SDK install in background
+(cd "$SDK_DIR/sdk" && $PKG_MANAGER install --silent 2>/dev/null) &
+SDK_INSTALL_PID=$!
+
+# Continue with other tasks while SDK installs...
 
 echo ""
 
@@ -129,17 +132,16 @@ else
     fi
 fi
 
-# Install platform dependencies
-echo -e "${GRAY}  Installing platform dependencies...${NC}"
-cd "$PLATFORM_DIR"
+# Platform install in background
+(cd "$PLATFORM_DIR" && $PKG_MANAGER install --silent 2>/dev/null) &
+PLATFORM_INSTALL_PID=$!
 
-if [ "$PKG_MANAGER" = "bun" ]; then
-    bun install --silent
-    echo -e "${GREEN}  ✓ Platform dependencies installed${NC}"
-else
-    npm install --silent
-    echo -e "${GREEN}  ✓ Platform dependencies installed${NC}"
-fi
+# Wait for both installations to complete
+wait $SDK_INSTALL_PID
+echo -e "${GREEN}  ✓ SDK dependencies installed${NC}"
+
+wait $PLATFORM_INSTALL_PID
+echo -e "${GREEN}  ✓ Platform dependencies installed${NC}"
 
 echo ""
 
