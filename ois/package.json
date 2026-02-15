@@ -1,0 +1,25 @@
+{
+  "name": "@vltrn/ois",
+  "version": "1.0.0",
+  "description": "OiS - Operational Intelligence System for Carbon6 Platform",
+  "bin": {
+    "ois": "./bin/ois"
+  },
+  "scripts": {
+    "postinstall": "node -e \"console.log('\\n✓ OiS installed! Run: ois init\\n')\""
+  },
+  "keywords": [
+    "ois",
+    "carbon6",
+    "vltrn",
+    "terminal",
+    "cli",
+    "operating-system",
+    "intelligence"
+  ],
+  "author": "VLTRN Council - Carbon Domain",
+  "license": "ISC",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -22,26 +22,33 @@ curl -sSL https://raw.githubusercontent.com/VltrnOne/carbon6-platform/main/remot
 ```
 
 This installs:
+- ✅ **OiS (Operational Intelligence System)** - Terminal-based OS layer
 - ✅ **Carbon Collective SDK** - Team collaboration & auto-sync system
 - ✅ **Carbon6 Platform** - Marketing website & creator portal
 - ✅ **Environment Configuration** - Pre-configured `.env` templates
-- ✅ **CLI Tools** - Global `carbon` command for project management
+- ✅ **CLI Tools** - Global `ois` and `carbon` commands
 
 ---
 
 ## 📋 What Gets Installed
 
-### 1. Carbon Collective SDK (`~/carbon-collective`)
+### 1. OiS - Operational Intelligence System (`~/carbon6-platform/ois`)
+- **Purpose**: Terminal-based OS layer with AI agent integration
+- **Tech**: Node.js, Plugin architecture, Natural language processing
+- **Commands**: `ois init`, `ois status`, `ois agents`, `ois task`
+- **Features**: VLTRN Council agent access, plugin system, intelligence layer
+
+### 2. Carbon Collective SDK (`~/carbon-collective`)
 - **Purpose**: Team collaboration & project syncing
 - **Tech**: TypeScript, Bun/npm, File watching
 - **Commands**: `carbon init`, `carbon track`, `carbon watch`
 
-### 2. Carbon6 Platform (`~/Carbon6`)
+### 3. Carbon6 Platform (`~/Carbon6`)
 - **Purpose**: Marketing site & creator portal
 - **Tech**: Vite, GSAP, Vanilla JS
 - **Runs on**: `localhost:5173` (dev)
 
-### 3. Helper Scripts (`~/carbon6-platform`)
+### 4. Helper Scripts (`~/carbon6-platform`)
 - `start-sdk.sh` - Launch SDK dev server
 - `start-platform.sh` - Launch platform dev server
 - `build-platform.sh` - Build & preview production
@@ -53,20 +60,29 @@ This installs:
 ### After Installation
 
 ```bash
-# 1. Initialize your profile (one time)
+# 1. Initialize OiS (Operational Intelligence System)
+ois init
+
+# 2. Initialize your Carbon profile
 carbon init --name "Your Name"
 
-# 2. Start the platform website
+# 3. View system status
+ois status
+
+# 4. List available AI agents
+ois agents
+
+# 5. Start the platform website
 cd ~/Carbon6
 npm run dev  # or bun run dev
 
 # Visit: http://localhost:5173
 
-# 3. Track any project
+# 6. Track any project
 cd ~/your-client-project
 carbon track
 
-# 4. Enable auto-sync (every 30 seconds)
+# 7. Enable auto-sync (every 30 seconds)
 carbon watch
 ```
 

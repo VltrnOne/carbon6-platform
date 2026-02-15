@@ -36,7 +36,7 @@ echo -e "${GRAY}╚════════════════════�
 echo ""
 
 # Dependency checks
-echo -e "${GRAY}[1/7] Checking system dependencies...${NC}"
+echo -e "${GRAY}[1/8] Checking system dependencies...${NC}"
 
 # Check for Git
 if ! command -v git &> /dev/null; then
@@ -84,7 +84,7 @@ fi
 echo ""
 
 # Clone/Update Carbon Collective SDK
-echo -e "${GRAY}[2/7] Installing Carbon Collective SDK...${NC}"
+echo -e "${GRAY}[2/8] Installing Carbon Collective SDK...${NC}"
 
 if [ -d "$SDK_DIR/.git" ]; then
     echo -e "${GRAY}  Updating existing SDK installation...${NC}"
@@ -114,7 +114,7 @@ fi
 echo ""
 
 # Clone/Update Carbon6 Platform
-echo -e "${GRAY}[3/7] Installing Carbon6 Platform...${NC}"
+echo -e "${GRAY}[3/8] Installing Carbon6 Platform...${NC}"
 
 if [ -d "$PLATFORM_DIR/.git" ]; then
     echo -e "${GRAY}  Updating existing platform installation...${NC}"
@@ -144,7 +144,7 @@ fi
 echo ""
 
 # Link SDK globally
-echo -e "${GRAY}[4/7] Linking Carbon SDK globally...${NC}"
+echo -e "${GRAY}[4/8] Linking Carbon SDK globally...${NC}"
 cd "$SDK_DIR/sdk"
 
 if [ "$PKG_MANAGER" = "bun" ]; then
@@ -164,7 +164,7 @@ fi
 echo ""
 
 # Environment setup
-echo -e "${GRAY}[5/7] Setting up environment configuration...${NC}"
+echo -e "${GRAY}[5/8] Setting up environment configuration...${NC}"
 
 # SDK environment
 if [ ! -f "$SDK_DIR/.env" ]; then
@@ -198,7 +198,7 @@ fi
 echo ""
 
 # Create platform link
-echo -e "${GRAY}[6/7] Creating platform shortcuts...${NC}"
+echo -e "${GRAY}[6/8] Creating platform shortcuts...${NC}"
 mkdir -p "$INSTALL_DIR"
 
 cat > "$INSTALL_DIR/start-sdk.sh" << 'EOF'
@@ -221,14 +221,70 @@ chmod +x "$INSTALL_DIR"/*.sh
 echo -e "${GREEN}  ✓ Created helper scripts in $INSTALL_DIR${NC}"
 echo ""
 
+# Install OiS (Operational Intelligence System)
+echo -e "${GRAY}[7/8] Installing OiS (Operational Intelligence System)...${NC}"
+
+# Clone carbon6-platform if needed (for OiS)
+if [ ! -d "$INSTALL_DIR/.git" ]; then
+    echo -e "${GRAY}  Cloning carbon6-platform repository...${NC}"
+    if [ "$USE_GH" = true ]; then
+        gh repo clone "$GITHUB_ORG/carbon6-platform" "$INSTALL_DIR"
+    else
+        git clone "https://github.com/$GITHUB_ORG/carbon6-platform.git" "$INSTALL_DIR"
+    fi
+fi
+
+# Install OiS CLI
+echo -e "${GRAY}  Installing OiS CLI...${NC}"
+cd "$INSTALL_DIR/ois"
+
+if [ "$PKG_MANAGER" = "bun" ]; then
+    bun install --silent 2>/dev/null || npm install --silent
+    bun link 2>/dev/null || npm link 2>/dev/null || true
+else
+    npm install --silent
+    npm link 2>/dev/null || true
+fi
+
+# Make ois executable
+chmod +x bin/ois
+
+# Add to PATH if not already there
+OIS_BIN="$INSTALL_DIR/ois/bin"
+SHELL_RC=""
+
+if [[ "$SHELL" == *"zsh"* ]]; then
+    SHELL_RC="$HOME/.zshrc"
+elif [[ "$SHELL" == *"bash"* ]]; then
+    SHELL_RC="$HOME/.bashrc"
+fi
+
+if [ -n "$SHELL_RC" ]; then
+    if ! grep -q "export PATH=\"$OIS_BIN:\$PATH\"" "$SHELL_RC" 2>/dev/null; then
+        echo "" >> "$SHELL_RC"
+        echo "# OiS - Operational Intelligence System" >> "$SHELL_RC"
+        echo "export PATH=\"$OIS_BIN:\$PATH\"" >> "$SHELL_RC"
+        echo -e "${GREEN}  ✓ Added OiS to PATH in $SHELL_RC${NC}"
+    fi
+fi
+
+# Verify ois command (use full path for now)
+if "$OIS_BIN/ois" version &> /dev/null; then
+    echo -e "${GREEN}  ✓ OiS CLI installed successfully${NC}"
+else
+    echo -e "${YELLOW}  ⚠ OiS CLI installed (restart terminal for 'ois' command)${NC}"
+fi
+
+echo ""
+
 # System info
-echo -e "${GRAY}[7/7] Installation complete!${NC}"
+echo -e "${GRAY}[8/8] Installation complete!${NC}"
 echo ""
 
 # Success banner
 echo -e "${GREEN}╔═══════════════════════════════════════════════════════════╗${NC}"
 echo -e "${GREEN}║                                                           ║${NC}"
-echo -e "${GREEN}║     ✓ Carbon6 Platform Installed Successfully            ║${NC}"
+echo -e "${GREEN}║     ✓ Carbon6 Platform + OiS Installed Successfully      ║${NC}"
 echo -e "${GREEN}║                                                           ║${NC}"
 echo -e "${GREEN}╚═══════════════════════════════════════════════════════════╝${NC}"
 echo ""
@@ -236,21 +292,25 @@ echo ""
 # Next steps
 echo -e "${BLUE}Next Steps:${NC}"
 echo ""
-echo -e "${GRAY}1. Initialize your Carbon profile:${NC}"
+echo -e "${GRAY}1. Initialize OiS (Operational Intelligence System):${NC}"
+echo -e "   ${BLUE}ois init${NC}"
+echo ""
+echo -e "${GRAY}2. Initialize your Carbon profile:${NC}"
 echo -e "   ${BLUE}carbon init --name \"Your Name\"${NC}"
 echo ""
-echo -e "${GRAY}2. Start the platform:${NC}"
+echo -e "${GRAY}3. View system status:${NC}"
+echo -e "   ${BLUE}ois status${NC}"
+echo ""
+echo -e "${GRAY}4. List available AI agents:${NC}"
+echo -e "   ${BLUE}ois agents${NC}"
+echo ""
+echo -e "${GRAY}5. Start the platform:${NC}"
 echo -e "   ${BLUE}cd ~/Carbon6 && ${PKG_MANAGER} run dev${NC}"
-echo ""
-echo -e "${GRAY}3. Track your first project:${NC}"
-echo -e "   ${BLUE}cd ~/your-project && carbon track${NC}"
-echo ""
-echo -e "${GRAY}4. Start auto-sync:${NC}"
-echo -e "   ${BLUE}carbon watch${NC}"
 echo ""
 
 # Helpful paths
 echo -e "${GRAY}Installed Components:${NC}"
+echo -e "  ${GRAY}• OiS:      $INSTALL_DIR/ois${NC}"
 echo -e "  ${GRAY}• SDK:      $SDK_DIR${NC}"
 echo -e "  ${GRAY}• Platform: $PLATFORM_DIR${NC}"
 echo -e "  ${GRAY}• Scripts:  $INSTALL_DIR${NC}"
@@ -258,9 +318,10 @@ echo ""
 
 # Documentation links
 echo -e "${GRAY}Documentation:${NC}"
+echo -e "  ${GRAY}• OiS Commands:    ois help${NC}"
 echo -e "  ${GRAY}• SDK Commands:    carbon --help${NC}"
+echo -e "  ${GRAY}• OiS Arch:        ~/carbon6-platform/OIS_ARCHITECTURE.md${NC}"
 echo -e "  ${GRAY}• Platform Docs:   ~/Carbon6/README.md${NC}"
-echo -e "  ${GRAY}• Team Guide:      ~/carbon-collective/docs/${NC}"
 echo ""
 
 # Tier system reminder
