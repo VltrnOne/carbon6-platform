@@ -40,9 +40,9 @@ curl -sSL https://raw.githubusercontent.com/VltrnOne/carbon6-platform/main/remot
 
 **Requirements:** Node.js 18+, Git
 
-#### Option B: Full Production Installation (macOS)
+#### Option B: Personal Installation (Single User)
 
-**Complete setup with database, security, monitoring:**
+**For development on your local machine:**
 
 ```bash
 # Clone repository
@@ -53,6 +53,10 @@ cd carbon6-platform
 ./install-carbon6-fast.sh
 ```
 
+**Installs to:** `~/Carbon6`
+**Access:** localhost only, single user
+**Best for:** Development, testing, personal use
+
 **Installs in 15-20 minutes:**
 - ✅ PostgreSQL 15 + Redis 7
 - ✅ Bun package manager (10x faster)
@@ -60,6 +64,41 @@ cd carbon6-platform
 - ✅ Optimized for speed
 
 **Requirements:** macOS 12+, 8GB RAM, 10GB disk
+
+---
+
+#### Option C: Shared Installation (Multi-User, Network-Ready)
+
+**For team/production use - accessible from any computer:**
+
+```bash
+# Download installer
+curl -sSL https://raw.githubusercontent.com/VltrnOne/carbon6-platform/main/install-carbon6-macos-shared.sh -o /tmp/install-shared.sh
+
+# Run with sudo
+sudo bash /tmp/install-shared.sh
+```
+
+**Installs to:** `/opt/carbon6` (all users can access)
+**Access:** Network-accessible, multi-user
+**Best for:** Production, teams, shared office environments
+
+**Features:**
+- ✅ All users on Mac can run the server
+- ✅ Accessible from other computers on network
+- ✅ Shared configuration in `/var/lib/carbon6`
+- ✅ System-wide `carbon6` command
+- ✅ Optional launchd service (auto-start)
+
+**📖 Full Guide:** [INSTALL_MACOS_SHARED.md](INSTALL_MACOS_SHARED.md)
+
+**Installs in 15-20 minutes:**
+- ✅ Homebrew + Bun package managers
+- ✅ PostgreSQL 15 + Redis 7
+- ✅ Network-configured database
+- ✅ Express + WebSocket server
+
+**Requirements:** macOS 12+, sudo access, 8GB RAM, 10GB disk
 
 ---
 
