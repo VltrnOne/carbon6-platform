@@ -65,13 +65,43 @@ cd carbon6-platform
 
 ### Windows 10/11
 
-#### Fast Installation (PowerShell)
+#### Personal Installation (Single User)
 
-**Open PowerShell as Administrator and run:**
+**For development on your local machine:**
 
 ```powershell
 irm https://raw.githubusercontent.com/VltrnOne/carbon6-platform/main/install-carbon6-windows.ps1 | iex
 ```
+
+**Installs to:** `C:\Users\YourName\Carbon6`
+**Access:** localhost only, single user
+**Best for:** Development, testing, personal use
+
+**📖 Full Guide:** [INSTALL_WINDOWS.md](INSTALL_WINDOWS.md)
+
+---
+
+#### Shared Installation (Multi-User, Network-Ready)
+
+**For team/production use - accessible from any computer:**
+
+```powershell
+# Run as Administrator
+irm https://raw.githubusercontent.com/VltrnOne/carbon6-platform/main/install-carbon6-windows-shared.ps1 | iex
+```
+
+**Installs to:** `C:\Carbon6` (all users can access)
+**Access:** Network-accessible, multi-user
+**Best for:** Production, teams, shared office environments
+
+**Features:**
+- ✅ All users on system can run the server
+- ✅ Accessible from other computers on network
+- ✅ Shared configuration in `C:\ProgramData\Carbon6`
+- ✅ Desktop shortcut for all users
+- ✅ Optional Windows service (auto-start)
+
+**📖 Full Guide:** [INSTALL_WINDOWS_SHARED.md](INSTALL_WINDOWS_SHARED.md)
 
 **Installs in 15-20 minutes:**
 - ✅ Chocolatey package manager
@@ -80,9 +110,7 @@ irm https://raw.githubusercontent.com/VltrnOne/carbon6-platform/main/install-car
 - ✅ Memurai (Redis for Windows)
 - ✅ Express + WebSocket server
 
-**Requirements:** Windows 10+, PowerShell 5.1+, 4GB RAM, 5GB disk
-
-**📖 Full Windows Guide:** [INSTALL_WINDOWS.md](INSTALL_WINDOWS.md)
+**Requirements:** Windows 10+, PowerShell 5.1+, Administrator privileges, 4GB RAM, 5GB disk
 
 ---
 
