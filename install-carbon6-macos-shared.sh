@@ -83,9 +83,14 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+# Get the original user (who ran sudo)
+ORIGINAL_USER="${SUDO_USER:-$USER}"
+ORIGINAL_HOME=$(eval echo "~$ORIGINAL_USER")
+
 log_info "Installation Path: $INSTALL_PATH"
 log_info "Data Path: $DATA_PATH"
 log_info "Log Path: $LOG_PATH"
+log_info "Running as: $ORIGINAL_USER"
 echo ""
 
 ################################################################################
@@ -135,32 +140,32 @@ log_success "Permissions set for multi-user access | $(elapsed_time)"
 echo ""
 echo -e "${GRAY}[3/8] Installing package managers...${NC}"
 
-# Install Homebrew (if not present)
-if ! command -v brew &> /dev/null; then
-    log_info "Installing Homebrew..."
-    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-    # Add Homebrew to PATH
-    if [ -d "/opt/homebrew" ]; then
-        eval "$(/opt/homebrew/bin/brew shellenv)"
-    else
-        eval "$(/usr/local/bin/brew shellenv)"
-    fi
-
+# Install Homebrew (if not present) - run as original user
+if ! sudo -u "$ORIGINAL_USER" bash -c 'command -v brew' &> /dev/null; then
+    log_info "Installing Homebrew as $ORIGINAL_USER..."
+    sudo -u "$ORIGINAL_USER" bash -c 'NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'
     log_success "Homebrew installed"
 else
     log_success "Homebrew already installed"
-    brew update 2>&1 | grep -v "^Warning:" || true
+    sudo -u "$ORIGINAL_USER" bash -c 'brew update' 2>&1 | grep -v "^Warning:" || true
 fi
 
-# Install Bun (system-wide)
-if ! command -v bun &> /dev/null; then
-    log_info "Installing Bun (system-wide)..."
-    curl -fsSL https://bun.sh/install | bash
+# Set up Homebrew PATH for this script
+if [ -d "/opt/homebrew" ]; then
+    BREW_PREFIX="/opt/homebrew"
+else
+    BREW_PREFIX="/usr/local"
+fi
+export PATH="$BREW_PREFIX/bin:$PATH"
+
+# Install Bun (system-wide) - run as original user
+if ! sudo -u "$ORIGINAL_USER" bash -c 'command -v bun' &> /dev/null; then
+    log_info "Installing Bun as $ORIGINAL_USER..."
+    sudo -u "$ORIGINAL_USER" bash -c 'curl -fsSL https://bun.sh/install | bash'
 
     # Make bun accessible system-wide
-    if [ -f "$HOME/.bun/bin/bun" ]; then
-        ln -sf "$HOME/.bun/bin/bun" /usr/local/bin/bun 2>/dev/null || true
+    if [ -f "$ORIGINAL_HOME/.bun/bin/bun" ]; then
+        ln -sf "$ORIGINAL_HOME/.bun/bin/bun" /usr/local/bin/bun 2>/dev/null || true
     fi
 
     log_success "Bun installed"
@@ -185,11 +190,11 @@ brew "git"
 brew "gh"
 EOF
 
-log_info "Installing via Homebrew..."
-brew bundle --file=/tmp/carbon6-brewfile --no-lock 2>&1 | grep -E "Installing|Using|Upgrading" || true
+log_info "Installing via Homebrew (as $ORIGINAL_USER)..."
+sudo -u "$ORIGINAL_USER" bash -c "brew bundle --file=/tmp/carbon6-brewfile" 2>&1 | grep -E "Installing|Using|Upgrading" || true
 
 # Link Node.js 20
-brew link node@20 --force --overwrite 2>/dev/null || true
+sudo -u "$ORIGINAL_USER" bash -c "brew link node@20 --force --overwrite" 2>/dev/null || true
 
 log_success "System dependencies installed | $(elapsed_time)"
 
@@ -199,10 +204,10 @@ log_success "System dependencies installed | $(elapsed_time)"
 echo ""
 echo -e "${GRAY}[5/8] Configuring database services...${NC}"
 
-# Start PostgreSQL
-if ! brew services list | grep postgresql@15 | grep started >/dev/null 2>&1; then
-    log_info "Starting PostgreSQL..."
-    brew services start postgresql@15
+# Start PostgreSQL (as original user)
+if ! sudo -u "$ORIGINAL_USER" bash -c "brew services list" | grep postgresql@15 | grep started >/dev/null 2>&1; then
+    log_info "Starting PostgreSQL as $ORIGINAL_USER..."
+    sudo -u "$ORIGINAL_USER" bash -c "brew services start postgresql@15"
     sleep 5
 fi
 log_success "PostgreSQL running"
@@ -234,21 +239,21 @@ if [ -f "$PG_HBA" ]; then
         echo "host    all             all             0.0.0.0/0               md5" >> "$PG_HBA"
 
         # Restart PostgreSQL to apply changes
-        brew services restart postgresql@15 >/dev/null 2>&1
+        sudo -u "$ORIGINAL_USER" bash -c "brew services restart postgresql@15" >/dev/null 2>&1
         sleep 3
     fi
 fi
 
-# Start Redis
-if ! brew services list | grep redis | grep started >/dev/null 2>&1; then
-    log_info "Starting Redis..."
-    brew services start redis
+# Start Redis (as original user)
+if ! sudo -u "$ORIGINAL_USER" bash -c "brew services list" | grep redis | grep started >/dev/null 2>&1; then
+    log_info "Starting Redis as $ORIGINAL_USER..."
+    sudo -u "$ORIGINAL_USER" bash -c "brew services start redis"
     sleep 2
 fi
 log_success "Redis running"
 
-# Create database
-createdb carbon6 2>/dev/null || true
+# Create database (as original user)
+sudo -u "$ORIGINAL_USER" bash -c "createdb carbon6" 2>/dev/null || true
 log_success "Database ready | $(elapsed_time)"
 
 ################################################################################
@@ -333,7 +338,7 @@ cat > "$DATA_PATH/config/.env" << EOF
 # Location: $DATA_PATH/config/.env
 
 # Database (network-accessible)
-DATABASE_URL="postgresql://$(whoami)@localhost:5432/carbon6"
+DATABASE_URL="postgresql://$ORIGINAL_USER@localhost:5432/carbon6"
 REDIS_URL="redis://localhost:6379"
 
 # Security
@@ -362,7 +367,7 @@ ln -sf "$DATA_PATH/config/.env" "$INSTALL_PATH/.env"
 chmod 664 "$DATA_PATH/config/.env"
 
 # Run Prisma
-export DATABASE_URL="postgresql://$(whoami)@localhost:5432/carbon6"
+export DATABASE_URL="postgresql://$ORIGINAL_USER@localhost:5432/carbon6"
 bunx prisma generate 2>&1 | grep -v "warning" || npx prisma generate 2>&1 | grep -v "warning" || true
 
 log_success "Database schema ready | $(elapsed_time)"
