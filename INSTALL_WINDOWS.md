@@ -37,7 +37,7 @@ Invoke-WebRequest -Uri "https://raw.githubusercontent.com/VltrnOne/carbon6-platf
 ## What Gets Installed
 
 ### Package Managers
-- **Chocolatey** - Windows package manager
+- **Chocolatey** - Windows package manager (auto-detects and upgrades if already installed)
 - **Bun** - Ultra-fast JavaScript runtime (10x faster than npm)
 
 ### System Dependencies
@@ -214,6 +214,45 @@ Stop-Service Memurai
 # Restart
 Restart-Service Memurai
 ```
+
+---
+
+## Running on Existing Systems
+
+### If You Already Have Chocolatey
+
+✅ **The installer automatically detects and handles this!**
+
+**What happens:**
+1. Installer detects existing Chocolatey installation
+2. Optionally upgrades Chocolatey to latest version
+3. Uses `choco upgrade` for packages (installs if missing, upgrades if exists)
+4. Continues with installation seamlessly
+
+**Example output:**
+```powershell
+[2/7] Installing package managers...
+  ✓ Chocolatey already installed
+  • Checking for Chocolatey updates...
+  ✓ Chocolatey upgraded
+```
+
+**Safe for:**
+- Systems with existing Chocolatey installations
+- Developer workstations with packages already installed
+- CI/CD environments
+
+### If You Already Have PostgreSQL or Node.js
+
+✅ **Also handled automatically!**
+
+The installer will:
+- Detect existing installations
+- Upgrade to required versions if needed (PostgreSQL 15, Node 20)
+- Skip if versions are compatible
+- Configure services regardless of installation method
+
+**Note:** If you have PostgreSQL from a different source (not Chocolatey), the installer will install Chocolatey's version alongside. You may want to uninstall the old version first.
 
 ---
 

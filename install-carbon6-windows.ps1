@@ -102,7 +102,7 @@ Write-Success "PowerShell $psVersion"
 ################################################################################
 Write-Progress-Step 2 7 "Installing package managers..."
 
-# Install Chocolatey
+# Install or upgrade Chocolatey
 if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
     Write-Info "Installing Chocolatey..."
     Set-ExecutionPolicy Bypass -Scope Process -Force
@@ -117,6 +117,10 @@ if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
     Write-Success "Chocolatey installed"
 } else {
     Write-Success "Chocolatey already installed"
+
+    # Optionally upgrade Chocolatey itself (silent, non-breaking)
+    Write-Info "Checking for Chocolatey updates..."
+    choco upgrade chocolatey -y --no-progress --limit-output 2>&1 | Out-Null
 }
 
 # Install Bun (fast package manager)
@@ -139,7 +143,7 @@ Write-Success "Package managers ready | $(Get-ElapsedTime)"
 ################################################################################
 Write-Progress-Step 3 7 "Installing system dependencies..."
 
-# Install packages via Chocolatey (parallel where possible)
+# Install/upgrade packages via Chocolatey
 $packages = @(
     "nodejs-lts",           # Node.js 20
     "postgresql15",         # PostgreSQL 15
@@ -147,13 +151,17 @@ $packages = @(
     "git"                  # Git
 )
 
-Write-Info "Installing via Chocolatey..."
+Write-Info "Installing/upgrading via Chocolatey..."
 foreach ($package in $packages) {
+    # Use 'upgrade' which installs if missing, upgrades if exists
+    Write-Info "Processing $package..."
+    choco upgrade $package -y --no-progress --limit-output 2>&1 | Out-Null
+
+    # Verify installation
     if (choco list --local-only $package | Select-String -Pattern "1 packages installed") {
-        Write-Success "$package already installed"
+        Write-Success "$package ready"
     } else {
-        Write-Info "Installing $package..."
-        choco install $package -y --no-progress --limit-output
+        Write-Warning "$package may need manual installation"
     }
 }
 
