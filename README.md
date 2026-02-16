@@ -21,6 +21,21 @@
 
 ## 🚀 Quick Start - Choose Your Platform
 
+### ⚡ Single-Click Installers (Easiest!)
+
+**No terminal required - just download and double-click!**
+
+| Platform | Type | Download |
+|----------|------|----------|
+| **macOS** | Personal (Dev) | [Install Carbon6 (Personal).command](https://raw.githubusercontent.com/VltrnOne/carbon6-platform/main/Install%20Carbon6%20(Personal).command) |
+| **macOS** | Shared (Network) | [Install Carbon6 (Shared).command](https://raw.githubusercontent.com/VltrnOne/carbon6-platform/main/Install%20Carbon6%20(Shared).command) |
+| **Windows** | Personal (Dev) | [Install Carbon6 (Personal).bat](https://raw.githubusercontent.com/VltrnOne/carbon6-platform/main/Install%20Carbon6%20(Personal).bat) |
+| **Windows** | Shared (Network) | [Install Carbon6 (Shared).bat](https://raw.githubusercontent.com/VltrnOne/carbon6-platform/main/Install%20Carbon6%20(Shared).bat) |
+
+**📖 Full Guide:** [SINGLE_CLICK_INSTALL.md](SINGLE_CLICK_INSTALL.md)
+
+---
+
 ### macOS / Linux
 
 #### Option A: OiS Lite (Recommended for Quick Start)
