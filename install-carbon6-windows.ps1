@@ -153,15 +153,38 @@ $packages = @(
 
 Write-Info "Installing/upgrading via Chocolatey..."
 foreach ($package in $packages) {
-    # Use 'upgrade' which installs if missing, upgrades if exists
     Write-Info "Processing $package..."
-    choco upgrade $package -y --no-progress --limit-output 2>&1 | Out-Null
 
-    # Verify installation
-    if (choco list --local-only $package | Select-String -Pattern "1 packages installed") {
-        Write-Success "$package ready"
+    # Check if already installed
+    $installed = choco list --local-only | Select-String -Pattern "^$package "
+
+    if ($installed) {
+        Write-Success "$package already installed"
     } else {
-        Write-Warning "$package may need manual installation"
+        # Install the package with timeout (5 minutes max per package)
+        Write-Info "Installing $package (may take 2-5 minutes)..."
+
+        $job = Start-Job -ScriptBlock {
+            param($pkg)
+            choco upgrade $pkg -y --no-progress --limit-output 2>&1
+        } -ArgumentList $package
+
+        $completed = Wait-Job $job -Timeout 300  # 5 minute timeout
+
+        if ($completed) {
+            $result = Receive-Job $job
+            Remove-Job $job
+
+            if ($LASTEXITCODE -eq 0 -or $result -match "already installed") {
+                Write-Success "$package ready"
+            } else {
+                Write-Warning "$package may need manual installation (check: choco list --local-only)"
+            }
+        } else {
+            Stop-Job $job
+            Remove-Job $job
+            Write-Warning "$package installation timed out - continuing..."
+        }
     }
 }
 
@@ -203,17 +226,55 @@ if ($redisService) {
         Write-Success "Memurai already running"
     }
 } else {
-    Write-Warning "Memurai service not found - Redis features may not work"
+    Write-Warning "Memurai not installed - trying alternative Redis..."
+
+    # Check for standard Redis installation
+    $redisAlt = Get-Service -Name "Redis" -ErrorAction SilentlyContinue
+    if ($redisAlt) {
+        Write-Info "Found Redis service, starting..."
+        if ($redisAlt.Status -ne "Running") {
+            Start-Service Redis
+        }
+        Write-Success "Redis started"
+    } else {
+        Write-Warning "Redis not available - install manually if needed:"
+        Write-Host "  choco install memurai -y" -ForegroundColor Cyan
+    }
 }
 
 # Create PostgreSQL database
 Write-Info "Creating carbon6 database..."
-$env:PGPASSWORD = "postgres"  # Default password
-& "C:\Program Files\PostgreSQL\15\bin\createdb.exe" -U postgres carbon6 2>$null
+
+# Try multiple authentication methods
+$dbCreated = $false
+
+# Method 1: Try without password (trust authentication)
+$env:PGPASSWORD = ""
+& "C:\Program Files\PostgreSQL\15\bin\createdb.exe" carbon6 2>$null
 if ($LASTEXITCODE -eq 0) {
+    $dbCreated = $true
+}
+
+# Method 2: Try common default passwords
+if (-not $dbCreated) {
+    foreach ($pwd in @("postgres", "admin", "password", "")) {
+        $env:PGPASSWORD = $pwd
+        & "C:\Program Files\PostgreSQL\15\bin\createdb.exe" -U postgres carbon6 2>$null
+        if ($LASTEXITCODE -eq 0) {
+            $dbCreated = $true
+            Write-Success "Database created (password: $pwd)"
+            break
+        }
+    }
+}
+
+if ($dbCreated) {
     Write-Success "Database created"
 } else {
-    Write-Success "Database ready (may already exist)"
+    Write-Warning "Could not create database automatically"
+    Write-Info "You may need to create it manually:"
+    Write-Host '  psql -U postgres -c "CREATE DATABASE carbon6;"' -ForegroundColor Cyan
+    Write-Info "Or update DATABASE_URL in .env with correct credentials"
 }
 
 Write-Success "Services started | $(Get-ElapsedTime)"
