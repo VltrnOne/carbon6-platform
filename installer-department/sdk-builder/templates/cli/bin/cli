@@ -1,0 +1,17 @@
+#!/usr/bin/env node
+
+const program = require('commander');
+const pkg = require('../package.json');
+
+program
+  .version(pkg.version)
+  .description('A powerful CLI tool');
+
+program
+  .command('hello <name>')
+  .description('Say hello')
+  .action((name) => {
+    console.log(`Hello, ${name}!`);
+  });
+
+program.parse(process.argv);
