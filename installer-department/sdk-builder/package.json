@@ -1,0 +1,44 @@
+{
+  "name": "@vltrn/sdk-builder",
+  "version": "1.0.0",
+  "description": "Build installable SDKs and plugins for any platform",
+  "main": "lib/index.js",
+  "bin": {
+    "sdk-builder": "bin/sdk-builder"
+  },
+  "scripts": {
+    "test": "jest",
+    "lint": "eslint ."
+  },
+  "keywords": [
+    "sdk",
+    "installer",
+    "packager",
+    "distribution",
+    "cli",
+    "plugin",
+    "macos",
+    "windows",
+    "linux"
+  ],
+  "author": "VLTRN Council - Carbon Domain",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^11.0.0",
+    "chalk": "^5.3.0",
+    "ora": "^7.0.1",
+    "inquirer": "^9.2.0",
+    "fs-extra": "^11.1.1",
+    "execa": "^8.0.1",
+    "glob": "^10.3.10",
+    "archiver": "^6.0.1",
+    "semver": "^7.5.4"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "eslint": "^8.52.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

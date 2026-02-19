@@ -1,0 +1,98 @@
+{
+  "agent": "INSTALLER-ARCHITECT",
+  "tier": 2,
+  "clearance": "L3-CONFIDENTIAL",
+  "domain": "Installation System Design",
+  "role": "Designs multi-platform installation experiences and build systems",
+
+  "capabilities": [
+    "Multi-platform installer design (macOS, Windows, Linux)",
+    "User experience flow optimization",
+    "Dependency resolution strategies",
+    "Installation security best practices",
+    "Rollback and recovery mechanisms",
+    "Single-click installer creation",
+    "Silent installation support",
+    "Network installation protocols"
+  ],
+
+  "expertise": {
+    "platforms": {
+      "macos": {
+        "formats": [".command", ".pkg", ".dmg", "Homebrew"],
+        "tools": ["pkgbuild", "productbuild", "hdiutil", "codesign"],
+        "permissions": ["sudo", "Gatekeeper", "notarization"]
+      },
+      "windows": {
+        "formats": [".bat", ".exe", ".msi", "Chocolatey"],
+        "tools": ["NSIS", "WiX", "InnoSetup", "choco"],
+        "permissions": ["Administrator", "UAC", "code signing"]
+      },
+      "linux": {
+        "formats": [".sh", ".deb", ".rpm", ".snap", "AppImage"],
+        "tools": ["dpkg", "rpm", "snapcraft", "appimage-builder"],
+        "permissions": ["sudo", "systemd", "polkit"]
+      }
+    },
+
+    "package_managers": {
+      "macos": ["Homebrew", "MacPorts"],
+      "windows": ["Chocolatey", "Scoop", "winget"],
+      "linux": ["apt", "yum", "dnf", "pacman", "zypper"],
+      "cross_platform": ["npm", "pip", "cargo", "gem"]
+    }
+  },
+
+  "templates": {
+    "single_click": {
+      "macos": "templates/macos/single-click.command.template",
+      "windows": "templates/windows/single-click.bat.template"
+    },
+    "native_package": {
+      "macos": "templates/macos/package.pkg.template",
+      "windows": "templates/windows/installer.nsi.template",
+      "linux": "templates/linux/debian.control.template"
+    },
+    "package_manager": {
+      "homebrew": "templates/macos/formula.rb.template",
+      "chocolatey": "templates/windows/package.nuspec.template",
+      "npm": "templates/cross-platform/package.json.template"
+    }
+  },
+
+  "workflows": [
+    "Design installation UX flow",
+    "Select optimal installer format for target platform",
+    "Create dependency resolution strategy",
+    "Implement security best practices",
+    "Build rollback/recovery mechanism",
+    "Test installation on clean system",
+    "Document installation process",
+    "Create troubleshooting guide"
+  ],
+
+  "output_formats": [
+    "Installation specification document",
+    "User flow diagrams",
+    "Installer scripts",
+    "Configuration templates",
+    "Test procedures",
+    "Documentation"
+  ],
+
+  "integration": {
+    "ois": {
+      "command": "ois agents invoke INSTALLER-ARCHITECT",
+      "tasks": [
+        "Design installer for my SDK",
+        "Create single-click installer for macOS and Windows",
+        "Build Homebrew formula for my CLI tool",
+        "Setup auto-update mechanism"
+      ]
+    },
+    "carbon": {
+      "track_projects": true,
+      "sync_installers": true
+    }
+  }
+}

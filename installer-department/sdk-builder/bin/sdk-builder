@@ -1,0 +1,345 @@
+#!/usr/bin/env node
+
+const { Command } = require('commander');
+const chalk = require('chalk');
+const ora = require('ora');
+const inquirer = require('inquirer');
+const path = require('path');
+const fs = require('fs-extra');
+
+const pkg = require('../package.json');
+
+const program = new Command();
+
+// Banner
+console.log(chalk.blue(`
+╔═══════════════════════════════════════════════════════════╗
+║                                                           ║
+║     SDK BUILDER                                          ║
+║                                                           ║
+║     ${chalk.white('Package. Distribute. Deploy. At Scale.')}              ║
+║                                                           ║
+╚═══════════════════════════════════════════════════════════╝
+`));
+
+program
+  .name('sdk-builder')
+  .description('Build installable SDKs and plugins for any platform')
+  .version(pkg.version);
+
+// Init command
+program
+  .command('init <name>')
+  .description('Initialize a new SDK project')
+  .option('-t, --template <type>', 'Template type (cli, sdk, plugin)', 'sdk')
+  .action(async (name, options) => {
+    const spinner = ora('Initializing SDK...').start();
+
+    try {
+      // Ask configuration questions
+      const answers = await inquirer.prompt([
+        {
+          type: 'input',
+          name: 'description',
+          message: 'Description:',
+          default: `A powerful SDK built with SDK Builder`
+        },
+        {
+          type: 'checkbox',
+          name: 'platforms',
+          message: 'Target platforms:',
+          choices: [
+            { name: 'macOS', value: 'macos', checked: true },
+            { name: 'Windows', value: 'windows', checked: true },
+            { name: 'Linux', value: 'linux', checked: true }
+          ]
+        },
+        {
+          type: 'checkbox',
+          name: 'packageManagers',
+          message: 'Package managers:',
+          choices: [
+            { name: 'npm', value: 'npm', checked: true },
+            { name: 'Homebrew', value: 'homebrew', checked: false },
+            { name: 'Chocolatey', value: 'chocolatey', checked: false },
+            { name: 'Docker', value: 'docker', checked: false }
+          ]
+        },
+        {
+          type: 'confirm',
+          name: 'plugins',
+          message: 'Enable plugin support?',
+          default: true
+        },
+        {
+          type: 'confirm',
+          name: 'autoUpdate',
+          message: 'Enable auto-update?',
+          default: true
+        }
+      ]);
+
+      // Create project directory
+      const projectDir = path.join(process.cwd(), name);
+      await fs.ensureDir(projectDir);
+
+      // Copy template
+      const templateDir = path.join(__dirname, '..', 'templates', options.template);
+      await fs.copy(templateDir, projectDir);
+
+      // Update package.json
+      const pkgPath = path.join(projectDir, 'package.json');
+      const sdkPkg = await fs.readJson(pkgPath);
+      sdkPkg.name = name;
+      sdkPkg.description = answers.description;
+      await fs.writeJson(pkgPath, sdkPkg, { spaces: 2 });
+
+      // Create config file
+      const config = {
+        name,
+        ...answers,
+        version: '1.0.0',
+        created: new Date().toISOString()
+      };
+
+      await fs.writeJson(
+        path.join(projectDir, 'sdk-builder.config.json'),
+        config,
+        { spaces: 2 }
+      );
+
+      spinner.succeed(chalk.green(`SDK '${name}' initialized successfully!`));
+
+      console.log(chalk.gray(`
+Next steps:
+  ${chalk.white(`cd ${name}`)}
+  ${chalk.white('sdk-builder dev')}        # Start development
+  ${chalk.white('sdk-builder build')}      # Build installers
+  ${chalk.white('sdk-builder publish')}    # Publish to registries
+      `));
+
+    } catch (error) {
+      spinner.fail(chalk.red('Initialization failed'));
+      console.error(error);
+      process.exit(1);
+    }
+  });
+
+// Build command
+program
+  .command('build')
+  .description('Build installers for all platforms')
+  .option('--all', 'Build for all platforms')
+  .option('--macos', 'Build for macOS')
+  .option('--windows', 'Build for Windows')
+  .option('--linux', 'Build for Linux')
+  .option('--npm', 'Build npm package')
+  .option('--homebrew', 'Build Homebrew formula')
+  .option('--docker', 'Build Docker image')
+  .option('-w, --watch', 'Watch mode')
+  .action(async (options) => {
+    const config = await loadConfig();
+
+    console.log(chalk.blue(`Building ${config.name} v${config.version}...`));
+
+    const builders = [];
+
+    if (options.all || options.macos) builders.push(buildMacOS(config));
+    if (options.all || options.windows) builders.push(buildWindows(config));
+    if (options.all || options.linux) builders.push(buildLinux(config));
+    if (options.npm) builders.push(buildNpm(config));
+    if (options.homebrew) builders.push(buildHomebrew(config));
+    if (options.docker) builders.push(buildDocker(config));
+
+    try {
+      await Promise.all(builders);
+      console.log(chalk.green('✓ Build complete!'));
+    } catch (error) {
+      console.error(chalk.red('Build failed:'), error);
+      process.exit(1);
+    }
+  });
+
+// Version command
+program
+  .command('version <type>')
+  .description('Bump version (patch, minor, major)')
+  .action(async (type) => {
+    const config = await loadConfig();
+    const [major, minor, patch] = config.version.split('.').map(Number);
+
+    let newVersion;
+    switch (type) {
+      case 'patch':
+        newVersion = `${major}.${minor}.${patch + 1}`;
+        break;
+      case 'minor':
+        newVersion = `${major}.${minor + 1}.0`;
+        break;
+      case 'major':
+        newVersion = `${major + 1}.0.0`;
+        break;
+      default:
+        console.error(chalk.red(`Invalid version type: ${type}`));
+        process.exit(1);
+    }
+
+    config.version = newVersion;
+    await saveConfig(config);
+
+    // Update package.json
+    const pkg = await fs.readJson('package.json');
+    pkg.version = newVersion;
+    await fs.writeJson('package.json', pkg, { spaces: 2 });
+
+    console.log(chalk.green(`Version bumped to ${newVersion}`));
+  });
+
+// Publish command
+program
+  .command('publish')
+  .description('Publish to distribution channels')
+  .option('--all', 'Publish to all channels')
+  .option('--github', 'Publish to GitHub Releases')
+  .option('--npm', 'Publish to npm')
+  .option('--homebrew', 'Publish to Homebrew')
+  .option('--chocolatey', 'Publish to Chocolatey')
+  .action(async (options) => {
+    const config = await loadConfig();
+
+    console.log(chalk.blue(`Publishing ${config.name} v${config.version}...`));
+
+    const publishers = [];
+
+    if (options.all || options.github) publishers.push(publishGitHub(config));
+    if (options.all || options.npm) publishers.push(publishNpm(config));
+    if (options.homebrew) publishers.push(publishHomebrew(config));
+    if (options.chocolatey) publishers.push(publishChocolatey(config));
+
+    try {
+      await Promise.all(publishers);
+      console.log(chalk.green('✓ Published successfully!'));
+    } catch (error) {
+      console.error(chalk.red('Publish failed:'), error);
+      process.exit(1);
+    }
+  });
+
+// Plugin commands
+const plugin = program.command('plugin');
+
+plugin
+  .command('create <name>')
+  .description('Create a new plugin')
+  .action(async (name) => {
+    const spinner = ora(`Creating plugin ${name}...`).start();
+
+    try {
+      const pluginDir = path.join(process.cwd(), 'plugins', name);
+      await fs.ensureDir(pluginDir);
+
+      const templateDir = path.join(__dirname, '..', 'templates', 'plugin');
+      await fs.copy(templateDir, pluginDir);
+
+      // Update plugin manifest
+      const manifestPath = path.join(pluginDir, 'plugin.json');
+      const manifest = await fs.readJson(manifestPath);
+      manifest.name = name;
+      manifest.version = '1.0.0';
+      await fs.writeJson(manifestPath, manifest, { spaces: 2 });
+
+      spinner.succeed(chalk.green(`Plugin '${name}' created!`));
+    } catch (error) {
+      spinner.fail(chalk.red('Failed to create plugin'));
+      console.error(error);
+      process.exit(1);
+    }
+  });
+
+// Helper functions
+async function loadConfig() {
+  const configPath = path.join(process.cwd(), 'sdk-builder.config.json');
+  if (!await fs.pathExists(configPath)) {
+    console.error(chalk.red('Not an SDK Builder project. Run "sdk-builder init" first.'));
+    process.exit(1);
+  }
+  return await fs.readJson(configPath);
+}
+
+async function saveConfig(config) {
+  const configPath = path.join(process.cwd(), 'sdk-builder.config.json');
+  await fs.writeJson(configPath, config, { spaces: 2 });
+}
+
+async function buildMacOS(config) {
+  const spinner = ora('Building macOS installer...').start();
+  // Implementation in lib/builders/macos.js
+  const builder = require('../lib/builders/macos');
+  await builder.build(config);
+  spinner.succeed(chalk.green('✓ macOS installer built'));
+}
+
+async function buildWindows(config) {
+  const spinner = ora('Building Windows installer...').start();
+  const builder = require('../lib/builders/windows');
+  await builder.build(config);
+  spinner.succeed(chalk.green('✓ Windows installer built'));
+}
+
+async function buildLinux(config) {
+  const spinner = ora('Building Linux installer...').start();
+  const builder = require('../lib/builders/linux');
+  await builder.build(config);
+  spinner.succeed(chalk.green('✓ Linux installer built'));
+}
+
+async function buildNpm(config) {
+  const spinner = ora('Building npm package...').start();
+  const builder = require('../lib/builders/npm');
+  await builder.build(config);
+  spinner.succeed(chalk.green('✓ npm package built'));
+}
+
+async function buildHomebrew(config) {
+  const spinner = ora('Building Homebrew formula...').start();
+  const builder = require('../lib/builders/homebrew');
+  await builder.build(config);
+  spinner.succeed(chalk.green('✓ Homebrew formula built'));
+}
+
+async function buildDocker(config) {
+  const spinner = ora('Building Docker image...').start();
+  const builder = require('../lib/builders/docker');
+  await builder.build(config);
+  spinner.succeed(chalk.green('✓ Docker image built'));
+}
+
+async function publishGitHub(config) {
+  const spinner = ora('Publishing to GitHub Releases...').start();
+  const publisher = require('../lib/publishers/github');
+  await publisher.publish(config);
+  spinner.succeed(chalk.green('✓ Published to GitHub'));
+}
+
+async function publishNpm(config) {
+  const spinner = ora('Publishing to npm...').start();
+  const publisher = require('../lib/publishers/npm');
+  await publisher.publish(config);
+  spinner.succeed(chalk.green('✓ Published to npm'));
+}
+
+async function publishHomebrew(config) {
+  const spinner = ora('Publishing to Homebrew...').start();
+  const publisher = require('../lib/publishers/homebrew');
+  await publisher.publish(config);
+  spinner.succeed(chalk.green('✓ Published to Homebrew'));
+}
+
+async function publishChocolatey(config) {
+  const spinner = ora('Publishing to Chocolatey...').start();
+  const publisher = require('../lib/publishers/chocolatey');
+  await publisher.publish(config);
+  spinner.succeed(chalk.green('✓ Published to Chocolatey'));
+}
+
+program.parse();
