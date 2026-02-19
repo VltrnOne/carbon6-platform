@@ -1,0 +1,933 @@
+{
+  "version": "1.0.0",
+  "totalCommands": 462,
+  "lastUpdated": "2026-02-18",
+
+  "tiers": {
+    "tier0": {
+      "clearance": "L5-BLACK",
+      "count": 5,
+      "commands": {
+        "genesis": {
+          "agent": "GENESIS",
+          "description": "Divine Orchestrator - Supreme intelligence routing",
+          "tier": 0,
+          "capabilities": ["intent-parsing", "complexity-scoring", "domain-detection", "multi-llm-routing"]
+        },
+        "genesis-omega": {
+          "agent": "GENESIS-OMEGA",
+          "description": "Strategic Analysis Super Mini",
+          "tier": 0,
+          "parent": "GENESIS"
+        },
+        "genesis-alpha": {
+          "agent": "GENESIS-ALPHA",
+          "description": "Execution Coordination Super Mini",
+          "tier": 0,
+          "parent": "GENESIS"
+        },
+        "genesis-prime": {
+          "agent": "GENESIS-PRIME",
+          "description": "Quality Assurance Super Mini",
+          "tier": 0,
+          "parent": "GENESIS"
+        },
+        "genesis-elite": {
+          "agent": "GENESIS-ELITE",
+          "description": "Crisis Response Super Mini",
+          "tier": 0,
+          "parent": "GENESIS"
+        }
+      }
+    },
+
+    "tier1": {
+      "clearance": "L4-RESTRICTED",
+      "count": 74,
+      "commands": {
+        "sovereign": {
+          "agent": "SOVEREIGN",
+          "description": "Strategic Command - Executive strategy, governance, resource allocation",
+          "tier": 1,
+          "domain": "strategic-command",
+          "subAgents": ["strategy", "governance", "resources", "vision"],
+          "superMinis": ["omega", "alpha", "prime", "elite"]
+        },
+        "sovereign.strategy": {
+          "agent": "SOVEREIGN-STRATEGY",
+          "description": "Strategic planning",
+          "tier": 1,
+          "parent": "SOVEREIGN"
+        },
+        "sovereign.governance": {
+          "agent": "SOVEREIGN-GOVERNANCE",
+          "description": "Decision frameworks",
+          "tier": 1,
+          "parent": "SOVEREIGN"
+        },
+        "sovereign.resources": {
+          "agent": "SOVEREIGN-RESOURCES",
+          "description": "Resource optimization",
+          "tier": 1,
+          "parent": "SOVEREIGN"
+        },
+        "sovereign.vision": {
+          "agent": "SOVEREIGN-VISION",
+          "description": "Long-term planning",
+          "tier": 1,
+          "parent": "SOVEREIGN"
+        },
+
+        "mnemos": {
+          "agent": "MNEMOS",
+          "description": "Memory & Knowledge - Knowledge synthesis, educational frameworks",
+          "tier": 1,
+          "domain": "memory-knowledge",
+          "subAgents": ["trivium", "quadrivium", "archive", "synthesis", "theology", "history"],
+          "superMinis": ["omega", "alpha", "prime", "elite"]
+        },
+        "mnemos.trivium": {
+          "agent": "MNEMOS-TRIVIUM",
+          "description": "Grammar, Logic, Rhetoric",
+          "tier": 1,
+          "parent": "MNEMOS"
+        },
+        "mnemos.quadrivium": {
+          "agent": "MNEMOS-QUADRIVIUM",
+          "description": "Arithmetic, Geometry, Music, Astronomy",
+          "tier": 1,
+          "parent": "MNEMOS"
+        },
+        "mnemos.archive": {
+          "agent": "MNEMOS-ARCHIVE",
+          "description": "Knowledge preservation",
+          "tier": 1,
+          "parent": "MNEMOS"
+        },
+        "mnemos.synthesis": {
+          "agent": "MNEMOS-SYNTHESIS",
+          "description": "Cross-domain integration",
+          "tier": 1,
+          "parent": "MNEMOS"
+        },
+        "mnemos.theology": {
+          "agent": "MNEMOS-THEOLOGY",
+          "description": "Divine wisdom, Torah scholarship",
+          "tier": 1,
+          "parent": "MNEMOS"
+        },
+        "mnemos.history": {
+          "agent": "MNEMOS-HISTORY",
+          "description": "Forensic history, cultural restoration",
+          "tier": 1,
+          "parent": "MNEMOS"
+        },
+
+        "aegis": {
+          "agent": "AEGIS",
+          "description": "Security Guardian - Security architecture, threat detection",
+          "tier": 1,
+          "domain": "security",
+          "subAgents": ["sentinel", "guardian", "inquisitor", "fortress", "penetrator"],
+          "superMinis": ["omega", "alpha", "prime", "elite"],
+          "nvidia": "morpheus"
+        },
+        "aegis.sentinel": {
+          "agent": "AEGIS-SENTINEL",
+          "description": "Threat monitoring",
+          "tier": 1,
+          "parent": "AEGIS"
+        },
+        "aegis.guardian": {
+          "agent": "AEGIS-GUARDIAN",
+          "description": "Access control",
+          "tier": 1,
+          "parent": "AEGIS"
+        },
+        "aegis.inquisitor": {
+          "agent": "AEGIS-INQUISITOR",
+          "description": "Incident response",
+          "tier": 1,
+          "parent": "AEGIS"
+        },
+        "aegis.fortress": {
+          "agent": "AEGIS-FORTRESS",
+          "description": "Infrastructure security",
+          "tier": 1,
+          "parent": "AEGIS"
+        },
+        "aegis.penetrator": {
+          "agent": "AEGIS-PENETRATOR",
+          "description": "Security testing",
+          "tier": 1,
+          "parent": "AEGIS"
+        },
+
+        "praxis": {
+          "agent": "PRAXIS",
+          "description": "Operations Director - Project execution, workflow management",
+          "tier": 1,
+          "domain": "operations",
+          "subAgents": ["executor", "logistics", "workflow", "quality"],
+          "superMinis": ["omega", "alpha", "prime", "elite"],
+          "nvidia": "cuopt"
+        },
+        "praxis.executor": {
+          "agent": "PRAXIS-EXECUTOR",
+          "description": "Task execution",
+          "tier": 1,
+          "parent": "PRAXIS"
+        },
+        "praxis.logistics": {
+          "agent": "PRAXIS-LOGISTICS",
+          "description": "Supply chain",
+          "tier": 1,
+          "parent": "PRAXIS"
+        },
+        "praxis.workflow": {
+          "agent": "PRAXIS-WORKFLOW",
+          "description": "Process automation",
+          "tier": 1,
+          "parent": "PRAXIS"
+        },
+        "praxis.quality": {
+          "agent": "PRAXIS-QUALITY",
+          "description": "Quality assurance",
+          "tier": 1,
+          "parent": "PRAXIS"
+        },
+
+        "trust": {
+          "agent": "TRUST_DIRECTOR",
+          "description": "Compliance & Trust - Trust architecture, regulatory compliance",
+          "tier": 1,
+          "domain": "compliance-trust",
+          "subAgents": ["sovereign", "compliance", "asset", "legacy"],
+          "superMinis": ["omega", "alpha", "prime", "elite"]
+        },
+        "trust.sovereign": {
+          "agent": "TRUST-SOVEREIGN",
+          "description": "Trust structures",
+          "tier": 1,
+          "parent": "TRUST_DIRECTOR"
+        },
+        "trust.compliance": {
+          "agent": "TRUST-COMPLIANCE",
+          "description": "Regulatory compliance",
+          "tier": 1,
+          "parent": "TRUST_DIRECTOR"
+        },
+        "trust.asset": {
+          "agent": "TRUST-ASSET",
+          "description": "Asset protection",
+          "tier": 1,
+          "parent": "TRUST_DIRECTOR"
+        },
+        "trust.legacy": {
+          "agent": "TRUST-LEGACY",
+          "description": "Estate planning",
+          "tier": 1,
+          "parent": "TRUST_DIRECTOR"
+        }
+      }
+    },
+
+    "tier2": {
+      "clearance": "L3-CONFIDENTIAL",
+      "count": 332,
+      "commands": {
+        "aurum": {
+          "agent": "AURUM",
+          "description": "Finance & Treasury - Financial operations, treasury management",
+          "tier": 2,
+          "domain": "finance",
+          "subAgents": ["controller", "analyst", "tax", "treasury", "capital"],
+          "superMinis": ["omega", "alpha", "prime", "elite"],
+          "nvidia": "cuopt",
+          "aliases": ["finance", "accounting", "treasury"]
+        },
+        "aurum.controller": {
+          "agent": "AURUM-CONTROLLER",
+          "description": "Bookkeeping, GAAP compliance",
+          "tier": 2,
+          "parent": "AURUM"
+        },
+        "aurum.analyst": {
+          "agent": "AURUM-ANALYST",
+          "description": "Variance analysis, forecasting",
+          "tier": 2,
+          "parent": "AURUM",
+          "aliases": ["fpa"]
+        },
+        "aurum.tax": {
+          "agent": "AURUM-TAX",
+          "description": "Tax compliance",
+          "tier": 2,
+          "parent": "AURUM",
+          "aliases": ["tax"]
+        },
+        "aurum.treasury": {
+          "agent": "AURUM-TREASURY",
+          "description": "Cash management",
+          "tier": 2,
+          "parent": "AURUM"
+        },
+        "aurum.capital": {
+          "agent": "AURUM-CAPITAL",
+          "description": "Structured finance",
+          "tier": 2,
+          "parent": "AURUM"
+        },
+
+        "techne": {
+          "agent": "TECHNE",
+          "description": "Technology & Development - Full-stack development, system architecture",
+          "tier": 2,
+          "domain": "technology",
+          "subAgents": ["architect", "frontend", "backend", "blockchain", "devops", "ai"],
+          "superMinis": ["omega", "alpha", "prime", "elite"],
+          "nvidia": ["nemo", "triton", "isaac"],
+          "aliases": ["dev", "code", "development"]
+        },
+        "techne.architect": {
+          "agent": "TECHNE-ARCHITECT",
+          "description": "System design",
+          "tier": 2,
+          "parent": "TECHNE"
+        },
+        "techne.frontend": {
+          "agent": "TECHNE-FRONTEND",
+          "description": "UI/UX implementation",
+          "tier": 2,
+          "parent": "TECHNE",
+          "aliases": ["frontend"]
+        },
+        "techne.backend": {
+          "agent": "TECHNE-BACKEND",
+          "description": "API, database",
+          "tier": 2,
+          "parent": "TECHNE",
+          "aliases": ["backend"]
+        },
+        "techne.blockchain": {
+          "agent": "TECHNE-BLOCKCHAIN",
+          "description": "Smart contracts",
+          "tier": 2,
+          "parent": "TECHNE",
+          "aliases": ["blockchain", "web3"]
+        },
+        "techne.devops": {
+          "agent": "TECHNE-DEVOPS",
+          "description": "CI/CD, infrastructure",
+          "tier": 2,
+          "parent": "TECHNE",
+          "aliases": ["deploy", "devops"]
+        },
+        "techne.ai": {
+          "agent": "TECHNE-AI",
+          "description": "ML integration",
+          "tier": 2,
+          "parent": "TECHNE"
+        },
+
+        "sophia": {
+          "agent": "SOPHIA",
+          "description": "Research & Intelligence - Deep research, competitive intelligence",
+          "tier": 2,
+          "domain": "research",
+          "subAgents": ["research", "intel", "diligence", "discovery"],
+          "superMinis": ["omega", "alpha", "prime", "elite"],
+          "nvidia": "rapids",
+          "aliases": ["research"]
+        },
+        "sophia.research": {
+          "agent": "SOPHIA-RESEARCH",
+          "description": "Deep analysis",
+          "tier": 2,
+          "parent": "SOPHIA"
+        },
+        "sophia.intel": {
+          "agent": "SOPHIA-INTEL",
+          "description": "Competitive intelligence",
+          "tier": 2,
+          "parent": "SOPHIA",
+          "aliases": ["intel"]
+        },
+        "sophia.diligence": {
+          "agent": "SOPHIA-DUE-DILIGENCE",
+          "description": "Due diligence",
+          "tier": 2,
+          "parent": "SOPHIA",
+          "aliases": ["dd"]
+        },
+        "sophia.discovery": {
+          "agent": "SOPHIA-DISCOVERY",
+          "description": "Solution finding",
+          "tier": 2,
+          "parent": "SOPHIA"
+        },
+
+        "melodia": {
+          "agent": "MELODIA",
+          "description": "Creative & Media - Content creation, media production",
+          "tier": 2,
+          "domain": "creative",
+          "subAgents": ["content", "video", "audio", "visual"],
+          "superMinis": ["omega", "alpha", "prime", "elite"],
+          "nvidia": ["ace", "maxine"],
+          "aliases": ["creative", "content"]
+        },
+        "melodia.content": {
+          "agent": "MELODIA-CONTENT",
+          "description": "Copy, scripts",
+          "tier": 2,
+          "parent": "MELODIA"
+        },
+        "melodia.video": {
+          "agent": "MELODIA-VIDEO",
+          "description": "Video production",
+          "tier": 2,
+          "parent": "MELODIA",
+          "aliases": ["video"]
+        },
+        "melodia.audio": {
+          "agent": "MELODIA-AUDIO",
+          "description": "Music, podcasts",
+          "tier": 2,
+          "parent": "MELODIA",
+          "aliases": ["audio"]
+        },
+        "melodia.visual": {
+          "agent": "MELODIA-VISUAL",
+          "description": "Design, imagery",
+          "tier": 2,
+          "parent": "MELODIA",
+          "aliases": ["design"]
+        },
+
+        "lexis": {
+          "agent": "LEXIS",
+          "description": "Language & Communication - Language processing, translation",
+          "tier": 2,
+          "domain": "language",
+          "subAgents": ["parser", "enricher", "translator", "documentation"],
+          "superMinis": ["omega", "alpha", "prime", "elite"],
+          "nvidia": "riva"
+        },
+        "lexis.parser": {
+          "agent": "LEXIS-PARSER",
+          "description": "Language analysis",
+          "tier": 2,
+          "parent": "LEXIS"
+        },
+        "lexis.enricher": {
+          "agent": "LEXIS-ENRICHER",
+          "description": "Terminology enrichment",
+          "tier": 2,
+          "parent": "LEXIS"
+        },
+        "lexis.translator": {
+          "agent": "LEXIS-TRANSLATOR",
+          "description": "Multi-language translation",
+          "tier": 2,
+          "parent": "LEXIS"
+        },
+        "lexis.documentation": {
+          "agent": "LEXIS-DOCUMENTATION",
+          "description": "Technical writing",
+          "tier": 2,
+          "parent": "LEXIS"
+        },
+
+        "mercator": {
+          "agent": "MERCATOR",
+          "description": "Marketing & Growth - Marketing strategy, growth hacking",
+          "tier": 2,
+          "domain": "marketing",
+          "subAgents": ["strategy", "growth", "social", "content"],
+          "superMinis": ["omega", "alpha", "prime", "elite"],
+          "aliases": ["marketing", "growth"]
+        },
+        "mercator.strategy": {
+          "agent": "MERCATOR-STRATEGY",
+          "description": "GTM planning",
+          "tier": 2,
+          "parent": "MERCATOR"
+        },
+        "mercator.growth": {
+          "agent": "MERCATOR-GROWTH",
+          "description": "Performance marketing",
+          "tier": 2,
+          "parent": "MERCATOR"
+        },
+        "mercator.social": {
+          "agent": "MERCATOR-SOCIAL",
+          "description": "Community, influencers",
+          "tier": 2,
+          "parent": "MERCATOR",
+          "aliases": ["social"]
+        },
+        "mercator.content": {
+          "agent": "MERCATOR-CONTENT",
+          "description": "Marketing content",
+          "tier": 2,
+          "parent": "MERCATOR"
+        },
+
+        "nexus": {
+          "agent": "NEXUS",
+          "description": "Integration & Automation - System integration, workflow automation",
+          "tier": 2,
+          "domain": "integration",
+          "subAgents": ["integrator", "automator", "operator", "orchestrator"],
+          "superMinis": ["omega", "alpha", "prime", "elite"]
+        },
+        "nexus.integrator": {
+          "agent": "NEXUS-INTEGRATOR",
+          "description": "API connections",
+          "tier": 2,
+          "parent": "NEXUS"
+        },
+        "nexus.automator": {
+          "agent": "NEXUS-AUTOMATOR",
+          "description": "Workflow design",
+          "tier": 2,
+          "parent": "NEXUS"
+        },
+        "nexus.operator": {
+          "agent": "NEXUS-OPERATOR",
+          "description": "Execution",
+          "tier": 2,
+          "parent": "NEXUS"
+        },
+        "nexus.orchestrator": {
+          "agent": "NEXUS-ORCHESTRATOR",
+          "description": "Multi-system coordination",
+          "tier": 2,
+          "parent": "NEXUS"
+        },
+
+        "visio": {
+          "agent": "VISIO",
+          "description": "Product & UX - Product strategy, user experience",
+          "tier": 2,
+          "domain": "product",
+          "subAgents": ["product", "ux", "ui", "research"],
+          "superMinis": ["omega", "alpha", "prime", "elite"]
+        },
+        "visio.product": {
+          "agent": "VISIO-PRODUCT",
+          "description": "Strategy, roadmap",
+          "tier": 2,
+          "parent": "VISIO"
+        },
+        "visio.ux": {
+          "agent": "VISIO-UX",
+          "description": "User experience",
+          "tier": 2,
+          "parent": "VISIO"
+        },
+        "visio.ui": {
+          "agent": "VISIO-UI",
+          "description": "Interface design",
+          "tier": 2,
+          "parent": "VISIO"
+        },
+        "visio.research": {
+          "agent": "VISIO-RESEARCH",
+          "description": "User research",
+          "tier": 2,
+          "parent": "VISIO"
+        },
+
+        "custos": {
+          "agent": "CUSTOS",
+          "description": "Client Success - Client relations, project delivery",
+          "tier": 2,
+          "domain": "client-success",
+          "subAgents": ["success", "sales", "delivery", "retention"],
+          "superMinis": ["omega", "alpha", "prime", "elite"],
+          "aliases": ["client"]
+        },
+        "custos.success": {
+          "agent": "CUSTOS-SUCCESS",
+          "description": "Client management",
+          "tier": 2,
+          "parent": "CUSTOS"
+        },
+        "custos.sales": {
+          "agent": "CUSTOS-SALES",
+          "description": "Business development",
+          "tier": 2,
+          "parent": "CUSTOS",
+          "aliases": ["sales"]
+        },
+        "custos.delivery": {
+          "agent": "CUSTOS-DELIVERY",
+          "description": "Project handoff",
+          "tier": 2,
+          "parent": "CUSTOS"
+        },
+        "custos.retention": {
+          "agent": "CUSTOS-RETENTION",
+          "description": "Relationship management",
+          "tier": 2,
+          "parent": "CUSTOS"
+        },
+
+        "datum": {
+          "agent": "DATUM",
+          "description": "Data & Analytics - Data engineering, business intelligence",
+          "tier": 2,
+          "domain": "data-analytics",
+          "subAgents": ["engineer", "analyst", "visualizer", "warehouse"],
+          "superMinis": ["omega", "alpha", "prime", "elite"],
+          "nvidia": "rapids",
+          "aliases": ["data", "analytics"]
+        },
+        "datum.engineer": {
+          "agent": "DATUM-ENGINEER",
+          "description": "Data pipelines",
+          "tier": 2,
+          "parent": "DATUM"
+        },
+        "datum.analyst": {
+          "agent": "DATUM-ANALYST",
+          "description": "BI analysis",
+          "tier": 2,
+          "parent": "DATUM"
+        },
+        "datum.visualizer": {
+          "agent": "DATUM-VISUALIZER",
+          "description": "Dashboards",
+          "tier": 2,
+          "parent": "DATUM",
+          "aliases": ["viz"]
+        },
+        "datum.warehouse": {
+          "agent": "DATUM-WAREHOUSE",
+          "description": "Data storage",
+          "tier": 2,
+          "parent": "DATUM"
+        },
+
+        "carbon": {
+          "agent": "CARBON",
+          "description": "Creator Collective - Creator platform operations",
+          "tier": 2,
+          "domain": "creator-collective",
+          "subAgents": ["triage", "match", "quality", "finance", "advance"],
+          "superMinis": ["omega", "alpha", "prime", "elite"]
+        },
+        "carbon.triage": {
+          "agent": "CARBON-TRIAGE",
+          "description": "Project complexity assessment",
+          "tier": 2,
+          "parent": "CARBON"
+        },
+        "carbon.match": {
+          "agent": "CARBON-MATCH",
+          "description": "Creator matching",
+          "tier": 2,
+          "parent": "CARBON"
+        },
+        "carbon.quality": {
+          "agent": "CARBON-QUALITY",
+          "description": "Deliverable review",
+          "tier": 2,
+          "parent": "CARBON"
+        },
+        "carbon.finance": {
+          "agent": "CARBON-FINANCE",
+          "description": "Revenue splits",
+          "tier": 2,
+          "parent": "CARBON"
+        },
+        "carbon.advance": {
+          "agent": "CARBON-ADVANCE",
+          "description": "Tier progression",
+          "tier": 2,
+          "parent": "CARBON"
+        },
+
+        "cultura": {
+          "agent": "CULTURA",
+          "description": "Brand & Culture - Culture-first digital presence",
+          "tier": 2,
+          "domain": "brand-culture",
+          "subAgents": ["brand", "translate", "aesthetic", "ritual"],
+          "superMinis": ["omega", "alpha", "prime", "elite"]
+        },
+        "cultura.brand": {
+          "agent": "CULTURA-BRAND",
+          "description": "Brand psychology",
+          "tier": 2,
+          "parent": "CULTURA"
+        },
+        "cultura.translate": {
+          "agent": "CULTURA-TRANSLATE",
+          "description": "Cultural accuracy",
+          "tier": 2,
+          "parent": "CULTURA"
+        },
+        "cultura.aesthetic": {
+          "agent": "CULTURA-AESTHETIC",
+          "description": "Visual standards",
+          "tier": 2,
+          "parent": "CULTURA"
+        },
+        "cultura.ritual": {
+          "agent": "CULTURA-RITUAL",
+          "description": "Content systems",
+          "tier": 2,
+          "parent": "CULTURA"
+        },
+
+        "genesis-ui": {
+          "agent": "GENESIS-UI",
+          "description": "Generative Interfaces - Dynamic UI generation",
+          "tier": 2,
+          "domain": "generative-ui",
+          "subAgents": ["renderer", "dashboard", "copilot", "artifact"],
+          "superMinis": ["omega", "alpha", "prime", "elite"]
+        },
+        "genesis-ui.renderer": {
+          "agent": "GENESIS-UI-RENDERER",
+          "description": "React components",
+          "tier": 2,
+          "parent": "GENESIS-UI"
+        },
+        "genesis-ui.dashboard": {
+          "agent": "GENESIS-UI-DASHBOARD",
+          "description": "Data visualization",
+          "tier": 2,
+          "parent": "GENESIS-UI"
+        },
+        "genesis-ui.copilot": {
+          "agent": "GENESIS-UI-COPILOT",
+          "description": "Conversational UI",
+          "tier": 2,
+          "parent": "GENESIS-UI"
+        },
+        "genesis-ui.artifact": {
+          "agent": "GENESIS-UI-ARTIFACT",
+          "description": "Document generation",
+          "tier": 2,
+          "parent": "GENESIS-UI"
+        }
+      }
+    },
+
+    "tier3": {
+      "clearance": "L2-INTERNAL",
+      "count": 47,
+      "commands": {
+        "calamus": {
+          "agent": "CALAMUS",
+          "description": "Documentation - Technical documentation, record keeping",
+          "tier": 3,
+          "domain": "documentation",
+          "subAgents": 8,
+          "aliases": ["docs"]
+        },
+        "chronos": {
+          "agent": "CHRONOS",
+          "description": "Scheduling - Time management, deadline tracking",
+          "tier": 3,
+          "domain": "scheduling",
+          "subAgents": 7
+        },
+        "benefactor": {
+          "agent": "BENEFACTOR",
+          "description": "Resource Provisioning - Resource allocation, tool provisioning",
+          "tier": 3,
+          "domain": "resources",
+          "subAgents": 10
+        },
+        "hermes": {
+          "agent": "HERMES",
+          "description": "Communication - Message routing, notification delivery",
+          "tier": 3,
+          "domain": "communication",
+          "subAgents": 12
+        },
+        "logos": {
+          "agent": "LOGOS",
+          "description": "Logging & Audit - Audit trails, compliance records",
+          "tier": 3,
+          "domain": "audit",
+          "subAgents": 10
+        }
+      }
+    },
+
+    "tier4": {
+      "clearance": "L1-PUBLIC",
+      "count": 4,
+      "commands": {
+        "scout": {
+          "agent": "SCOUT",
+          "description": "Discovery - Initial discovery, requirement gathering",
+          "tier": 4,
+          "domain": "discovery"
+        },
+        "forma": {
+          "agent": "FORMA",
+          "description": "Input Processing - Form handling, data intake",
+          "tier": 4,
+          "domain": "input"
+        },
+        "nuntius": {
+          "agent": "NUNTIUS",
+          "description": "Notification - Alert delivery, status updates",
+          "tier": 4,
+          "domain": "notification"
+        },
+        "verbum": {
+          "agent": "VERBUM",
+          "description": "Natural Language - Conversational interaction",
+          "tier": 4,
+          "domain": "natural-language"
+        }
+      }
+    }
+  },
+
+  "workflows": {
+    "financial": [
+      "month-end-close",
+      "variance-analysis",
+      "cash-flow-projection",
+      "tax-compliance",
+      "portfolio-rebalance",
+      "financial-modeling"
+    ],
+    "development": [
+      "full-stack-build",
+      "smart-contract-deploy",
+      "api-design",
+      "database-migration",
+      "ci-cd-pipeline",
+      "security-audit",
+      "code-review"
+    ],
+    "marketing": [
+      "campaign-launch",
+      "ab-test-analysis",
+      "seo-optimization",
+      "content-calendar",
+      "influencer-outreach",
+      "brand-audit"
+    ],
+    "operations": [
+      "project-kickoff",
+      "sprint-planning",
+      "resource-allocation",
+      "risk-assessment",
+      "status-reporting",
+      "delivery-handoff"
+    ],
+    "creative": [
+      "brand-identity",
+      "content-production",
+      "video-editing",
+      "audio-mastering",
+      "design-system"
+    ],
+    "research": [
+      "due-diligence",
+      "competitive-intel",
+      "market-analysis",
+      "tech-assessment",
+      "vendor-evaluation"
+    ],
+    "compliance": [
+      "regulatory-check",
+      "policy-review",
+      "contract-analysis",
+      "risk-assessment",
+      "audit-trail",
+      "incident-response"
+    ],
+    "client": [
+      "client-onboarding",
+      "requirement-gathering",
+      "proposal-generation",
+      "sow-creation",
+      "change-order",
+      "satisfaction-survey"
+    ]
+  },
+
+  "nvidia": {
+    "nim": "LLM inference with 17 models",
+    "guardrails": "Content safety - PII detection, jailbreak prevention",
+    "riva": "Speech AI - ASR, TTS",
+    "triton": "Model serving - load balancing",
+    "nemo": "Model training - custom training, LoRA",
+    "morpheus": "Cybersecurity - threat/fraud detection",
+    "maxine": "Video/Audio enhancement",
+    "rapids": "GPU analytics - cuDF, cuML",
+    "omniverse": "Digital twins - 3D simulation",
+    "cuopt": "Optimization - portfolio, routing",
+    "ace": "Digital humans - 8 avatar types",
+    "isaac": "Robotics - robot simulation"
+  },
+
+  "llm": {
+    "claude": "Claude (Anthropic) - Strategic reasoning",
+    "gemini": "Gemini (Google) - Research synthesis",
+    "kimi": "Kimi K2 (Moonshot) - Security analysis",
+    "codex": "Codex (OpenAI) - Technical implementation",
+    "opencode": "OpenCode - Code analysis",
+    "perplexity": "Perplexity - Real-time search",
+    "liquid": "Liquid AI - Quantum preprocessing",
+    "nexa": "Nexa AI - Vision processing"
+  },
+
+  "oracle": {
+    "strategic": "Strategic validator - SOVEREIGN",
+    "financial": "Financial validator - AURUM",
+    "legal": "Legal validator - TRUST_DIRECTOR",
+    "asset": "Asset/IP validator - TRUST_DIRECTOR",
+    "technology": "Technology validator - TECHNE"
+  },
+
+  "aliases": {
+    "finance": "aurum",
+    "accounting": "aurum.controller",
+    "fpa": "aurum.analyst",
+    "tax": "aurum.tax",
+    "treasury": "aurum.treasury",
+    "dev": "techne",
+    "code": "techne.architect",
+    "frontend": "techne.frontend",
+    "backend": "techne.backend",
+    "blockchain": "techne.blockchain",
+    "deploy": "techne.devops",
+    "creative": "melodia",
+    "content": "melodia.content",
+    "video": "melodia.video",
+    "audio": "melodia.audio",
+    "design": "melodia.visual",
+    "marketing": "mercator",
+    "growth": "mercator.growth",
+    "social": "mercator.social",
+    "research": "sophia",
+    "intel": "sophia.intel",
+    "dd": "sophia.diligence",
+    "ops": "praxis",
+    "pm": "praxis.executor",
+    "logistics": "praxis.logistics",
+    "security": "aegis",
+    "audit": "aegis.inquisitor",
+    "pentest": "aegis.penetrator",
+    "client": "custos",
+    "sales": "custos.sales",
+    "data": "datum",
+    "analytics": "datum.analyst",
+    "viz": "datum.visualizer",
+    "docs": "calamus",
+    "strategy": "sovereign"
+  }
+}

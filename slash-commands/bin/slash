@@ -1,0 +1,175 @@
+#!/usr/bin/env node
+
+/**
+ * VLTRN Council Slash Commands CLI
+ */
+
+const { program } = require('commander');
+const chalk = require('chalk');
+const CommandParser = require('../lib/command-parser');
+const pkg = require('../package.json');
+
+const parser = new CommandParser();
+
+// Display banner
+console.log(chalk.blue(`
+╔═══════════════════════════════════════════════════════════╗
+║                                                           ║
+║     SLASH COMMAND SYSTEM                                 ║
+║                                                           ║
+║     ${chalk.white('Direct Access to 462 Council Agents')}                 ║
+║                                                           ║
+╚═══════════════════════════════════════════════════════════╝
+`));
+
+program
+  .name('slash')
+  .description('VLTRN Council Slash Command System')
+  .version(pkg.version);
+
+// Execute command
+program
+  .command('exec <command...>')
+  .alias('e')
+  .description('Execute a slash command')
+  .action(async (commandParts) => {
+    const input = commandParts.join(' ');
+    await parser.execute(input);
+  });
+
+// List commands
+program
+  .command('list')
+  .alias('ls')
+  .description('List all available commands')
+  .option('-t, --tier <tier>', 'Filter by tier (tier0, tier1, tier2, tier3, tier4)')
+  .option('-d, --domain <domain>', 'Filter by domain')
+  .option('-s, --search <query>', 'Search commands')
+  .action((options) => {
+    const commands = parser.listCommands(options);
+
+    console.log(chalk.white(`\nFound ${commands.length} commands:\n`));
+
+    commands.forEach(cmd => {
+      console.log(chalk.blue(`  /${cmd.command}`) + chalk.gray(` - ${cmd.description}`));
+      if (cmd.tier) {
+        console.log(chalk.gray(`    Tier: ${cmd.tier}`));
+      }
+    });
+  });
+
+// Get command info
+program
+  .command('info <command>')
+  .description('Get detailed information about a command')
+  .action((command) => {
+    const info = parser.getInfo(command);
+
+    if (!info) {
+      console.error(chalk.red(`\nCommand not found: ${command}`));
+      return;
+    }
+
+    console.log(chalk.blue(`\n╔═══════════════════════════════════════════════════════════╗`));
+    console.log(chalk.blue(`║`) + chalk.white(`  /${info.command}`.padEnd(57)) + chalk.blue(`║`));
+    console.log(chalk.blue(`╚═══════════════════════════════════════════════════════════╝\n`));
+
+    console.log(chalk.white('Agent:       ') + chalk.gray(info.agent));
+    console.log(chalk.white('Description: ') + chalk.gray(info.description));
+    console.log(chalk.white('Tier:        ') + chalk.gray(info.tier));
+
+    if (info.domain) {
+      console.log(chalk.white('Domain:      ') + chalk.gray(info.domain));
+    }
+
+    if (info.parent) {
+      console.log(chalk.white('Parent:      ') + chalk.gray(info.parent));
+    }
+
+    if (info.subAgents) {
+      console.log(chalk.white('Sub-Agents:  ') + chalk.gray(
+        Array.isArray(info.subAgents)
+          ? info.subAgents.join(', ')
+          : `${info.subAgents} total`
+      ));
+    }
+
+    if (info.aliases && info.aliases.length > 0) {
+      console.log(chalk.white('Aliases:     ') + chalk.gray(info.aliases.join(', ')));
+    }
+
+    if (info.nvidia) {
+      console.log(chalk.white('NVIDIA:      ') + chalk.gray(
+        Array.isArray(info.nvidia) ? info.nvidia.join(', ') : info.nvidia
+      ));
+    }
+
+    console.log('');
+  });
+
+// Search commands
+program
+  .command('search <query>')
+  .alias('s')
+  .description('Search for commands')
+  .action((query) => {
+    const commands = parser.listCommands({ search: query });
+
+    if (commands.length === 0) {
+      console.log(chalk.yellow(`\nNo commands found matching: ${query}`));
+      return;
+    }
+
+    console.log(chalk.white(`\nFound ${commands.length} commands matching "${query}":\n`));
+
+    commands.forEach(cmd => {
+      console.log(chalk.blue(`  /${cmd.command}`) + chalk.gray(` - ${cmd.description}`));
+    });
+  });
+
+// Display stats
+program
+  .command('stats')
+  .description('Display system statistics')
+  .action(() => {
+    const stats = parser.getStats();
+
+    console.log(chalk.blue(`\n╔═══════════════════════════════════════════════════════════╗`));
+    console.log(chalk.blue(`║`) + chalk.white(`  SYSTEM STATISTICS`.padEnd(57)) + chalk.blue(`║`));
+    console.log(chalk.blue(`╚═══════════════════════════════════════════════════════════╝\n`));
+
+    console.log(chalk.white('Total Commands:    ') + chalk.gray(stats.totalCommands));
+    console.log(chalk.white('Total Aliases:     ') + chalk.gray(stats.totalAliases));
+    console.log(chalk.white('Workflows:         ') + chalk.gray(stats.workflows));
+    console.log(chalk.white('NVIDIA Backends:   ') + chalk.gray(stats.nvidiaBackends));
+    console.log(chalk.white('LLM Providers:     ') + chalk.gray(stats.llmProviders));
+
+    console.log(chalk.white('\nBy Tier:'));
+    Object.entries(stats.byTier).forEach(([tier, count]) => {
+      console.log(chalk.gray(`  ${tier}: ${count}`));
+    });
+
+    console.log('');
+  });
+
+// Help command
+program
+  .command('help [topic]')
+  .description('Display help information')
+  .action((topic) => {
+    parser.displayHelp(topic);
+  });
+
+// Shortcuts for direct command execution
+if (process.argv[2] && process.argv[2].startsWith('/')) {
+  // Direct slash command
+  const input = process.argv.slice(2).join(' ');
+  parser.execute(input).then(() => {
+    process.exit(0);
+  }).catch(err => {
+    console.error(chalk.red(err.message));
+    process.exit(1);
+  });
+} else {
+  program.parse();
+}
