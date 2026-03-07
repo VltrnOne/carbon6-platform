@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+cd /root/carbon6-platform && exec python3 -m tui "$@"
