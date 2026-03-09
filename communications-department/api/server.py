@@ -294,6 +294,58 @@ async def contact_analytics(identifier: str):
     return analytics.contact_engagement(identifier)
 
 
+# --- Setup Agent (auto-configure iPhone) ---
+
+from communications_department.engine.setup_agent import HermesSetupAgent
+from fastapi.responses import HTMLResponse, Response
+
+setup_agent = HermesSetupAgent()
+
+
+@app.get("/api/comms/setup", response_class=HTMLResponse)
+async def setup_page():
+    """Serve the iPhone setup page. Open this URL on your phone."""
+    return setup_agent.generate_setup_page_html()
+
+
+@app.post("/api/comms/setup/run")
+async def run_setup():
+    """Execute full automated setup."""
+    return setup_agent.run_full_setup()
+
+
+@app.get("/api/comms/setup/shortcut/send")
+async def download_send_shortcut():
+    """Download the 'HERMES Send Message' shortcut file."""
+    data = setup_agent.generate_send_shortcut()
+    return Response(
+        content=data,
+        media_type="application/x-apple-shortcut",
+        headers={
+            "Content-Disposition": 'attachment; filename="HERMES Send Message.shortcut"',
+        },
+    )
+
+
+@app.get("/api/comms/setup/shortcut/receive")
+async def download_receive_shortcut():
+    """Download the 'HERMES Receive Message' shortcut file."""
+    data = setup_agent.generate_receive_shortcut()
+    return Response(
+        content=data,
+        media_type="application/x-apple-shortcut",
+        headers={
+            "Content-Disposition": 'attachment; filename="HERMES Receive Message.shortcut"',
+        },
+    )
+
+
+@app.get("/api/comms/setup/verify")
+async def verify_setup():
+    """Verify Pushcut connection and device."""
+    return setup_agent.verify_pushcut()
+
+
 # --- Status ---
 
 @app.get("/api/comms/status")
@@ -302,12 +354,14 @@ async def status():
         "agent": "HERMES",
         "department": "Communications",
         "channels": {
+            "imessage": imessage.is_configured,
             "sms": sms.is_configured,
             "email_send": email_eng.can_send,
             "email_receive": email_eng.can_receive,
             "voice": voice.is_configured,
         },
         "queue_size": router.queue_size(),
+        "imessage_queue": imessage.queue_size(),
     }
 
 

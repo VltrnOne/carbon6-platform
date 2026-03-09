@@ -1,0 +1,15 @@
+{
+  "apps": [{
+    "name": "hermes-api",
+    "script": "python3",
+    "args": "-m uvicorn communications_department.api.server:app --host 0.0.0.0 --port 3100",
+    "cwd": "/root/carbon6-platform",
+    "env": {
+      "PUSHCUT_API_KEY": "jOWB4J7QXEenxwXhD3eeHMpX",
+      "PUSHCUT_DEVICE_NAME": "My iPhone",
+      "IMESSAGE_SEND_SHORTCUT": "HERMES Send Message"
+    },
+    "max_restarts": 10,
+    "restart_delay": 5000
+  }]
+}

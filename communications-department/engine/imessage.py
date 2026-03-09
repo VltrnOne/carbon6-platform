@@ -120,17 +120,24 @@ class IMessageEngine:
             return {"error": str(e), "channel": "imessage"}
 
     def _trigger_pushcut(self, payload: dict) -> dict:
-        """Trigger the Pushcut automation to run the send Shortcut."""
-        # Pushcut Automation Server endpoint
+        """Trigger the Pushcut Automation Server to run the send Shortcut.
+
+        Pushcut Automation Server endpoint format:
+          POST https://api.pushcut.io/{secret}/execute?shortcut=Name
+          Body: input JSON passed to the shortcut
+        """
         url = f"{self.PUSHCUT_API}/{self.api_key}/execute"
 
-        pushcut_payload = {
+        params = {
             "shortcut": self.send_shortcut,
-            "input": json.dumps(payload),
-            "device": self.device_name,
         }
 
-        response = requests.post(url, json=pushcut_payload, timeout=30)
+        response = requests.post(
+            url,
+            params=params,
+            json={"input": json.dumps(payload)},
+            timeout=30,
+        )
 
         if response.status_code == 200:
             return response.json() if response.text else {"status": "triggered"}
@@ -222,19 +229,17 @@ class IMessageEngine:
             "queue_size": self.queue_size(),
         }
 
-        # Ping Pushcut to see if phone is reachable
+        # Ping Pushcut to see if Automation Server is reachable
         if self.is_configured:
             try:
-                resp = requests.get(
-                    f"{self.PUSHCUT_API}/{self.api_key}/devices",
+                resp = requests.post(
+                    f"{self.PUSHCUT_API}/{self.api_key}/execute",
+                    params={"shortcut": "__ping__", "timeout": "nowait"},
                     timeout=5,
                 )
-                if resp.status_code == 200:
-                    devices = resp.json() if resp.text else []
-                    result["pushcut_online"] = True
-                    result["devices"] = devices
-                else:
-                    result["pushcut_online"] = False
+                # Any response other than connection error means server is up
+                result["pushcut_online"] = "Invalid secret" not in resp.text
+                result["pushcut_status"] = resp.status_code
             except Exception:
                 result["pushcut_online"] = False
 
