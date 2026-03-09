@@ -55,7 +55,7 @@ class Message(Base):
     html_body = Column(Text)
     status = Column(String(20), default="pending", index=True)  # pending, sent, delivered, failed, received
     provider_sid = Column(String(100), index=True)  # Twilio SID / SendGrid ID
-    metadata = Column(JSON, default=dict)  # provider-specific data
+    extra_data = Column("metadata", JSON, default=dict)  # provider-specific data
     is_read = Column(Boolean, default=False, index=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), index=True)
 
@@ -72,7 +72,7 @@ class Message(Base):
             "contact_id": self.contact_id, "from": self.from_addr, "to": self.to_addr,
             "subject": self.subject, "body": self.body, "status": self.status,
             "provider_sid": self.provider_sid, "is_read": self.is_read,
-            "metadata": self.metadata,
+            "metadata": self.extra_data,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "contact_name": self.contact.name if self.contact else None,
         }
@@ -193,7 +193,7 @@ class CommsDB:
                 channel=channel, direction=direction, from_addr=from_addr,
                 to_addr=to_addr, body=body, subject=subject,
                 contact_id=contact_id, status=status,
-                provider_sid=provider_sid, metadata=metadata or {},
+                provider_sid=provider_sid, extra_data=metadata or {},
                 is_read=(direction == "outbound"),
             )
             session.add(msg)

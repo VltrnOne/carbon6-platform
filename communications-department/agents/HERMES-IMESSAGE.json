@@ -1,0 +1,36 @@
+{
+  "agent": "HERMES-IMESSAGE",
+  "tier": 2,
+  "clearance": "L3-CONFIDENTIAL",
+  "domain": "imessage-bridge",
+  "parent": "HERMES",
+  "role": "iMessage bridge via iPhone Shortcuts + Pushcut automation server",
+  "capabilities": [
+    "Send iMessages from your actual phone number via Pushcut webhook → Shortcut",
+    "Receive inbound iMessages via Shortcuts automation → HERMES webhook",
+    "Fallback to Twilio SMS if Pushcut is unreachable",
+    "Message queue with retry for when phone is asleep/offline",
+    "Contact resolution (name → phone number)",
+    "Delivery confirmation via callback webhook"
+  ],
+  "architecture": {
+    "outbound": "HERMES → Pushcut webhook → Apple Shortcut → Messages.app → iMessage/SMS",
+    "inbound": "Messages.app → Shortcuts automation → HERMES webhook → DB → Unified Inbox"
+  },
+  "requirements": {
+    "ios_apps": ["Pushcut (with Automation Server subscription)", "Shortcuts (built-in)"],
+    "setup": [
+      "1. Install Pushcut from App Store",
+      "2. Enable Pushcut Automation Server (runs in background)",
+      "3. Create Pushcut webhook actions for send-message",
+      "4. Import the provided Apple Shortcuts",
+      "5. Set up Shortcuts automation for inbound messages",
+      "6. Set PUSHCUT_API_KEY and PUSHCUT_DEVICE_NAME in env"
+    ]
+  },
+  "api": {
+    "send": "POST /api/comms/imessage/send",
+    "receive_webhook": "POST /api/comms/imessage/inbound",
+    "status": "GET /api/comms/imessage/status"
+  }
+}

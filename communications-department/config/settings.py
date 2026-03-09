@@ -64,7 +64,7 @@ class RedisConfig:
 class DatabaseConfig:
     url: str = field(default_factory=lambda: os.getenv(
         "COMMS_DATABASE_URL",
-        "postgresql://root@localhost/carbon6"
+        "postgresql+psycopg2://root:carbon6comms@localhost/carbon6"
     ))
     schema: str = "communications"
 

@@ -1,0 +1,32 @@
+#!/usr/bin/env python3
+"""HERMES CLI - Communications Department command interface.
+
+Usage:
+    hermes status              - Show channel status
+    hermes setup               - Check configuration
+    hermes init                - Initialize database
+
+    hermes text <contact> <msg>    - Send SMS
+    hermes email <to> <subj> -- <body>  - Send email
+    hermes call <contact> [msg]    - Make voice call
+    hermes send <contact> <msg>    - Smart send (auto-detect channel)
+
+    hermes search <query>      - Search all communications
+    hermes inbox [--unread]    - Unified inbox
+    hermes contacts [list|add|find]  - Manage contacts
+    hermes broadcast <group> <msg>   - Bulk send
+    hermes schedule <time> <ch> <to> <msg>  - Schedule message
+    hermes templates [list|create]   - Manage templates
+    hermes analytics [--days N]      - Communication stats
+"""
+import sys
+import os
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+from communications_department.hermes import main
+
+if __name__ == "__main__":
+    main()
+else:
+    main()
