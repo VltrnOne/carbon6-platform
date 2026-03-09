@@ -1,0 +1,15 @@
+{
+  "agent": "HERMES-SCHEDULER",
+  "tier": 2,
+  "clearance": "L3-CONFIDENTIAL",
+  "domain": "message-scheduling",
+  "parent": "HERMES",
+  "role": "Scheduled messaging - Schedule future messages, recurring sends, and timezone-aware delivery",
+  "capabilities": [
+    "Schedule one-time future messages",
+    "Recurring message schedules (cron-based)",
+    "Timezone-aware delivery",
+    "Cancel and modify scheduled messages",
+    "Delivery window management"
+  ]
+}

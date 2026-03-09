@@ -1,0 +1,25 @@
+{
+  "agent": "HERMES-SMS",
+  "tier": 2,
+  "clearance": "L3-CONFIDENTIAL",
+  "domain": "sms-messaging",
+  "parent": "HERMES",
+  "role": "SMS & MMS messaging - Send, receive, and manage text messages via Twilio",
+  "capabilities": [
+    "Send SMS/MMS messages",
+    "Receive and process inbound texts",
+    "Group messaging",
+    "Message status tracking (delivered, read, failed)",
+    "Media attachment handling (MMS)",
+    "Short code and long code management",
+    "Opt-in/opt-out compliance",
+    "Message retry on failure"
+  ],
+  "provider": "twilio",
+  "api": {
+    "send": "POST /api/comms/sms/send",
+    "receive": "POST /api/comms/sms/webhook",
+    "status": "GET /api/comms/sms/status/<sid>",
+    "history": "GET /api/comms/sms/history"
+  }
+}

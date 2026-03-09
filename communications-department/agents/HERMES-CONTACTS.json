@@ -1,0 +1,17 @@
+{
+  "agent": "HERMES-CONTACTS",
+  "tier": 2,
+  "clearance": "L3-CONFIDENTIAL",
+  "domain": "contact-management",
+  "parent": "HERMES",
+  "role": "Contact management - Store, organize, and manage contacts with multi-channel info",
+  "capabilities": [
+    "Add/edit/delete contacts",
+    "Multi-channel info per contact (phone, email, etc.)",
+    "Contact groups and tags",
+    "Preferred channel per contact",
+    "Import/export contacts (CSV, vCard)",
+    "Duplicate detection and merge",
+    "Communication history per contact"
+  ]
+}

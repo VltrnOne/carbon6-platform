@@ -1,0 +1,22 @@
+{
+  "agent": "HERMES-SEARCH",
+  "tier": 2,
+  "clearance": "L3-CONFIDENTIAL",
+  "domain": "communication-search",
+  "parent": "HERMES",
+  "role": "Cross-channel communication search - Full-text search across SMS, email, voice transcripts, and contacts",
+  "capabilities": [
+    "Full-text search across all channels",
+    "Filter by channel, contact, date range, keywords",
+    "Search email subjects, bodies, attachments",
+    "Search SMS message content",
+    "Search voice call transcripts",
+    "Contact search with fuzzy matching",
+    "Conversation thread reconstruction",
+    "Export search results"
+  ],
+  "api": {
+    "search": "GET /api/comms/search",
+    "advanced": "POST /api/comms/search/advanced"
+  }
+}

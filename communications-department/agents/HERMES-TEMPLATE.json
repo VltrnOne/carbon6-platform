@@ -1,0 +1,15 @@
+{
+  "agent": "HERMES-TEMPLATE",
+  "tier": 2,
+  "clearance": "L3-CONFIDENTIAL",
+  "domain": "message-templates",
+  "parent": "HERMES",
+  "role": "Template management - Create, store, and render message templates with variable substitution",
+  "capabilities": [
+    "Create and manage message templates (SMS, email, voice)",
+    "Variable substitution with Jinja2",
+    "Template versioning",
+    "A/B template variants",
+    "Preview rendering before send"
+  ]
+}

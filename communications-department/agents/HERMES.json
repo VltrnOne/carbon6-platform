@@ -1,0 +1,99 @@
+{
+  "agent": "HERMES",
+  "tier": 2,
+  "clearance": "L3-CONFIDENTIAL",
+  "domain": "communications",
+  "role": "Communications Director - Orchestrates all messaging, email, voice, and search across unified channels",
+
+  "capabilities": [
+    "Unified message routing across SMS, email, voice, webhooks",
+    "Natural language command parsing for communication tasks",
+    "Contact management and relationship mapping",
+    "Message template creation and management",
+    "Scheduled and triggered message delivery",
+    "Inbound message processing and auto-response",
+    "Communication analytics and reporting",
+    "Broadcast and bulk messaging campaigns",
+    "Search across all communication channels",
+    "Voice call initiation and IVR management"
+  ],
+
+  "subAgents": [
+    "HERMES-SMS",
+    "HERMES-EMAIL",
+    "HERMES-VOICE",
+    "HERMES-SEARCH",
+    "HERMES-ROUTER",
+    "HERMES-TEMPLATE",
+    "HERMES-SCHEDULER",
+    "HERMES-INBOX",
+    "HERMES-CONTACTS",
+    "HERMES-WEBHOOK",
+    "HERMES-ANALYTICS",
+    "HERMES-BROADCAST"
+  ],
+
+  "channels": {
+    "sms": {
+      "provider": "twilio",
+      "capabilities": ["send", "receive", "mms", "group"]
+    },
+    "email": {
+      "provider": "smtp+sendgrid",
+      "capabilities": ["send", "receive", "templates", "attachments", "tracking"]
+    },
+    "voice": {
+      "provider": "twilio",
+      "capabilities": ["outbound-call", "ivr", "voicemail", "transcription"]
+    }
+  },
+
+  "commands": {
+    "text": "/hermes text <contact> <message> - Send SMS",
+    "email": "/hermes email <contact> <subject> <body> - Send email",
+    "call": "/hermes call <contact> - Initiate voice call",
+    "search": "/hermes search <query> - Search all communications",
+    "inbox": "/hermes inbox [channel] - View unified inbox",
+    "contacts": "/hermes contacts [action] - Manage contacts",
+    "broadcast": "/hermes broadcast <group> <message> - Bulk send",
+    "schedule": "/hermes schedule <time> <channel> <message> - Schedule message",
+    "templates": "/hermes templates [list|create|use] - Manage templates",
+    "analytics": "/hermes analytics [period] - Communication stats"
+  },
+
+  "workflows": [
+    "Send text message to contact",
+    "Compose and send email",
+    "Initiate outbound voice call",
+    "Search all communications by keyword/contact/date",
+    "Process inbound messages and auto-route",
+    "Schedule future messages across channels",
+    "Create and manage message templates",
+    "Run broadcast campaigns",
+    "Generate communication analytics reports",
+    "Manage contact database"
+  ],
+
+  "integration": {
+    "ois": {
+      "command": "ois agents invoke HERMES",
+      "tasks": [
+        "Text John: meeting at 3pm",
+        "Email the team about the deploy",
+        "Search all messages from last week",
+        "Show my inbox",
+        "Call the client"
+      ]
+    },
+    "carbon": {
+      "track_messages": true,
+      "sync_contacts": true,
+      "log_analytics": true
+    },
+    "memory": {
+      "store_contacts": true,
+      "index_messages": true,
+      "search_history": true
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "agent": "HERMES-WEBHOOK",
+  "tier": 2,
+  "clearance": "L3-CONFIDENTIAL",
+  "domain": "webhook-handler",
+  "parent": "HERMES",
+  "role": "Webhook handler - Receives inbound callbacks from Twilio, SendGrid, and other providers",
+  "capabilities": [
+    "Twilio SMS webhook handler",
+    "Twilio voice webhook handler",
+    "SendGrid inbound parse webhook",
+    "Delivery status webhooks",
+    "Signature verification for security",
+    "Event logging and replay"
+  ]
+}

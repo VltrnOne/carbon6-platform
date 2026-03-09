@@ -1,0 +1,27 @@
+{
+  "agent": "HERMES-EMAIL",
+  "tier": 2,
+  "clearance": "L3-CONFIDENTIAL",
+  "domain": "email-messaging",
+  "parent": "HERMES",
+  "role": "Email communications - Send, receive, search, and manage email via SMTP/IMAP and SendGrid",
+  "capabilities": [
+    "Send emails via SMTP or SendGrid API",
+    "Receive and parse inbound emails via IMAP",
+    "HTML and plaintext email composition",
+    "Attachment handling",
+    "Email template rendering",
+    "Open/click tracking via SendGrid",
+    "Thread management and reply detection",
+    "Spam filtering and classification",
+    "Multiple account support"
+  ],
+  "providers": ["smtp", "imap", "sendgrid"],
+  "api": {
+    "send": "POST /api/comms/email/send",
+    "inbox": "GET /api/comms/email/inbox",
+    "read": "GET /api/comms/email/<id>",
+    "search": "GET /api/comms/email/search",
+    "reply": "POST /api/comms/email/reply"
+  }
+}

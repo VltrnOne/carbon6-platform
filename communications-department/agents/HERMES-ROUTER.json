@@ -1,0 +1,16 @@
+{
+  "agent": "HERMES-ROUTER",
+  "tier": 2,
+  "clearance": "L3-CONFIDENTIAL",
+  "domain": "message-routing",
+  "parent": "HERMES",
+  "role": "Message routing and priority - Routes messages to correct channel and handles priority queuing",
+  "capabilities": [
+    "Intelligent channel selection based on contact preferences",
+    "Priority-based message queuing via Redis",
+    "Failover routing (SMS fails -> email fallback)",
+    "Rate limiting and throttling",
+    "Message deduplication",
+    "Queue management and monitoring"
+  ]
+}

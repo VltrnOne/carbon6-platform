@@ -1,0 +1,17 @@
+{
+  "agent": "HERMES-BROADCAST",
+  "tier": 2,
+  "clearance": "L3-CONFIDENTIAL",
+  "domain": "broadcast-messaging",
+  "parent": "HERMES",
+  "role": "Broadcast messaging - Bulk send to contact groups with throttling, personalization, and tracking",
+  "capabilities": [
+    "Bulk SMS to contact groups",
+    "Bulk email campaigns",
+    "Per-recipient personalization",
+    "Send rate throttling",
+    "Opt-out handling",
+    "Broadcast analytics",
+    "Segment targeting"
+  ]
+}

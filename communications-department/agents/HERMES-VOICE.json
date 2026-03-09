@@ -1,0 +1,25 @@
+{
+  "agent": "HERMES-VOICE",
+  "tier": 2,
+  "clearance": "L3-CONFIDENTIAL",
+  "domain": "voice-communications",
+  "parent": "HERMES",
+  "role": "Voice call management - Initiate calls, IVR, voicemail, and transcription via Twilio",
+  "capabilities": [
+    "Initiate outbound voice calls",
+    "TwiML-based IVR flows",
+    "Voicemail recording and playback",
+    "Call transcription",
+    "Call forwarding and routing",
+    "Conference calling",
+    "Call recording",
+    "Text-to-speech announcements"
+  ],
+  "provider": "twilio",
+  "api": {
+    "call": "POST /api/comms/voice/call",
+    "status": "GET /api/comms/voice/status/<sid>",
+    "voicemail": "GET /api/comms/voice/voicemail",
+    "transcribe": "POST /api/comms/voice/transcribe"
+  }
+}

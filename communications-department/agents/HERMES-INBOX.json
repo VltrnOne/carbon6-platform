@@ -1,0 +1,16 @@
+{
+  "agent": "HERMES-INBOX",
+  "tier": 2,
+  "clearance": "L3-CONFIDENTIAL",
+  "domain": "unified-inbox",
+  "parent": "HERMES",
+  "role": "Unified inbox - Aggregates inbound messages from all channels into a single view",
+  "capabilities": [
+    "Unified view of SMS, email, voicemail",
+    "Read/unread status tracking",
+    "Priority sorting and flagging",
+    "Thread grouping by contact",
+    "Quick reply from inbox",
+    "Archive and snooze"
+  ]
+}

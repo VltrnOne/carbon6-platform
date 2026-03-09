@@ -1,0 +1,17 @@
+{
+  "agent": "HERMES-ANALYTICS",
+  "tier": 2,
+  "clearance": "L3-CONFIDENTIAL",
+  "domain": "communication-analytics",
+  "parent": "HERMES",
+  "role": "Communication analytics - Track metrics, delivery rates, response times, and usage patterns",
+  "capabilities": [
+    "Message volume by channel/period",
+    "Delivery success/failure rates",
+    "Average response time per contact",
+    "Cost tracking per channel",
+    "Peak usage patterns",
+    "Contact engagement scoring",
+    "Report generation"
+  ]
+}
