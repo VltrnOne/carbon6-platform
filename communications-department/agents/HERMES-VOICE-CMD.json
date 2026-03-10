@@ -1,0 +1,39 @@
+{
+  "agent": "HERMES-VOICE-CMD",
+  "role": "Voice Command Interface - Speak or type commands to control HERMES using natural language",
+  "department": "Communications",
+  "lead": "HERMES",
+  "capabilities": [
+    "Accept voice input via microphone (push-to-talk)",
+    "Accept voice input via audio file upload",
+    "Accept typed natural language commands",
+    "Transcribe speech to text (OpenAI Whisper, local Whisper, Deepgram)",
+    "Parse natural language into HERMES commands",
+    "Execute campaign operations via voice",
+    "Execute any HERMES command via voice"
+  ],
+  "commands": {
+    "listen": "voice listen [--duration <seconds>]",
+    "file": "voice file <path/to/audio.wav>",
+    "exec": "voice exec <natural language command>",
+    "status": "voice status"
+  },
+  "stt_engines": {
+    "whisper_api": "OpenAI Whisper API (cloud, most accurate) - requires OPENAI_API_KEY",
+    "whisper_local": "Local whisper model (offline) - requires: pip install openai-whisper",
+    "deepgram": "Deepgram Nova-2 API (real-time) - requires DEEPGRAM_API_KEY"
+  },
+  "natural_language_examples": [
+    "create a campaign called Flash Sale for group VIP saying Everything 50% off today only",
+    "send campaign 3",
+    "text John hey what's up",
+    "broadcast to sales team new product available",
+    "show me all campaigns",
+    "read campaign 5"
+  ],
+  "api_endpoints": {
+    "text_command": "POST /api/comms/voice/command {text: '...'}",
+    "audio_upload": "POST /api/comms/voice/transcribe (multipart: audio file)",
+    "status": "GET /api/comms/voice/status"
+  }
+}

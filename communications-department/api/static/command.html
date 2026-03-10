@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>HERMES Command Center</title>
+<style>
+:root {
+  --bg: #0a0a0f;
+  --surface: #12121a;
+  --border: #1e1e2e;
+  --text: #e0e0e8;
+  --dim: #6b6b80;
+  --accent: #6c5ce7;
+  --accent2: #00cec9;
+  --danger: #e74c3c;
+  --success: #00b894;
+  --warn: #fdcb6e;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro', 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg); color: var(--text);
+  min-height: 100vh; overflow-x: hidden;
+}
+
+/* Header */
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px; border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+.header h1 { font-size: 18px; font-weight: 600; letter-spacing: 1px; }
+.header .status { font-size: 11px; color: var(--dim); }
+.header .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--success); margin-right: 6px; }
+
+/* Tabs */
+.tabs {
+  display: flex; border-bottom: 1px solid var(--border);
+  background: var(--surface); overflow-x: auto;
+}
+.tab {
+  padding: 12px 20px; font-size: 13px; color: var(--dim); cursor: pointer;
+  border-bottom: 2px solid transparent; white-space: nowrap;
+  transition: all 0.2s;
+}
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab:hover { color: var(--text); }
+
+/* Panels */
+.panel { display: none; padding: 20px; max-width: 800px; margin: 0 auto; }
+.panel.active { display: block; }
+
+/* Command Input Area */
+.cmd-area {
+  background: var(--surface); border-radius: 16px; padding: 20px;
+  border: 1px solid var(--border); margin-bottom: 20px;
+}
+.cmd-input-row {
+  display: flex; gap: 10px; align-items: flex-end;
+}
+.cmd-input {
+  flex: 1; background: var(--bg); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px 16px; color: var(--text);
+  font-size: 16px; outline: none; resize: none;
+  font-family: inherit; min-height: 52px; max-height: 120px;
+}
+.cmd-input:focus { border-color: var(--accent); }
+.cmd-input::placeholder { color: var(--dim); }
+
+/* Buttons */
+.btn {
+  padding: 14px 20px; border-radius: 12px; border: none; cursor: pointer;
+  font-size: 14px; font-weight: 600; transition: all 0.2s;
+  display: flex; align-items: center; gap: 8px;
+}
+.btn-send { background: var(--accent); color: #fff; }
+.btn-send:hover { filter: brightness(1.15); }
+.btn-send:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Mic Button */
+.mic-btn {
+  width: 52px; height: 52px; border-radius: 50%; border: 2px solid var(--border);
+  background: var(--surface); color: var(--dim); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; flex-shrink: 0;
+}
+.mic-btn:hover { border-color: var(--accent); color: var(--accent); }
+.mic-btn.recording {
+  border-color: var(--danger); color: var(--danger);
+  animation: pulse 1s infinite;
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(231,76,60,0.4); }
+  50% { box-shadow: 0 0 0 12px rgba(231,76,60,0); }
+}
+.mic-btn svg { width: 22px; height: 22px; }
+
+/* Quick Actions */
+.quick-actions {
+  display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px;
+}
+.quick-btn {
+  padding: 8px 14px; border-radius: 20px; border: 1px solid var(--border);
+  background: transparent; color: var(--dim); font-size: 12px;
+  cursor: pointer; transition: all 0.2s;
+}
+.quick-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Results */
+.result-area {
+  background: var(--surface); border-radius: 16px;
+  border: 1px solid var(--border); overflow: hidden;
+}
+.result-header {
+  padding: 14px 20px; border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.result-header h3 { font-size: 13px; color: var(--dim); text-transform: uppercase; letter-spacing: 1px; }
+.result-body {
+  padding: 16px 20px; font-size: 14px; line-height: 1.6;
+  max-height: 50vh; overflow-y: auto;
+}
+.result-body pre {
+  white-space: pre-wrap; word-break: break-word;
+  font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px;
+  color: var(--text);
+}
+.result-body .transcription {
+  color: var(--accent2); font-style: italic; margin-bottom: 12px;
+  padding-bottom: 12px; border-bottom: 1px solid var(--border);
+}
+.result-body .error { color: var(--danger); }
+.result-body .success { color: var(--success); }
+
+/* Campaign List */
+.campaign-card {
+  background: var(--surface); border-radius: 12px; padding: 16px;
+  border: 1px solid var(--border); margin-bottom: 12px;
+  cursor: pointer; transition: border-color 0.2s;
+}
+.campaign-card:hover { border-color: var(--accent); }
+.campaign-card .name { font-weight: 600; font-size: 15px; margin-bottom: 6px; }
+.campaign-card .meta { display: flex; gap: 16px; font-size: 12px; color: var(--dim); }
+.campaign-card .badge {
+  padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 600;
+}
+.badge-draft { background: rgba(108,92,231,0.15); color: var(--accent); }
+.badge-sent { background: rgba(0,184,148,0.15); color: var(--success); }
+.badge-sending { background: rgba(253,203,110,0.15); color: var(--warn); }
+.badge-cancelled { background: rgba(231,76,60,0.15); color: var(--danger); }
+
+.empty-state {
+  text-align: center; padding: 60px 20px; color: var(--dim);
+}
+.empty-state svg { width: 48px; height: 48px; margin-bottom: 16px; opacity: 0.3; }
+
+/* Loading */
+.loading { display: none; text-align: center; padding: 20px; }
+.loading.show { display: block; }
+.spinner {
+  width: 28px; height: 28px; border: 3px solid var(--border);
+  border-top-color: var(--accent); border-radius: 50%;
+  animation: spin 0.8s linear infinite; margin: 0 auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Voice Drop Status */
+.drop-info {
+  background: var(--surface); border-radius: 12px; padding: 16px;
+  border: 1px solid var(--border); margin-bottom: 16px;
+  font-size: 13px; color: var(--dim);
+}
+.drop-info code {
+  background: var(--bg); padding: 2px 8px; border-radius: 6px;
+  font-family: monospace; color: var(--accent2);
+}
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+  background: var(--surface); border: 1px solid var(--border);
+  padding: 12px 24px; border-radius: 12px; font-size: 14px;
+  z-index: 1000; opacity: 0; transition: opacity 0.3s;
+  max-width: 90vw;
+}
+.toast.show { opacity: 1; }
+
+/* Mobile */
+@media (max-width: 600px) {
+  .header h1 { font-size: 16px; }
+  .tab { padding: 10px 14px; font-size: 12px; }
+  .panel { padding: 14px; }
+  .cmd-input { font-size: 16px; } /* Prevent iOS zoom */
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>HERMES</h1>
+    <div class="status"><span class="dot" id="statusDot"></span><span id="statusText">Connecting...</span></div>
+  </div>
+  <div style="font-size:12px;color:var(--dim)" id="engineLabel">--</div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" data-panel="command">Command</div>
+  <div class="tab" data-panel="campaigns">Campaigns</div>
+  <div class="tab" data-panel="voicedrop">Voice Drop</div>
+</div>
+
+<!-- COMMAND PANEL -->
+<div class="panel active" id="panel-command">
+  <div class="cmd-area">
+    <div class="cmd-input-row">
+      <button class="mic-btn" id="micBtn" title="Hold to speak">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          <line x1="12" y1="19" x2="12" y2="23"/>
+          <line x1="8" y1="23" x2="16" y2="23"/>
+        </svg>
+      </button>
+      <textarea class="cmd-input" id="cmdInput" placeholder="Type or speak a command..."
+        rows="1"></textarea>
+      <button class="btn btn-send" id="sendBtn">Send</button>
+    </div>
+    <div class="quick-actions">
+      <button class="quick-btn" data-cmd="list campaigns">campaigns</button>
+      <button class="quick-btn" data-cmd="campaign list --status draft">drafts</button>
+      <button class="quick-btn" data-cmd="contacts list">contacts</button>
+      <button class="quick-btn" data-cmd="inbox --unread">inbox</button>
+      <button class="quick-btn" data-cmd="analytics --days 7">analytics</button>
+      <button class="quick-btn" data-cmd="status">status</button>
+    </div>
+  </div>
+
+  <div class="loading" id="loading"><div class="spinner"></div></div>
+
+  <div class="result-area" id="resultArea" style="display:none">
+    <div class="result-header">
+      <h3>Result</h3>
+      <span style="font-size:12px;color:var(--dim)" id="resultTime"></span>
+    </div>
+    <div class="result-body" id="resultBody"></div>
+  </div>
+</div>
+
+<!-- CAMPAIGNS PANEL -->
+<div class="panel" id="panel-campaigns">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+    <h2 style="font-size:18px">Campaigns</h2>
+    <button class="btn btn-send" id="newCampaignBtn" style="padding:10px 16px;font-size:13px">+ New</button>
+  </div>
+  <div id="campaignList"></div>
+</div>
+
+<!-- VOICE DROP PANEL -->
+<div class="panel" id="panel-voicedrop">
+  <h2 style="font-size:18px;margin-bottom:16px">Voice Drop Folder</h2>
+  <div class="drop-info">
+    <p style="margin-bottom:10px">Drop audio files into the inbox folder and they'll be auto-processed every 5 minutes.</p>
+    <p><strong>Inbox:</strong> <code>voice-drop/inbox/</code></p>
+    <p><strong>Processed:</strong> <code>voice-drop/processed/</code></p>
+    <p><strong>Failed:</strong> <code>voice-drop/failed/</code></p>
+    <p style="margin-top:10px"><strong>Formats:</strong> .wav, .mp3, .m4a, .ogg, .webm, .flac</p>
+  </div>
+  <div style="display:flex;gap:10px;margin-bottom:20px">
+    <button class="btn btn-send" id="scanNowBtn" style="padding:10px 16px;font-size:13px">Scan Now</button>
+    <button class="btn" id="dropStatusBtn"
+      style="padding:10px 16px;font-size:13px;background:var(--surface);color:var(--text);border:1px solid var(--border)">
+      Refresh Status
+    </button>
+  </div>
+  <div class="result-area" id="dropResult" style="display:none">
+    <div class="result-header"><h3>Scanner Output</h3></div>
+    <div class="result-body" id="dropResultBody"></div>
+  </div>
+  <div style="margin-top:20px">
+    <h3 style="font-size:14px;color:var(--dim);margin-bottom:12px">Upload Audio</h3>
+    <input type="file" id="audioUpload" accept="audio/*"
+      style="font-size:14px;color:var(--dim)">
+    <div class="loading" id="uploadLoading"><div class="spinner"></div></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = window.location.origin + '/api/comms';
+
+// --- Tab switching ---
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.panel).classList.add('active');
+    if (tab.dataset.panel === 'campaigns') loadCampaigns();
+  });
+});
+
+// --- Status check ---
+async function checkStatus() {
+  try {
+    const [sysRes, voiceRes] = await Promise.all([
+      fetch(API + '/status').then(r => r.json()),
+      fetch(API + '/voice/status').then(r => r.json()),
+    ]);
+    document.getElementById('statusDot').style.background = '#00b894';
+    document.getElementById('statusText').textContent = 'Online';
+    document.getElementById('engineLabel').textContent = 'STT: ' + voiceRes.engine;
+  } catch {
+    document.getElementById('statusDot').style.background = '#e74c3c';
+    document.getElementById('statusText').textContent = 'Offline';
+  }
+}
+checkStatus();
+
+// --- Command execution ---
+const cmdInput = document.getElementById('cmdInput');
+const sendBtn = document.getElementById('sendBtn');
+const loading = document.getElementById('loading');
+const resultArea = document.getElementById('resultArea');
+const resultBody = document.getElementById('resultBody');
+const resultTime = document.getElementById('resultTime');
+
+// Auto-resize textarea
+cmdInput.addEventListener('input', () => {
+  cmdInput.style.height = 'auto';
+  cmdInput.style.height = Math.min(cmdInput.scrollHeight, 120) + 'px';
+});
+
+// Send on Enter (Shift+Enter for newline)
+cmdInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendCommand(); }
+});
+sendBtn.addEventListener('click', sendCommand);
+
+async function sendCommand() {
+  const text = cmdInput.value.trim();
+  if (!text) return;
+
+  sendBtn.disabled = true;
+  loading.classList.add('show');
+  resultArea.style.display = 'none';
+
+  try {
+    const res = await fetch(API + '/voice/command', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text }),
+    });
+    const data = await res.json();
+    showResult(data);
+  } catch (e) {
+    showResult({ error: 'Connection failed: ' + e.message });
+  } finally {
+    sendBtn.disabled = false;
+    loading.classList.remove('show');
+  }
+}
+
+function showResult(data) {
+  resultArea.style.display = '';
+  resultTime.textContent = new Date().toLocaleTimeString();
+
+  let html = '';
+  if (data.transcription) {
+    html += `<div class="transcription">"${data.transcription}"</div>`;
+  }
+  if (data.error) {
+    html += `<div class="error">${data.error}</div>`;
+  } else {
+    // Remove transcription/source from display
+    const display = { ...data };
+    delete display.transcription;
+    delete display.source;
+    html += `<pre>${JSON.stringify(display, null, 2)}</pre>`;
+  }
+  resultBody.innerHTML = html;
+}
+
+// --- Quick actions ---
+document.querySelectorAll('.quick-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    cmdInput.value = btn.dataset.cmd;
+    sendCommand();
+  });
+});
+
+// --- Mic recording (browser MediaRecorder) ---
+const micBtn = document.getElementById('micBtn');
+let mediaRecorder = null;
+let audioChunks = [];
+let isRecording = false;
+
+micBtn.addEventListener('click', toggleRecording);
+
+// Also support hold-to-talk
+micBtn.addEventListener('touchstart', e => { e.preventDefault(); startRecording(); });
+micBtn.addEventListener('touchend', e => { e.preventDefault(); stopRecording(); });
+
+async function toggleRecording() {
+  if (isRecording) { stopRecording(); } else { startRecording(); }
+}
+
+async function startRecording() {
+  if (isRecording) return;
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    // Prefer webm, fall back to wav
+    const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+      ? 'audio/webm;codecs=opus' : 'audio/wav';
+    mediaRecorder = new MediaRecorder(stream, { mimeType });
+    audioChunks = [];
+
+    mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
+    mediaRecorder.onstop = () => {
+      stream.getTracks().forEach(t => t.stop());
+      const blob = new Blob(audioChunks, { type: mediaRecorder.mimeType });
+      sendAudio(blob);
+    };
+
+    mediaRecorder.start();
+    isRecording = true;
+    micBtn.classList.add('recording');
+    toast('Recording... tap again or release to stop');
+  } catch (e) {
+    toast('Mic access denied. Check browser permissions.');
+  }
+}
+
+function stopRecording() {
+  if (!isRecording || !mediaRecorder) return;
+  mediaRecorder.stop();
+  isRecording = false;
+  micBtn.classList.remove('recording');
+}
+
+async function sendAudio(blob) {
+  loading.classList.add('show');
+  resultArea.style.display = 'none';
+  sendBtn.disabled = true;
+
+  try {
+    const form = new FormData();
+    const ext = blob.type.includes('webm') ? '.webm' : '.wav';
+    form.append('audio', blob, 'voice_command' + ext);
+
+    const res = await fetch(API + '/voice/transcribe', {
+      method: 'POST', body: form,
+    });
+    const data = await res.json();
+    showResult(data);
+    if (data.transcription) {
+      cmdInput.value = data.transcription;
+    }
+  } catch (e) {
+    showResult({ error: 'Upload failed: ' + e.message });
+  } finally {
+    loading.classList.remove('show');
+    sendBtn.disabled = false;
+  }
+}
+
+// --- Campaign list ---
+async function loadCampaigns() {
+  const list = document.getElementById('campaignList');
+  list.innerHTML = '<div class="loading show"><div class="spinner"></div></div>';
+
+  try {
+    const res = await fetch(API + '/campaigns');
+    const data = await res.json();
+    const campaigns = data.campaigns || [];
+
+    if (!campaigns.length) {
+      list.innerHTML = `<div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        <p>No campaigns yet</p>
+        <p style="font-size:12px;margin-top:8px">Try: "create campaign called Summer Sale for all saying Check out our deals!"</p>
+      </div>`;
+      return;
+    }
+
+    list.innerHTML = campaigns.map(c => {
+      const badge = c.status || 'draft';
+      return `<div class="campaign-card" onclick="viewCampaign(${c.id})">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div class="name">${esc(c.name)}</div>
+          <span class="badge badge-${badge}">${badge}</span>
+        </div>
+        <div class="meta">
+          <span>${c.target_type}${c.target_value ? ': ' + esc(c.target_value) : ''}</span>
+          <span>${c.total_recipients || 0} recipients</span>
+          <span>${c.channel || 'sms'}</span>
+          <span>${new Date(c.created_at).toLocaleDateString()}</span>
+        </div>
+        <div style="margin-top:8px;font-size:13px;color:var(--dim)">${esc((c.body||'').substring(0, 100))}${(c.body||'').length > 100 ? '...' : ''}</div>
+      </div>`;
+    }).join('');
+  } catch (e) {
+    list.innerHTML = `<div class="empty-state error">Failed to load campaigns</div>`;
+  }
+}
+
+async function viewCampaign(id) {
+  // Switch to command tab and show campaign details
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelector('[data-panel="command"]').classList.add('active');
+  document.getElementById('panel-command').classList.add('active');
+
+  cmdInput.value = `campaign read ${id}`;
+  sendCommand();
+}
+
+// New campaign button
+document.getElementById('newCampaignBtn').addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelector('[data-panel="command"]').classList.add('active');
+  document.getElementById('panel-command').classList.add('active');
+  cmdInput.value = 'create a campaign called ';
+  cmdInput.focus();
+});
+
+// --- Voice Drop ---
+document.getElementById('scanNowBtn').addEventListener('click', async () => {
+  const body = document.getElementById('dropResultBody');
+  const area = document.getElementById('dropResult');
+  area.style.display = '';
+  body.innerHTML = '<div class="loading show"><div class="spinner"></div></div>';
+
+  try {
+    const res = await fetch(API + '/voice/scan', { method: 'POST' });
+    const data = await res.json();
+    body.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+  } catch (e) {
+    body.innerHTML = `<div class="error">Failed: ${e.message}</div>`;
+  }
+});
+
+document.getElementById('dropStatusBtn').addEventListener('click', async () => {
+  const body = document.getElementById('dropResultBody');
+  const area = document.getElementById('dropResult');
+  area.style.display = '';
+  try {
+    const res = await fetch(API + '/voice/drop-status');
+    const data = await res.json();
+    body.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+  } catch (e) {
+    body.innerHTML = `<div class="error">Failed: ${e.message}</div>`;
+  }
+});
+
+// Audio file upload
+document.getElementById('audioUpload').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const uploadLoading = document.getElementById('uploadLoading');
+  uploadLoading.classList.add('show');
+
+  const form = new FormData();
+  form.append('audio', file);
+
+  try {
+    const res = await fetch(API + '/voice/transcribe', { method: 'POST', body: form });
+    const data = await res.json();
+    const body = document.getElementById('dropResultBody');
+    document.getElementById('dropResult').style.display = '';
+    body.innerHTML = '';
+    if (data.transcription) {
+      body.innerHTML += `<div class="transcription">"${data.transcription}"</div>`;
+    }
+    body.innerHTML += `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+  } catch (e) {
+    toast('Upload failed: ' + e.message);
+  } finally {
+    uploadLoading.classList.remove('show');
+    e.target.value = '';
+  }
+});
+
+// --- Helpers ---
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+{
+  "agent": "HERMES-CAMPAIGN",
+  "role": "Campaign Manager - Create, preview, send, and track text campaigns to one contact, groups, tags, or all contacts",
+  "department": "Communications",
+  "lead": "HERMES",
+  "capabilities": [
+    "Create campaign drafts with targeting (single, group, tag, all)",
+    "Preview campaigns before sending (recipient list + message)",
+    "Send campaigns with throttling and personalization",
+    "Track campaign delivery stats (sent, delivered, failed)",
+    "Cancel draft/scheduled campaigns",
+    "Duplicate existing campaigns",
+    "Schedule campaigns for future delivery",
+    "Personalize messages with {name}, {first_name}, {phone}, {email}",
+    "Resume interrupted campaign sends"
+  ],
+  "commands": {
+    "create": "campaign create <name> --body <msg> --target <single|group|tag|all> [--to <contact>] [--group <group>] [--tag <tag>] [--channel sms|email] [--schedule <datetime>]",
+    "list": "campaign list [--status draft|sent|cancelled]",
+    "read": "campaign read <id>",
+    "preview": "campaign preview <id>",
+    "send": "campaign send <id> [--throttle <msgs_per_sec>]",
+    "cancel": "campaign cancel <id>",
+    "duplicate": "campaign duplicate <id> [--name <new_name>]"
+  },
+  "natural_language": [
+    "create a campaign called Spring Sale for group VIP saying 20% off everything",
+    "send campaign 5",
+    "show me campaign 3",
+    "list all campaigns",
+    "cancel campaign 7",
+    "create campaign Welcome for all saying Hi {first_name}!"
+  ],
+  "api_endpoints": {
+    "create": "POST /api/comms/campaigns",
+    "list": "GET /api/comms/campaigns",
+    "read": "GET /api/comms/campaigns/{id}",
+    "preview": "GET /api/comms/campaigns/{id}/preview",
+    "send": "POST /api/comms/campaigns/{id}/send",
+    "cancel": "POST /api/comms/campaigns/{id}/cancel",
+    "duplicate": "POST /api/comms/campaigns/{id}/duplicate"
+  }
+}

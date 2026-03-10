@@ -15,6 +15,8 @@ Usage:
     hermes schedule <datetime> <channel> <to> <message>
     hermes templates [list|create|use]
     hermes analytics [--days N]
+    hermes campaign [create|read|list|send|preview|cancel|duplicate]
+    hermes voice [listen|file <path>|status]
     hermes status
     hermes setup
 """
@@ -39,6 +41,8 @@ from communications_department.engine.inbox import UnifiedInbox
 from communications_department.engine.analytics import AnalyticsEngine
 from communications_department.engine.imessage import IMessageEngine
 from communications_department.engine.email_bridge import EmailAccountBridge, EMAIL_PROVIDERS
+from communications_department.engine.campaign import CampaignEngine
+from communications_department.engine.voice_command import VoiceCommander
 from communications_department.config.settings import load_config
 
 
@@ -63,6 +67,8 @@ class Hermes:
         self.scheduler = MessageScheduler(db=self.db, router=self.router)
         self.inbox = UnifiedInbox(db=self.db, email_engine=self.email)
         self.analytics = AnalyticsEngine(db=self.db)
+        self.campaigns = CampaignEngine(db=self.db, contacts=self.contacts, router=self.router)
+        self.voice_cmd = VoiceCommander(hermes=self)
 
     def init(self):
         """Initialize database tables."""
@@ -103,6 +109,10 @@ class Hermes:
             "setup-email": lambda _: self.setup_email_accounts(),
             "init": lambda _: self.init() or {"status": "initialized"},
             "send": self._cmd_send,
+            "campaign": self._cmd_campaign,
+            "campaigns": self._cmd_campaign,
+            "voice": self._cmd_voice,
+            "listen": lambda _: self.voice_cmd.listen(),
             "accounts": lambda _: self.email_bridge.status(),
         }
 
@@ -351,6 +361,133 @@ class Hermes:
             return self.analytics.contact_engagement(contact)
         return self.analytics.dashboard(days=days)
 
+    def _cmd_campaign(self, args: list) -> dict:
+        """Campaign management: campaign [create|read|list|send|preview|cancel|duplicate]
+
+        Examples:
+            hermes campaign create "Spring Sale" --body "20% off!" --target group --group vip
+            hermes campaign create "Welcome" --body "Hi {first_name}!" --target single --to John
+            hermes campaign create "Big Blast" --body "New launch!" --target all
+            hermes campaign list [--status draft|sent|cancelled]
+            hermes campaign read <id>
+            hermes campaign preview <id>
+            hermes campaign send <id> [--throttle 2]
+            hermes campaign cancel <id>
+            hermes campaign duplicate <id> [--name "New Name"]
+        """
+        if not args:
+            return self.campaigns.list()
+
+        action = args[0].lower()
+
+        if action == "list":
+            status = None
+            if "--status" in args:
+                idx = args.index("--status")
+                status = args[idx + 1] if idx + 1 < len(args) else None
+            return self.campaigns.list(status=status)
+
+        elif action == "create":
+            if len(args) < 2:
+                return {"error": "Usage: hermes campaign create <name> --body <message> --target <single|group|tag|all> [--group <name>|--to <contact>|--tag <tag>]"}
+            name = args[1]
+            body = channel = subject = target_type = target_value = None
+            scheduled_at = None
+            i = 2
+            while i < len(args):
+                if args[i] == "--body" and i + 1 < len(args):
+                    body = args[i + 1]; i += 2
+                elif args[i] == "--channel" and i + 1 < len(args):
+                    channel = args[i + 1]; i += 2
+                elif args[i] == "--subject" and i + 1 < len(args):
+                    subject = args[i + 1]; i += 2
+                elif args[i] == "--target" and i + 1 < len(args):
+                    target_type = args[i + 1]; i += 2
+                elif args[i] in ("--group", "--to", "--tag") and i + 1 < len(args):
+                    target_value = args[i + 1]
+                    if args[i] == "--group":
+                        target_type = target_type or "group"
+                    elif args[i] == "--tag":
+                        target_type = target_type or "tag"
+                    elif args[i] == "--to":
+                        target_type = target_type or "single"
+                    i += 2
+                elif args[i] == "--schedule" and i + 1 < len(args):
+                    try:
+                        scheduled_at = datetime.fromisoformat(args[i + 1])
+                    except ValueError:
+                        return {"error": f"Invalid datetime: {args[i+1]}"}
+                    i += 2
+                else:
+                    i += 1
+
+            if not body:
+                return {"error": "Missing --body. Usage: hermes campaign create <name> --body <message> --target all"}
+            target_type = target_type or "all"
+
+            return self.campaigns.create(
+                name=name, body=body, target_type=target_type,
+                target_value=target_value, channel=channel or "sms",
+                subject=subject, scheduled_at=scheduled_at,
+            )
+
+        elif action == "read" and len(args) >= 2:
+            return self.campaigns.read(int(args[1]))
+
+        elif action == "preview" and len(args) >= 2:
+            return self.campaigns.preview(int(args[1]))
+
+        elif action == "send" and len(args) >= 2:
+            throttle = None
+            if "--throttle" in args:
+                idx = args.index("--throttle")
+                throttle = float(args[idx + 1]) if idx + 1 < len(args) else None
+            return self.campaigns.send(int(args[1]), throttle_rate=throttle)
+
+        elif action == "cancel" and len(args) >= 2:
+            return self.campaigns.cancel(int(args[1]))
+
+        elif action == "duplicate" and len(args) >= 2:
+            new_name = None
+            if "--name" in args:
+                idx = args.index("--name")
+                new_name = args[idx + 1] if idx + 1 < len(args) else None
+            return self.campaigns.duplicate(int(args[1]), new_name=new_name)
+
+        return {"error": "Usage: hermes campaign [create|read|list|send|preview|cancel|duplicate]"}
+
+    def _cmd_voice(self, args: list) -> dict:
+        """Voice command: voice [listen|file <path>|status|exec <text>]
+
+        Examples:
+            hermes voice listen                     # mic → command
+            hermes voice listen --duration 10       # record for 10 seconds
+            hermes voice file /path/to/audio.wav    # file → command
+            hermes voice exec "send campaign 5"     # text → parsed as voice command
+            hermes voice status                     # check STT engine status
+        """
+        if not args or args[0] == "status":
+            return self.voice_cmd.status()
+
+        action = args[0].lower()
+
+        if action == "listen":
+            duration = 5
+            if "--duration" in args:
+                idx = args.index("--duration")
+                duration = int(args[idx + 1]) if idx + 1 < len(args) else 5
+            print("[HERMES] Listening... speak your command.")
+            return self.voice_cmd.listen(duration=duration)
+
+        elif action == "file" and len(args) >= 2:
+            return self.voice_cmd.from_file(args[1])
+
+        elif action == "exec" and len(args) >= 2:
+            text = " ".join(args[1:])
+            return self.voice_cmd.execute(text)
+
+        return {"error": "Usage: hermes voice [listen|file <path>|exec <text>|status]"}
+
     def _cmd_send(self, args: list) -> dict:
         """Smart send: auto-detect channel. send <contact> <message...>"""
         if len(args) < 2:
@@ -400,7 +537,12 @@ class Hermes:
         if "inbox" in text:
             return self._cmd_inbox([])
 
-        return {"error": f"Unknown command. Try: hermes text/email/call/search/inbox/contacts/status"}
+        # Campaign natural language (delegate to voice commander's parser)
+        campaign_result = self.voice_cmd._parse_campaign_command(" ".join(args))
+        if campaign_result:
+            return campaign_result
+
+        return {"error": f"Unknown command. Try: hermes text/email/call/search/inbox/contacts/campaign/voice/status"}
 
     def status(self) -> dict:
         """Get system status."""
@@ -417,11 +559,13 @@ class Hermes:
             "imessage_queue": self.imessage.queue_size(),
             "message_queue": self.router.queue_size(),
             "email_accounts": self.email_bridge.list_accounts(),
+            "voice_command": self.voice_cmd.status(),
             "sub_agents": [
                 "HERMES-IMESSAGE", "HERMES-SMS", "HERMES-EMAIL", "HERMES-VOICE",
                 "HERMES-SEARCH", "HERMES-ROUTER", "HERMES-TEMPLATE",
                 "HERMES-SCHEDULER", "HERMES-INBOX", "HERMES-CONTACTS",
                 "HERMES-WEBHOOK", "HERMES-ANALYTICS", "HERMES-BROADCAST",
+                "HERMES-CAMPAIGN", "HERMES-VOICE-CMD",
             ],
         }
 

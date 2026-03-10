@@ -9,8 +9,11 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
+from pathlib import Path
+
 from fastapi import FastAPI, Request, HTTPException, Query
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, HTMLResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import Optional
 
@@ -24,6 +27,8 @@ from communications_department.engine.router import MessageRouter
 from communications_department.engine.inbox import UnifiedInbox
 from communications_department.engine.analytics import AnalyticsEngine
 from communications_department.engine.imessage import IMessageEngine
+from communications_department.engine.campaign import CampaignEngine
+from communications_department.engine.voice_command import VoiceCommander
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("hermes.api")
@@ -45,6 +50,8 @@ search = SearchEngine(db=db, email_engine=email_eng)
 router = MessageRouter(db=db, sms_engine=sms, email_engine=email_eng, voice_engine=voice, imessage_engine=imessage)
 inbox = UnifiedInbox(db=db, email_engine=email_eng)
 analytics = AnalyticsEngine(db=db)
+campaigns = CampaignEngine(db=db, contacts=contacts, router=router)
+voice_cmd = VoiceCommander()
 
 
 # --- Pydantic models ---
@@ -292,6 +299,124 @@ async def get_analytics(days: int = 30):
 @app.get("/api/comms/analytics/contact/{identifier}")
 async def contact_analytics(identifier: str):
     return analytics.contact_engagement(identifier)
+
+
+# --- Campaign endpoints ---
+
+class CampaignCreate(BaseModel):
+    name: str
+    body: str
+    target_type: str  # single, group, tag, all
+    target_value: Optional[str] = None
+    channel: str = "sms"
+    subject: Optional[str] = None
+    template_id: Optional[int] = None
+    scheduled_at: Optional[str] = None
+
+
+class CampaignSend(BaseModel):
+    throttle_rate: Optional[float] = None
+
+
+@app.post("/api/comms/campaigns")
+async def create_campaign(c: CampaignCreate):
+    """Create a new campaign (draft or scheduled)."""
+    sched = None
+    if c.scheduled_at:
+        from datetime import datetime as dt
+        sched = dt.fromisoformat(c.scheduled_at)
+    return campaigns.create(
+        name=c.name, body=c.body, target_type=c.target_type,
+        target_value=c.target_value, channel=c.channel,
+        subject=c.subject, template_id=c.template_id,
+        scheduled_at=sched,
+    )
+
+
+@app.get("/api/comms/campaigns")
+async def list_campaigns(status: Optional[str] = None):
+    return campaigns.list(status=status)
+
+
+@app.get("/api/comms/campaigns/{campaign_id}")
+async def get_campaign(campaign_id: int):
+    result = campaigns.read(campaign_id)
+    if result and result.get("error"):
+        raise HTTPException(status_code=404, detail=result["error"])
+    return result
+
+
+@app.get("/api/comms/campaigns/{campaign_id}/preview")
+async def preview_campaign(campaign_id: int):
+    return campaigns.preview(campaign_id)
+
+
+@app.post("/api/comms/campaigns/{campaign_id}/send")
+async def send_campaign(campaign_id: int, opts: CampaignSend = None):
+    """Send a campaign to all its recipients."""
+    throttle = opts.throttle_rate if opts else None
+    return campaigns.send(campaign_id, throttle_rate=throttle)
+
+
+@app.post("/api/comms/campaigns/{campaign_id}/cancel")
+async def cancel_campaign(campaign_id: int):
+    return campaigns.cancel(campaign_id)
+
+
+@app.post("/api/comms/campaigns/{campaign_id}/duplicate")
+async def duplicate_campaign(campaign_id: int, name: Optional[str] = None):
+    return campaigns.duplicate(campaign_id, new_name=name)
+
+
+# --- Voice Command endpoints ---
+
+class VoiceTextCommand(BaseModel):
+    text: str
+
+
+@app.post("/api/comms/voice/command")
+async def voice_text_command(cmd: VoiceTextCommand):
+    """Execute a text command through the voice command parser.
+    Accepts natural language like: 'create a campaign called X for group Y saying Z'
+    """
+    # Use a temporary Hermes instance for voice command execution
+    from communications_department.hermes import Hermes
+    hermes = Hermes()
+    vc = VoiceCommander(hermes=hermes)
+    return vc.execute(cmd.text)
+
+
+@app.post("/api/comms/voice/transcribe")
+async def voice_transcribe(request: Request):
+    """Upload audio file for transcription + command execution.
+
+    Send audio as multipart form data with field name 'audio'.
+    Supported: .wav, .mp3, .m4a, .ogg, .webm
+    """
+    import tempfile
+    form = await request.form()
+    audio_file = form.get("audio")
+    if not audio_file:
+        raise HTTPException(status_code=400, detail="No audio file provided. Upload as 'audio' field.")
+
+    contents = await audio_file.read()
+    filename = getattr(audio_file, "filename", "audio.wav")
+
+    text = voice_cmd.transcribe_bytes(contents, filename=filename)
+    if not text:
+        return {"error": "Could not transcribe audio. Check STT engine configuration."}
+
+    # Execute the transcribed command
+    from communications_department.hermes import Hermes
+    hermes = Hermes()
+    vc = VoiceCommander(hermes=hermes)
+    result = vc.execute(text)
+    return result
+
+
+@app.get("/api/comms/voice/status")
+async def voice_command_status():
+    return voice_cmd.status()
 
 
 # --- Setup Agent (auto-configure iPhone) ---

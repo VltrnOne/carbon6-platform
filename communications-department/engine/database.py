@@ -115,6 +115,80 @@ class Template(Base):
         }
 
 
+class Campaign(Base):
+    __tablename__ = "comms_campaigns"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255), nullable=False, index=True)
+    body = Column(Text, nullable=False)
+    channel = Column(String(20), default="sms")  # sms, email, voice, auto
+    subject = Column(String(500))  # for email campaigns
+    template_id = Column(Integer, ForeignKey("comms_templates.id"), nullable=True)
+    target_type = Column(String(20), nullable=False)  # single, group, tag, all
+    target_value = Column(String(255))  # contact name/id, group name, tag name, or null for all
+    status = Column(String(20), default="draft", index=True)  # draft, scheduled, sending, sent, cancelled
+    scheduled_at = Column(DateTime, nullable=True)
+    sent_at = Column(DateTime, nullable=True)
+    total_recipients = Column(Integer, default=0)
+    total_sent = Column(Integer, default=0)
+    total_delivered = Column(Integer, default=0)
+    total_failed = Column(Integer, default=0)
+    metadata_ = Column("campaign_metadata", JSON, default=dict)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc),
+                        onupdate=lambda: datetime.now(timezone.utc))
+
+    template = relationship("Template", foreign_keys=[template_id])
+
+    def to_dict(self):
+        return {
+            "id": self.id, "name": self.name, "body": self.body,
+            "channel": self.channel, "subject": self.subject,
+            "template_id": self.template_id,
+            "target_type": self.target_type, "target_value": self.target_value,
+            "status": self.status,
+            "scheduled_at": self.scheduled_at.isoformat() if self.scheduled_at else None,
+            "sent_at": self.sent_at.isoformat() if self.sent_at else None,
+            "total_recipients": self.total_recipients,
+            "total_sent": self.total_sent,
+            "total_delivered": self.total_delivered,
+            "total_failed": self.total_failed,
+            "metadata": self.metadata_,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
+        }
+
+
+class CampaignRecipient(Base):
+    __tablename__ = "comms_campaign_recipients"
+
+    id = Column(Integer, primary_key=True)
+    campaign_id = Column(Integer, ForeignKey("comms_campaigns.id"), nullable=False, index=True)
+    contact_id = Column(Integer, ForeignKey("comms_contacts.id"), nullable=False)
+    status = Column(String(20), default="pending")  # pending, sent, delivered, failed, skipped
+    message_id = Column(Integer, ForeignKey("comms_messages.id"), nullable=True)
+    sent_at = Column(DateTime, nullable=True)
+    error = Column(Text, nullable=True)
+
+    campaign = relationship("Campaign", backref="recipients")
+    contact = relationship("Contact")
+    message = relationship("Message")
+
+    __table_args__ = (
+        Index("ix_campaign_recipients_lookup", "campaign_id", "contact_id"),
+    )
+
+    def to_dict(self):
+        return {
+            "id": self.id, "campaign_id": self.campaign_id,
+            "contact_id": self.contact_id, "status": self.status,
+            "message_id": self.message_id,
+            "sent_at": self.sent_at.isoformat() if self.sent_at else None,
+            "error": self.error,
+            "contact_name": self.contact.name if self.contact else None,
+        }
+
+
 class CommsDB:
     """Communications database manager."""
 
@@ -364,3 +438,93 @@ class CommsDB:
                 "total_contacts": session.query(Contact).count(),
                 "total_templates": session.query(Template).count(),
             }
+
+    # --- Campaign operations ---
+
+    def create_campaign(self, name: str, body: str, target_type: str,
+                        target_value: str = None, channel: str = "sms",
+                        subject: str = None, template_id: int = None,
+                        scheduled_at: datetime = None) -> dict:
+        with self.get_session() as session:
+            campaign = Campaign(
+                name=name, body=body, channel=channel, subject=subject,
+                template_id=template_id, target_type=target_type,
+                target_value=target_value,
+                status="scheduled" if scheduled_at else "draft",
+                scheduled_at=scheduled_at,
+            )
+            session.add(campaign)
+            session.commit()
+            session.refresh(campaign)
+            return campaign.to_dict()
+
+    def get_campaign(self, campaign_id: int) -> Optional[dict]:
+        with self.get_session() as session:
+            c = session.query(Campaign).filter(Campaign.id == campaign_id).first()
+            return c.to_dict() if c else None
+
+    def list_campaigns(self, status: str = None, limit: int = 50) -> list:
+        with self.get_session() as session:
+            q = session.query(Campaign)
+            if status:
+                q = q.filter(Campaign.status == status)
+            campaigns = q.order_by(Campaign.created_at.desc()).limit(limit).all()
+            return [c.to_dict() for c in campaigns]
+
+    def update_campaign(self, campaign_id: int, **kwargs) -> Optional[dict]:
+        with self.get_session() as session:
+            c = session.query(Campaign).filter(Campaign.id == campaign_id).first()
+            if not c:
+                return None
+            for key, val in kwargs.items():
+                if hasattr(c, key):
+                    setattr(c, key, val)
+            session.commit()
+            session.refresh(c)
+            return c.to_dict()
+
+    def delete_campaign(self, campaign_id: int) -> bool:
+        with self.get_session() as session:
+            c = session.query(Campaign).filter(Campaign.id == campaign_id).first()
+            if not c or c.status == "sent":
+                return False
+            session.query(CampaignRecipient).filter(
+                CampaignRecipient.campaign_id == campaign_id
+            ).delete()
+            session.delete(c)
+            session.commit()
+            return True
+
+    def add_campaign_recipient(self, campaign_id: int, contact_id: int) -> dict:
+        with self.get_session() as session:
+            r = CampaignRecipient(campaign_id=campaign_id, contact_id=contact_id)
+            session.add(r)
+            session.commit()
+            session.refresh(r)
+            return r.to_dict()
+
+    def update_campaign_recipient(self, recipient_id: int, status: str,
+                                   message_id: int = None, error: str = None) -> bool:
+        with self.get_session() as session:
+            r = session.query(CampaignRecipient).filter(
+                CampaignRecipient.id == recipient_id
+            ).first()
+            if r:
+                r.status = status
+                r.sent_at = datetime.now(timezone.utc) if status == "sent" else r.sent_at
+                if message_id:
+                    r.message_id = message_id
+                if error:
+                    r.error = error
+                session.commit()
+                return True
+            return False
+
+    def get_campaign_recipients(self, campaign_id: int) -> list:
+        with self.get_session() as session:
+            recipients = (
+                session.query(CampaignRecipient)
+                .filter(CampaignRecipient.campaign_id == campaign_id)
+                .all()
+            )
+            return [r.to_dict() for r in recipients]
