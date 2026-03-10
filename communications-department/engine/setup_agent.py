@@ -36,9 +36,9 @@ class HermesSetupAgent:
         self.api_key = os.getenv("PUSHCUT_API_KEY", "")
         self.device_name = os.getenv("PUSHCUT_DEVICE_NAME", "My iPhone")
         self.webhook_base = os.getenv("HERMES_WEBHOOK_URL", "")
-        # Auto-detect webhook URL from Hostinger VPS
+        # Auto-detect webhook URL - prefer HTTPS domain for iOS compatibility
         if not self.webhook_base:
-            self.webhook_base = f"http://72.62.202.157:{self.config.api_port}"
+            self.webhook_base = "https://hermes.vltrn.cloud"
 
     # ----------------------------------------------------------------
     # Pushcut API
@@ -454,8 +454,18 @@ class HermesSetupAgent:
         return results
 
     def generate_setup_page_html(self) -> str:
-        """Generate the HTML setup page served to the iPhone."""
+        """Generate the HTML setup page served to the iPhone.
+
+        Serves .shortcut files over HTTPS via shortcuts://import-shortcut URL scheme.
+        iOS requires HTTPS for shortcut imports.
+        """
+        import urllib.parse
         api_base = self.webhook_base
+        webhook_url = f"{api_base}/api/comms/imessage/inbound"
+        send_file_url = f"{api_base}/api/comms/setup/shortcut/send"
+        recv_file_url = f"{api_base}/api/comms/setup/shortcut/receive"
+        send_import = f"shortcuts://import-shortcut?url={urllib.parse.quote(send_file_url, safe='')}&name={urllib.parse.quote('HERMES Send Message', safe='')}"
+        recv_import = f"shortcuts://import-shortcut?url={urllib.parse.quote(recv_file_url, safe='')}&name={urllib.parse.quote('HERMES Receive Message', safe='')}"
         return f"""<!DOCTYPE html>
 <html>
 <head>
@@ -482,11 +492,9 @@ class HermesSetupAgent:
   .btn-blue {{ background: #0a84ff; color: #fff; }}
   .btn-green {{ background: #30d158; color: #fff; }}
   .btn-outline {{ background: transparent; color: #0a84ff; border: 2px solid #0a84ff; }}
-  .status {{ display: inline-block; width: 10px; height: 10px; border-radius: 5px; margin-right: 8px; }}
-  .status-ok {{ background: #30d158; }}
-  .status-pending {{ background: #ff9f0a; }}
   .divider {{ height: 1px; background: #333; margin: 16px 0; }}
   .small {{ font-size: 12px; color: #666; text-align: center; margin-top: 20px; }}
+  .note {{ font-size: 13px; color: #888; margin-top: 8px; text-align: center; }}
 </style>
 </head>
 <body>
@@ -498,56 +506,57 @@ class HermesSetupAgent:
 
 <div class="card">
   <h2>Step 1: Install Send Shortcut</h2>
-  <p>This shortcut lets HERMES send iMessages from your phone number.</p>
-  <a href="{api_base}/api/comms/setup/shortcut/send" class="btn btn-blue">
-    Install "HERMES Send Message"
+  <p>This shortcut lets HERMES send iMessages from your phone number. Tap below — it opens the Shortcuts app and adds it automatically.</p>
+  <a href="{send_import}" class="btn btn-blue">
+    Add "HERMES Send Message"
   </a>
+  <p class="note">Tap "Add Shortcut" when the Shortcuts app opens.</p>
 </div>
 
 <div class="card">
   <h2>Step 2: Install Receive Shortcut</h2>
   <p>This shortcut forwards incoming messages to HERMES for your unified inbox.</p>
-  <a href="{api_base}/api/comms/setup/shortcut/receive" class="btn btn-green">
-    Install "HERMES Receive Message"
+  <a href="{recv_import}" class="btn btn-green">
+    Add "HERMES Receive Message"
   </a>
+  <p class="note">Tap "Add Shortcut" when the Shortcuts app opens.</p>
 </div>
 
 <div class="card">
   <h2>Step 3: Create Message Automation</h2>
-  <p>Connect the receive shortcut to trigger automatically:</p>
+  <p>Auto-forward every incoming message to HERMES:</p>
   <div class="step">
     <div class="step-num">1</div>
-    <div class="step-text">Open <strong>Shortcuts</strong> app → <strong>Automation</strong> tab</div>
+    <div class="step-text">Open <strong>Shortcuts</strong> → <strong>Automation</strong> tab</div>
   </div>
   <div class="step">
     <div class="step-num">2</div>
-    <div class="step-text">Tap <strong>+</strong> → <strong>Message</strong></div>
+    <div class="step-text">Tap <strong>+</strong> → choose <strong>Message</strong></div>
   </div>
   <div class="step">
     <div class="step-num">3</div>
-    <div class="step-text">Select <strong>"Message Contains"</strong> → leave blank (any message)</div>
+    <div class="step-text"><strong>Message Contains</strong> → leave blank → <strong>Next</strong></div>
   </div>
   <div class="step">
     <div class="step-num">4</div>
-    <div class="step-text">Choose <strong>"Run Immediately"</strong></div>
+    <div class="step-text">Choose <strong>Run Immediately</strong></div>
   </div>
   <div class="step">
     <div class="step-num">5</div>
-    <div class="step-text">Set action: <strong>Run Shortcut → "HERMES Receive Message"</strong></div>
+    <div class="step-text">Action: <strong>Run Shortcut → HERMES Receive Message</strong></div>
   </div>
 </div>
 
 <div class="card">
-  <h2>Step 4: Verify</h2>
-  <p>Tap below to check if everything is connected:</p>
-  <a href="{api_base}/api/comms/imessage/status" class="btn btn-outline">
-    Check Connection Status
-  </a>
+  <h2>Step 4: Verify Connection</h2>
+  <p>Tap below to check if HERMES can receive messages:</p>
+  <button class="btn btn-outline" onclick="testConnection()">Test Connection</button>
+  <div id="test-result" style="margin-top: 10px; font-size: 14px;"></div>
 </div>
 
 <div class="card" style="background: #1a2a1a; border: 1px solid #30d158;">
   <h2 style="color: #30d158;">Ready to Go</h2>
-  <p>Once all steps are done, you can control messages from your server:</p>
+  <p>Once all steps are done, control messages from your server:</p>
   <p style="color: #fff; font-family: monospace; background: #000; padding: 12px; border-radius: 8px; font-size: 13px;">
     hermes text "John" "Hey, meeting at 3pm"<br>
     hermes inbox --unread<br>
@@ -556,7 +565,26 @@ class HermesSetupAgent:
 </div>
 
 <p class="small">HERMES // Carbon6 Communications Department<br>
-Webhook: {api_base}</p>
+{api_base}</p>
+
+<script>
+function testConnection() {{
+  const r = document.getElementById('test-result');
+  r.innerHTML = '<span style="color:#ff9f0a;">Testing...</span>';
+  fetch('{api_base}/api/comms/imessage/inbound', {{
+    method: 'POST',
+    headers: {{'Content-Type': 'application/json'}},
+    body: JSON.stringify({{from: 'setup-test', body: 'HERMES setup verification', is_imessage: true}})
+  }})
+  .then(resp => resp.json())
+  .then(data => {{
+    r.innerHTML = '<span style="color:#30d158;">Connected! HERMES received the test message.</span>';
+  }})
+  .catch(err => {{
+    r.innerHTML = '<span style="color:#ff453a;">Connection failed: ' + err.message + '</span>';
+  }});
+}}
+</script>
 
 </body>
 </html>"""
