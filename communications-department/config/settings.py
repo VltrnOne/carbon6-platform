@@ -5,6 +5,24 @@ Set these in /root/carbon6-platform/.env or export them.
 """
 import os
 from dataclasses import dataclass, field
+from pathlib import Path
+
+# Load .env file if present
+_env_file = Path(__file__).resolve().parent.parent.parent / ".env"
+if _env_file.exists():
+    try:
+        from dotenv import load_dotenv
+        load_dotenv(_env_file, override=False)
+    except ImportError:
+        # Manual fallback if python-dotenv not installed
+        with open(_env_file) as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    key, _, val = line.partition("=")
+                    key, val = key.strip(), val.strip().strip('"').strip("'")
+                    if key not in os.environ:
+                        os.environ[key] = val
 
 
 @dataclass

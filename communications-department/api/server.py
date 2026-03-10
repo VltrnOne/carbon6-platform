@@ -419,6 +419,54 @@ async def voice_command_status():
     return voice_cmd.status()
 
 
+@app.post("/api/comms/voice/scan")
+async def voice_scan_now():
+    """Manually trigger a scan of the voice drop inbox folder."""
+    from communications_department.workers.voice_scanner import scan_once, INBOX_DIR, PROCESSED_DIR, FAILED_DIR
+    from communications_department.hermes import Hermes
+    hermes = Hermes()
+    vc = VoiceCommander(hermes=hermes)
+    results = scan_once(hermes, vc)
+    return {"scanned": len(results), "results": results}
+
+
+@app.get("/api/comms/voice/drop-status")
+async def voice_drop_status():
+    """Get voice drop folder status."""
+    from communications_department.workers.voice_scanner import INBOX_DIR, PROCESSED_DIR, FAILED_DIR, AUDIO_EXTENSIONS
+    def count_audio(d):
+        if not d.exists():
+            return 0
+        return len([f for f in d.iterdir() if f.is_file() and f.suffix.lower() in AUDIO_EXTENSIONS])
+    def list_files(d, limit=20):
+        if not d.exists():
+            return []
+        files = sorted(
+            [f for f in d.iterdir() if f.is_file()],
+            key=lambda f: f.stat().st_mtime, reverse=True,
+        )[:limit]
+        return [{"name": f.name, "size": f.stat().st_size,
+                 "modified": f.stat().st_mtime} for f in files]
+    return {
+        "inbox": {"path": str(INBOX_DIR), "audio_files": count_audio(INBOX_DIR), "files": list_files(INBOX_DIR)},
+        "processed": {"path": str(PROCESSED_DIR), "count": len(list(PROCESSED_DIR.iterdir())) if PROCESSED_DIR.exists() else 0, "recent": list_files(PROCESSED_DIR, 10)},
+        "failed": {"path": str(FAILED_DIR), "count": len(list(FAILED_DIR.iterdir())) if FAILED_DIR.exists() else 0, "recent": list_files(FAILED_DIR, 10)},
+    }
+
+
+# --- Command Center UI ---
+
+STATIC_DIR = Path(__file__).parent / "static"
+
+
+@app.get("/command", response_class=HTMLResponse)
+@app.get("/cmd", response_class=HTMLResponse)
+async def command_center_ui():
+    """Serve the HERMES Command Center UI."""
+    html_path = STATIC_DIR / "command.html"
+    return HTMLResponse(content=html_path.read_text())
+
+
 # --- Setup Agent (auto-configure iPhone) ---
 
 from communications_department.engine.setup_agent import HermesSetupAgent
