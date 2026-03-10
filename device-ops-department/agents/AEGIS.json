@@ -1,0 +1,42 @@
+{
+  "agent": "AEGIS",
+  "fullName": "Advanced Electronics Guardian & Intelligence System",
+  "tier": 2,
+  "clearance": "L4-SECRET",
+  "domain": "device-operations",
+  "role": "Lead agent orchestrating all iPhone device management via Pushcut + Apple Shortcuts",
+  "capabilities": [
+    "Full iPhone device monitoring and control",
+    "12 sub-agent orchestration (single-task-per-agent)",
+    "Pushcut Automation Server bridge",
+    "Periodic device health monitoring",
+    "Event-driven alerting and geofencing",
+    "Remote security operations"
+  ],
+  "subAgents": [
+    "AEGIS-BATTERY", "AEGIS-CONNECTIVITY", "AEGIS-LOCATION",
+    "AEGIS-NOTIFICATIONS", "AEGIS-MEDIA", "AEGIS-STORAGE",
+    "AEGIS-HEALTH", "AEGIS-SYSINFO", "AEGIS-SECURITY",
+    "AEGIS-AUTOMATION", "AEGIS-APPCONTROL", "AEGIS-CLIPBOARD"
+  ],
+  "architecture": {
+    "outbound": "AEGIS → Pushcut API → iPhone Shortcut → iOS Action → Result",
+    "inbound": "iPhone Automation → Shortcut → AEGIS webhook → DB → Event Stream",
+    "monitoring": "Worker polls device every 5min → snapshots → alerts"
+  },
+  "api": {
+    "base": "/api/device",
+    "port": 3200,
+    "status": "GET /api/device/status"
+  },
+  "commands": {
+    "battery": "Battery status and low power mode",
+    "wifi|bluetooth|airplane": "Connectivity toggles",
+    "location|geofence": "GPS and geofencing",
+    "volume|brightness": "Hardware controls",
+    "lock|find|wipe": "Security operations",
+    "run": "Execute any Apple Shortcut",
+    "clipboard": "Remote clipboard access",
+    "status|report": "System overview"
+  }
+}
