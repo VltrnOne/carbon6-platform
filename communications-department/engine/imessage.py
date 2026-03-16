@@ -10,6 +10,7 @@ Each trigger executes an Apple Shortcut that performs the actual send.
 import json
 import logging
 import os
+import sys
 import time
 from typing import Optional
 
@@ -17,6 +18,14 @@ import redis
 import requests
 
 from ..config.settings import load_config
+
+# Add vault to path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+try:
+    from lib.vault import get_secret
+except ImportError:
+    def get_secret(key, default=""):
+        return os.getenv(key, default)
 
 log = logging.getLogger("hermes.imessage")
 
@@ -29,19 +38,26 @@ class IMessageEngine:
 
     def __init__(self, db=None):
         self.db = db
-        self.api_key = os.getenv("PUSHCUT_API_KEY", "")
-        self.device_name = os.getenv("PUSHCUT_DEVICE_NAME", "")
+        self.api_key = get_secret("PUSHCUT_API_KEY")
+        self.device_name = get_secret("PUSHCUT_DEVICE_NAME")
         # Shortcut names on the iPhone
-        self.send_shortcut = os.getenv("IMESSAGE_SEND_SHORTCUT", "HERMES Send Message")
+        self.send_shortcut = get_secret("IMESSAGE_SEND_SHORTCUT", "HERMES Send Message")
         self.config = load_config()
 
         # Redis for outbound queue (messages waiting for phone to pick up)
         try:
+            redis_pw = None
+            try:
+                with open('/root/.redis_password', 'r') as f:
+                    redis_pw = f.read().strip()
+            except Exception:
+                pass
             self.redis = redis.Redis(
                 host=self.config.redis.host,
                 port=self.config.redis.port,
                 db=self.config.redis.db,
                 decode_responses=True,
+                password=redis_pw,
             )
         except Exception:
             self.redis = None

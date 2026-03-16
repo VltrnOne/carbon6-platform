@@ -70,11 +70,21 @@ class EmailConfig:
         return bool(self.sendgrid_api_key)
 
 
+def _load_redis_password() -> str:
+    """Load Redis password from secure file."""
+    try:
+        with open('/root/.redis_password', 'r') as f:
+            return f.read().strip()
+    except Exception:
+        return os.getenv("REDIS_PASSWORD", "")
+
+
 @dataclass
 class RedisConfig:
     host: str = field(default_factory=lambda: os.getenv("REDIS_HOST", "localhost"))
     port: int = field(default_factory=lambda: int(os.getenv("REDIS_PORT", "6379")))
     db: int = field(default_factory=lambda: int(os.getenv("REDIS_COMMS_DB", "2")))
+    password: str = field(default_factory=_load_redis_password)
     prefix: str = "comms:"
 
 
@@ -82,7 +92,7 @@ class RedisConfig:
 class DatabaseConfig:
     url: str = field(default_factory=lambda: os.getenv(
         "COMMS_DATABASE_URL",
-        "postgresql+psycopg2://root:carbon6comms@localhost/carbon6"
+        "postgresql+psycopg2://root@localhost/carbon6"
     ))
     schema: str = "communications"
 
