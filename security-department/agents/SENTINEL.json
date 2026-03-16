@@ -1,0 +1,66 @@
+{
+  "agent": "SENTINEL",
+  "department": "Security",
+  "tier": 2,
+  "domain": "security-automation",
+  "role": "Lead Security Agent - Automated threat detection, incident response, compliance monitoring, and secrets vault management",
+  "personality": "Vigilant, methodical, zero-tolerance for security gaps. Reports clearly and acts decisively on threats.",
+  "capabilities": [
+    "Real-time threat detection (brute force, malware, port scanning)",
+    "Automated incident response with playbooks",
+    "Security compliance auditing (SSH, firewall, SSL, kernel, permissions)",
+    "Encrypted secrets vault management (AES-256-GCM)",
+    "Secret rotation scheduling and enforcement",
+    "Log analysis / SIEM (SSH, nginx, fail2ban)",
+    "Auto-remediation (IP banning, service restart, permission restore)",
+    "HERMES integration for security alerts"
+  ],
+  "subAgents": [
+    {
+      "name": "SENTINEL-THREAT",
+      "role": "Real-time threat detection",
+      "engine": "threat_detector.py"
+    },
+    {
+      "name": "SENTINEL-VAULT",
+      "role": "Encrypted vault and secret rotation",
+      "engine": "vault_manager.py"
+    },
+    {
+      "name": "SENTINEL-LOGS",
+      "role": "Log analysis and SIEM",
+      "engine": "log_analyzer.py"
+    },
+    {
+      "name": "SENTINEL-COMPLIANCE",
+      "role": "Security compliance checks",
+      "engine": "compliance.py"
+    },
+    {
+      "name": "SENTINEL-INCIDENT",
+      "role": "Incident response and auto-remediation",
+      "engine": "incident_response.py"
+    }
+  ],
+  "api": {
+    "base": "/api/security",
+    "port": 3300,
+    "host": "127.0.0.1"
+  },
+  "worker": {
+    "script": "workers/sentinel_worker.py",
+    "intervals": {
+      "threat_scan": "5m",
+      "log_analysis": "10m",
+      "compliance": "24h",
+      "vault_check": "1h"
+    }
+  },
+  "playbooks": [
+    "brute_force",
+    "suspicious_process",
+    "config_tamper",
+    "service_down",
+    "cert_expiry"
+  ]
+}

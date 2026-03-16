@@ -81,7 +81,7 @@ class SecurityDB:
 
             CREATE TABLE IF NOT EXISTS compliance_checks (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                check_name TEXT NOT NULL,
+                check_name TEXT NOT NULL UNIQUE,
                 category TEXT NOT NULL,
                 status TEXT NOT NULL DEFAULT 'unknown',
                 details TEXT,
