@@ -1,0 +1,112 @@
+{
+  "version": "2.0.0",
+  "lastUpdated": "2026-09-04",
+  "orchestrator": "NEO",
+
+  "computeBackends": {
+    "tier0": {
+      "label": "Meta-Orchestrator & Strategy",
+      "provider": "anthropic",
+      "model": "claude-opus-4-6",
+      "context": "1M",
+      "role": "Architectural reasoning, task decomposition, code audits, PR review",
+      "endpoint": "cloud (current session)",
+      "cost": "paid"
+    },
+    "tier1": {
+      "label": "Heavy Coders (Lightning L40S GPU)",
+      "endpoint": "http://localhost:11437/v1",
+      "tunnel": "ssh -L 11437:127.0.0.1:11434 council-gpu",
+      "gpu": "NVIDIA L40S 46GB VRAM",
+      "models": {
+        "qwen2.5-coder:32b": {
+          "params": "32.8B",
+          "quant": "Q4_K_M",
+          "disk": "19.9GB",
+          "vram": "~28GB",
+          "throughput": "18.7 tok/s",
+          "context": 32768,
+          "role": "Deep architectural code generation, multi-file refactoring, strict diff-generation",
+          "aiderAlias": "run-remote-qwen25"
+        },
+        "qwen3-coder:30b": {
+          "params": "30.5B (MoE)",
+          "quant": "Q4_K_M",
+          "disk": "18.6GB",
+          "vram": "~21GB",
+          "throughput": "53.7 tok/s",
+          "context": 262144,
+          "role": "Advanced code reasoning, complex syntax validation, cross-module integration",
+          "aiderAlias": "run-remote-qwen3"
+        }
+      }
+    },
+    "tier2": {
+      "label": "High-Speed Specialist (Lightning L40S GPU)",
+      "endpoint": "http://localhost:11437/v1",
+      "models": {
+        "glm4:9b": {
+          "params": "9.4B",
+          "quant": "Q4_0",
+          "disk": "5.5GB",
+          "vram": "~7GB",
+          "throughput": "74.8 tok/s",
+          "context": 131072,
+          "role": "Rapid deterministic utility generation, commit messages, quick syntax transforms",
+          "aiderAlias": "run-remote-glm"
+        }
+      }
+    }
+  },
+
+  "agentFleet": {
+    "source": "../slash-commands/command-registry.json",
+    "totalAgents": 462,
+    "router": "../slash-commands/lib/command-parser.js",
+    "cli": "../slash-commands/bin/slash",
+    "tiers": {
+      "tier0": { "clearance": "L5-BLACK", "count": 5, "lead": "GENESIS" },
+      "tier1": { "clearance": "L4-RESTRICTED", "count": 74, "leads": ["SOVEREIGN", "MNEMOS", "AEGIS", "PRAXIS", "TRUST_DIRECTOR"] },
+      "tier2": { "clearance": "L3-CONFIDENTIAL", "count": 332, "leads": ["AURUM", "TECHNE", "SOPHIA", "CARBON", "NEXUS", "VISIO", "MELODIA", "LEXIS", "MERCATOR", "CUSTOS", "DATUM", "CULTURA", "GENESIS-UI"] },
+      "tier3": { "clearance": "L2-INTERNAL", "count": 47, "leads": ["CALAMUS", "CHRONOS", "BENEFACTOR", "HERMES", "LOGOS"] },
+      "tier4": { "clearance": "L1-PUBLIC", "count": 4, "leads": ["SCOUT", "FORMA", "NUNTIUS", "VERBUM"] }
+    }
+  },
+
+  "departments": {
+    "installer-department": {
+      "path": "../installer-department",
+      "agents": ["INSTALLER-ARCHITECT", "PACKAGER", "DISTRIBUTOR", "VERSIONER", "UPDATER"],
+      "status": "partial"
+    },
+    "slash-commands": {
+      "path": "../slash-commands",
+      "agents": ["CommandParser"],
+      "status": "operational"
+    },
+    "scripts": {
+      "path": "../scripts",
+      "role": "Admin provisioning, database migrations, security auth, system maintenance",
+      "status": "operational"
+    },
+    "ois": {
+      "path": "../ois",
+      "role": "CLI binary, plugin system, intelligence layer, agent orchestration",
+      "status": "scaffold"
+    }
+  },
+
+  "qualityGates": {
+    "auditFirst": "Compare target files against CONVENTIONS.md, OIS_ARCHITECTURE.md before writing",
+    "atomicDispatch": "Isolate changes to single department/file per pass",
+    "diffVerification": "Check diffs for missing braces, dangling references, unhandled rejections",
+    "cleanCommit": "Conventional commits: feat:, fix:, refactor:, chore:"
+  },
+
+  "conventions": {
+    "zeroPlaceholders": true,
+    "zeroStubs": true,
+    "zeroDummyData": true,
+    "sourceOfTruth": ["CONVENTIONS.md", "OIS_ARCHITECTURE.md", "EXECUTABLE_SDK_COMPLETE.md"]
+  }
+}

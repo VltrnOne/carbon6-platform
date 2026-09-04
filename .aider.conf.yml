@@ -1,0 +1,29 @@
+# Carbon OIS — Aider Configuration
+# Managed by NEO Master Orchestrator
+
+# Model defaults (overridden by run-remote-* shell functions)
+openai-api-base: http://localhost:11437/v1
+openai-api-key: ollama
+model: openai/qwen2.5-coder:32b
+
+# Token limits
+map-tokens: 512
+
+# Streaming
+stream: true
+
+# Suppress model compatibility warnings (Ollama models not in aider's known list)
+no-show-model-warnings: true
+
+# Auto-commit with conventional commit format
+auto-commits: true
+attribute-author: false
+attribute-committer: false
+
+# File handling
+gitignore: true
+aiderignore: .aiderignore
+
+# Editor behavior
+edit-format: diff
+auto-lint: false
