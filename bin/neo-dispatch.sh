@@ -36,16 +36,39 @@ if [[ -z "$MODEL" || -z "$TARGET_PATH" ]]; then
   exit 1
 fi
 
-# Ensure SSH tunnel to Lightning L40S is up
-if ! lsof -i :$PORT &>/dev/null; then
-  echo "[tunnel] Establishing SSH tunnel to Lightning GPU..."
-  ssh -f -N -L ${PORT}:127.0.0.1:11434 council-gpu
-  sleep 1
+# Ensure SSH tunnel is up (Lightning GPU → VPS fallback)
+if ! lsof -i :$PORT &>/dev/null || ! curl -s --max-time 3 http://localhost:${PORT}/api/tags &>/dev/null; then
+  pkill -f "ssh.*${PORT}.*11434" 2>/dev/null
+  sleep 0.5
+  # Try Lightning GPU first
+  if ssh -o ConnectTimeout=5 -o BatchMode=yes -f -N -L ${PORT}:127.0.0.1:11434 council-gpu 2>/dev/null; then
+    sleep 1
+    curl -s --max-time 3 http://localhost:${PORT}/api/tags &>/dev/null && echo "[tunnel] Lightning GPU connected" || {
+      pkill -f "ssh.*${PORT}.*council-gpu" 2>/dev/null
+      echo "[tunnel] Lightning offline — falling back to VPS..."
+      ssh -o ConnectTimeout=5 -f -N -L ${PORT}:127.0.0.1:11434 n8n-vps
+      sleep 1
+    }
+  else
+    echo "[tunnel] Lightning unreachable — falling back to VPS..."
+    ssh -o ConnectTimeout=5 -f -N -L ${PORT}:127.0.0.1:11434 n8n-vps
+    sleep 1
+  fi
 fi
 
-if ! curl -s --max-time 3 http://localhost:${PORT}/api/tags &>/dev/null; then
-  echo "Error: Remote Ollama not reachable on :${PORT}. Is the Lightning studio running?"
+if ! curl -s --max-time 5 http://localhost:${PORT}/api/tags &>/dev/null; then
+  echo "Error: No remote Ollama reachable on :${PORT}."
   exit 1
+fi
+
+# Detect if requested model is available, fallback to best available
+AVAILABLE=$(curl -s http://localhost:${PORT}/api/tags | python3 -c "import sys,json; print(' '.join(m['name'] for m in json.load(sys.stdin)['models']))" 2>/dev/null)
+if ! echo "$AVAILABLE" | grep -q "$MODEL"; then
+  FALLBACK=$(echo "$AVAILABLE" | tr ' ' '\n' | grep -E "coder|qwen|glm" | head -1)
+  if [[ -n "$FALLBACK" ]]; then
+    echo "[model] ${MODEL} not available — using ${FALLBACK}"
+    MODEL="$FALLBACK"
+  fi
 fi
 
 echo ""
