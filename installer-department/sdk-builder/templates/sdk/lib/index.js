@@ -6,6 +6,7 @@ class SDK {
   constructor(config = {}) {
     this.config = config;
     this.plugins = [];
+    this.agents = new Map();
   }
 
   /**
@@ -49,18 +50,24 @@ class SDK {
    * Invoke an agent by ID with a payload
    */
   invokeAgent(agentId, payload) {
-    // Placeholder for agent invocation logic
-    console.log(`Invoking agent ${agentId} with payload:`, payload);
-    return this;
+    const agent = this.agents.get(agentId);
+    if (!agent) {
+      throw new Error(`Agent ${agentId} not found`);
+    }
+    if (typeof agent.handle === 'function') {
+      return agent.handle(payload);
+    } else if (typeof agent.run === 'function') {
+      return agent.run(payload);
+    } else {
+      throw new Error(`Agent ${agentId} does not have a handle or run method`);
+    }
   }
 
   /**
    * List all agents
    */
   listAgents() {
-    // Placeholder for listing agents
-    console.log('Listing agents...');
-    return [];
+    return Array.from(this.agents.keys());
   }
 }
 
