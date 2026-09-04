@@ -74,23 +74,29 @@
   },
 
   "departments": {
-    "installer-department": {
-      "path": "../installer-department",
+    "installer": {
+      "path": "installer-department",
       "agents": ["INSTALLER-ARCHITECT", "PACKAGER", "DISTRIBUTOR", "VERSIONER", "UPDATER"],
+      "assignedModel": "qwen2.5-coder:32b",
       "status": "partial"
     },
-    "slash-commands": {
-      "path": "../slash-commands",
+    "slash_commands": {
+      "path": "slash-commands",
       "agents": ["CommandParser"],
+      "assignedModel": "qwen3-coder:30b",
       "status": "operational"
     },
-    "scripts": {
-      "path": "../scripts",
+    "security_admin": {
+      "path": "scripts",
+      "agents": [],
+      "assignedModel": "qwen2.5-coder:32b",
       "role": "Admin provisioning, database migrations, security auth, system maintenance",
       "status": "operational"
     },
-    "ois": {
-      "path": "../ois",
+    "utility_ops": {
+      "path": "ois",
+      "agents": [],
+      "assignedModel": "glm4:9b",
       "role": "CLI binary, plugin system, intelligence layer, agent orchestration",
       "status": "scaffold"
     }

@@ -39,3 +39,15 @@ Zero placeholders, stubs, or dummy data. Every deliverable must be fully impleme
 - `run-remote-glm` — Aider + glm4:9b (rapid lightweight)
 - `run-local` — Aider + local Ollama (embeddings only now)
 - `run-claude` — Claude Code direct (Anthropic cloud)
+
+## Autonomous Multi-Agent Delegation Protocol
+When presented with a high-level project request, refactor, or multi-file task:
+1. **Decompose by Department:** Identify which departments own the affected files using `config/agent-registry.json`.
+2. **Execute Worker Passes:** Use the dispatch runner to assign concrete sub-tasks to the dedicated models:
+   ```
+   ./bin/neo-dispatch.sh <department> "<explicit implementation instructions>"
+   ```
+3. **Audit & Enforce:** After each worker pass:
+   - Check `git diff` for zero placeholders, no mock functions, and syntax integrity.
+   - Run tests or type-checks for that department.
+4. **Aggregate & Finalize:** Coordinate cross-department imports, verify full system compilation, and produce an atomic git commit.
