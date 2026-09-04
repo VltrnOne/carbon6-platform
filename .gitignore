@@ -69,3 +69,4 @@ temp/
 # start-*.sh
 # build-*.sh
 # deploy-*.sh
+.aider*
