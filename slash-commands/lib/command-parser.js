@@ -260,46 +260,6 @@ class CommandParser {
     }
   }
 
-    if (!parsed.valid) {
-      console.error(chalk.red(`Error: ${parsed.error}`));
-
-      if (parsed.suggestions.length > 0) {
-        console.log(chalk.gray('\nDid you mean:'));
-        parsed.suggestions.forEach(suggestion => {
-          console.log(chalk.blue(`  /${suggestion.command}`) + chalk.gray(` - ${suggestion.description || ''}`));
-        });
-      }
-
-      return {
-        success: false,
-        error: parsed.error
-      };
-    }
-
-    console.log(chalk.blue(`\n╔═══════════════════════════════════════════════════════════╗`));
-    console.log(chalk.blue(`║`) + chalk.white(`  Invoking: ${parsed.agent}`.padEnd(57)) + chalk.blue(`║`));
-    console.log(chalk.blue(`║`) + chalk.gray(`  Tier: ${parsed.tier}`.padEnd(57)) + chalk.blue(`║`));
-    console.log(chalk.blue(`╚═══════════════════════════════════════════════════════════╝\n`));
-
-    try {
-      const result = await this.invokeAgent(parsed.agent, parsed.args);
-      return {
-        success: true,
-        agent: parsed.agent,
-        command: parsed.command,
-        args: parsed.args,
-        tier: parsed.tier,
-        result
-      };
-    } catch (error) {
-      console.error(chalk.red(`Error: ${error.message}`));
-      return {
-        success: false,
-        error: error.message
-      };
-    }
-  }
-
   /**
    * Display help
    * @param {string} topic - Optional help topic
