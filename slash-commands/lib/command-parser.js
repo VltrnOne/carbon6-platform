@@ -7,7 +7,8 @@ const registry = require('../command-registry.json');
 const chalk = require('chalk');
 
 class CommandParser {
-  constructor() {
+  constructor(sdk) {
+    this.sdk = sdk;
     this.registry = registry;
     this.commandMap = this.buildCommandMap();
     this.aliasMap = this.buildAliasMap();
@@ -240,16 +241,63 @@ class CommandParser {
     console.log(chalk.blue(`║`) + chalk.gray(`  Tier: ${parsed.tier}`.padEnd(57)) + chalk.blue(`║`));
     console.log(chalk.blue(`╚═══════════════════════════════════════════════════════════╝\n`));
 
-    // TODO: Actual agent invocation via OiS or Council API
-    // For now, return placeholder
-    return {
-      success: true,
-      agent: parsed.agent,
-      command: parsed.command,
-      args: parsed.args,
-      tier: parsed.tier,
-      message: `Command would be executed: ${parsed.agent} - ${parsed.args}`
-    };
+    try {
+      const result = await this.invokeAgent(parsed.agent, parsed.args);
+      return {
+        success: true,
+        agent: parsed.agent,
+        command: parsed.command,
+        args: parsed.args,
+        tier: parsed.tier,
+        result
+      };
+    } catch (error) {
+      console.error(chalk.red(`Error: ${error.message}`));
+      return {
+        success: false,
+        error: error.message
+      };
+    }
+  }
+
+    if (!parsed.valid) {
+      console.error(chalk.red(`Error: ${parsed.error}`));
+
+      if (parsed.suggestions.length > 0) {
+        console.log(chalk.gray('\nDid you mean:'));
+        parsed.suggestions.forEach(suggestion => {
+          console.log(chalk.blue(`  /${suggestion.command}`) + chalk.gray(` - ${suggestion.description || ''}`));
+        });
+      }
+
+      return {
+        success: false,
+        error: parsed.error
+      };
+    }
+
+    console.log(chalk.blue(`\n╔═══════════════════════════════════════════════════════════╗`));
+    console.log(chalk.blue(`║`) + chalk.white(`  Invoking: ${parsed.agent}`.padEnd(57)) + chalk.blue(`║`));
+    console.log(chalk.blue(`║`) + chalk.gray(`  Tier: ${parsed.tier}`.padEnd(57)) + chalk.blue(`║`));
+    console.log(chalk.blue(`╚═══════════════════════════════════════════════════════════╝\n`));
+
+    try {
+      const result = await this.invokeAgent(parsed.agent, parsed.args);
+      return {
+        success: true,
+        agent: parsed.agent,
+        command: parsed.command,
+        args: parsed.args,
+        tier: parsed.tier,
+        result
+      };
+    } catch (error) {
+      console.error(chalk.red(`Error: ${error.message}`));
+      return {
+        success: false,
+        error: error.message
+      };
+    }
   }
 
   /**
@@ -302,6 +350,20 @@ class CommandParser {
         });
       }
     }
+  }
+
+  /**
+   * Invoke an agent by ID with a payload
+   * @param {string} agentId - Agent ID
+   * @param {string} payload - Payload for the agent
+   * @returns {Promise} Execution result
+   */
+  async invokeAgent(agentId, payload) {
+    // Assuming there is an SDK instance available
+    if (!this.sdk) {
+      throw new Error('SDK instance not available');
+    }
+    return this.sdk.invokeAgent(agentId, payload);
   }
 
   /**
