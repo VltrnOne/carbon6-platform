@@ -12,16 +12,14 @@ map-tokens: 512
 # Streaming
 stream: true
 
-# Suppress model compatibility warnings (Ollama models not in aider's known list)
+# Suppress all prompts and warnings
 no-show-model-warnings: true
-
-# Auto-commit with conventional commit format
+yes-always: true
+no-gitignore: true
 auto-commits: true
-attribute-author: false
-attribute-committer: false
+no-suggest-shell-commands: true
 
 # File handling
-gitignore: true
 aiderignore: .aiderignore
 
 # Editor behavior
