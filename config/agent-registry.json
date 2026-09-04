@@ -14,46 +14,44 @@
       "cost": "paid"
     },
     "tier1": {
-      "label": "Heavy Coders (Lightning L40S GPU)",
+      "label": "Heavy Coder (Vast.ai GPU 0 — RTX 3090 24GB)",
       "endpoint": "http://localhost:11437/v1",
-      "tunnel": "ssh -L 11437:127.0.0.1:11434 council-gpu",
-      "gpu": "NVIDIA L40S 46GB VRAM",
+      "tunnel": "ssh -N -L 11437:127.0.0.1:11434 -L 11438:127.0.0.1:11435 vast-gpu",
+      "gpu": "NVIDIA RTX 3090 24GB (GPU 0)",
       "models": {
         "qwen2.5-coder:32b": {
           "params": "32.8B",
           "quant": "Q4_K_M",
           "disk": "19.9GB",
-          "vram": "~28GB",
-          "throughput": "18.7 tok/s",
+          "vram": "~22GB",
           "context": 32768,
           "role": "Deep architectural code generation, multi-file refactoring, strict diff-generation",
           "aiderAlias": "run-remote-qwen25"
-        },
-        "qwen3-coder:30b": {
-          "params": "30.5B (MoE)",
-          "quant": "Q4_K_M",
-          "disk": "18.6GB",
-          "vram": "~21GB",
-          "throughput": "53.7 tok/s",
-          "context": 262144,
-          "role": "Advanced code reasoning, complex syntax validation, cross-module integration",
-          "aiderAlias": "run-remote-qwen3"
         }
       }
     },
     "tier2": {
-      "label": "High-Speed Specialist (Lightning L40S GPU)",
-      "endpoint": "http://localhost:11437/v1",
+      "label": "Fast Specialist (Vast.ai GPU 1 — RTX 3090 24GB)",
+      "endpoint": "http://localhost:11438/v1",
+      "gpu": "NVIDIA RTX 3090 24GB (GPU 1)",
       "models": {
         "glm4:9b": {
           "params": "9.4B",
           "quant": "Q4_0",
           "disk": "5.5GB",
           "vram": "~7GB",
-          "throughput": "74.8 tok/s",
           "context": 131072,
           "role": "Rapid deterministic utility generation, commit messages, quick syntax transforms",
           "aiderAlias": "run-remote-glm"
+        },
+        "qwen2.5-coder:14b": {
+          "params": "14.8B",
+          "quant": "Q4_K_M",
+          "disk": "9.0GB",
+          "vram": "~12GB",
+          "context": 32768,
+          "role": "Balanced coding, cross-module integration, syntax validation",
+          "aiderAlias": "run-remote-14b"
         }
       }
     }
@@ -83,7 +81,8 @@
     "slash_commands": {
       "path": "slash-commands",
       "agents": ["CommandParser"],
-      "assignedModel": "qwen3-coder:30b",
+      "assignedModel": "qwen2.5-coder:14b",
+      "port": 11438,
       "status": "operational"
     },
     "security_admin": {
@@ -97,6 +96,7 @@
       "path": "ois",
       "agents": [],
       "assignedModel": "glm4:9b",
+      "port": 11438,
       "role": "CLI binary, plugin system, intelligence layer, agent orchestration",
       "status": "scaffold"
     }

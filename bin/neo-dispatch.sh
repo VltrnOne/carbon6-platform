@@ -30,45 +30,33 @@ fi
 # Extract model and target path from registry
 MODEL=$(python3 -c "import json; reg=json.load(open('$REGISTRY')); print(reg['departments']['$DEPT']['assignedModel'])" 2>/dev/null || true)
 TARGET_PATH=$(python3 -c "import json; reg=json.load(open('$REGISTRY')); print(reg['departments']['$DEPT']['path'])" 2>/dev/null || true)
+DEPT_PORT=$(python3 -c "import json; reg=json.load(open('$REGISTRY')); print(reg['departments']['$DEPT'].get('port', 11437))" 2>/dev/null || echo "11437")
 
 if [[ -z "$MODEL" || -z "$TARGET_PATH" ]]; then
   echo "Error: Unknown department '$DEPT' in $REGISTRY."
   exit 1
 fi
 
-# Ensure SSH tunnel is up (Lightning GPU → VPS fallback)
-if ! lsof -i :$PORT &>/dev/null || ! curl -s --max-time 3 http://localhost:${PORT}/api/tags &>/dev/null; then
-  pkill -f "ssh.*${PORT}.*11434" 2>/dev/null
-  sleep 0.5
-  # Try Lightning GPU first
-  if ssh -o ConnectTimeout=5 -o BatchMode=yes -f -N -L ${PORT}:127.0.0.1:11434 council-gpu 2>/dev/null; then
+PORT=$DEPT_PORT
+
+# Ensure dual SSH tunnel to Vast.ai is up
+for p in 11437 11438; do
+  if ! lsof -i :$p &>/dev/null || ! curl -s --max-time 3 http://localhost:${p}/api/tags &>/dev/null; then
+    pkill -f "ssh.*vast-gpu" 2>/dev/null
+    sleep 0.5
+    echo "[tunnel] Establishing dual tunnel to Vast.ai (2x RTX 3090)..."
+    ssh -o ConnectTimeout=10 -f -N \
+      -L 11437:127.0.0.1:11434 \
+      -L 11438:127.0.0.1:11435 \
+      vast-gpu 2>/dev/null
     sleep 1
-    curl -s --max-time 3 http://localhost:${PORT}/api/tags &>/dev/null && echo "[tunnel] Lightning GPU connected" || {
-      pkill -f "ssh.*${PORT}.*council-gpu" 2>/dev/null
-      echo "[tunnel] Lightning offline — falling back to VPS..."
-      ssh -o ConnectTimeout=5 -f -N -L ${PORT}:127.0.0.1:11434 n8n-vps
-      sleep 1
-    }
-  else
-    echo "[tunnel] Lightning unreachable — falling back to VPS..."
-    ssh -o ConnectTimeout=5 -f -N -L ${PORT}:127.0.0.1:11434 n8n-vps
-    sleep 1
+    break
   fi
-fi
+done
 
 if ! curl -s --max-time 5 http://localhost:${PORT}/api/tags &>/dev/null; then
-  echo "Error: No remote Ollama reachable on :${PORT}."
+  echo "Error: Ollama not reachable on :${PORT}."
   exit 1
-fi
-
-# Detect if requested model is available, fallback to best available
-AVAILABLE=$(curl -s http://localhost:${PORT}/api/tags | python3 -c "import sys,json; print(' '.join(m['name'] for m in json.load(sys.stdin)['models']))" 2>/dev/null)
-if ! echo "$AVAILABLE" | grep -q "$MODEL"; then
-  FALLBACK=$(echo "$AVAILABLE" | tr ' ' '\n' | grep -E "coder|qwen|glm" | head -1)
-  if [[ -n "$FALLBACK" ]]; then
-    echo "[model] ${MODEL} not available — using ${FALLBACK}"
-    MODEL="$FALLBACK"
-  fi
 fi
 
 echo ""
@@ -92,7 +80,7 @@ fi
 
 # Execute non-interactive worker pass via Aider over the L40S tunnel
 aider \
-  --openai-api-base http://localhost:${PORT}/v1 \
+  --openai-api-base http://localhost:${DEPT_PORT}/v1 \
   --openai-api-key ollama \
   --model "openai/${MODEL}" \
   --no-show-model-warnings \
