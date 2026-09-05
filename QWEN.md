@@ -106,6 +106,32 @@ If verification fails, execute automated recovery, then re-verify.
 
 ---
 
+# DOMAIN SEMANTICS — ARTIFACT RESOLUTION
+NEVER search for colloquial business terms as literal file extensions. Map intents to real types:
+
+**Video / Reel / Short / Clip:**
+- File types: `.mp4`, `.mov`, `.webm`, `.mkv`, `.avi`
+- Locations: `outputs/`, `exports/`, `rendered/`, `reels/`, `videos/`, `assets/`, or pipeline script output dirs
+- Fast find: `shell` → `ls -lt /path/**/*.mp4 2>/dev/null | head -5` or `find /path -name '*.mp4' -maxdepth 3 -newer /path/some-ref 2>/dev/null`
+- Also check: rendering logs, caption files (`.srt`, `.vtt`), transcript JSONs, pipeline state files
+- Pipeline tools: Remotion, FFmpeg, LTX, SadTalker, Arcads, Veo, Seedance
+
+**Contract / Token / Deploy:**
+- File types: `.sol`, `.rs`, `artifacts/`, `deployments/`, ABI JSONs
+- Tools: Hardhat (`hardhat.config.*`), Anchor, Foundry
+
+**Post / Schedule / Campaign:**
+- Content queues, `.json` dispatch logs, cron/launchd jobs, workflow state DBs
+- Check: `crontab -l`, `launchctl list`, pipeline scripts
+
+**Note / Doc / Decision:**
+- Obsidian vault markdown (`.md`), brain index nodes
+- Search: `mdfind -onlyin <vault> "keyword"` or `neo-brain-query.sh`
+
+**Build / Deploy / Ship:**
+- Check: `package.json` scripts, `Makefile`, `Dockerfile`, CI configs (`.github/workflows/`)
+- Verify: `git log --oneline -5`, `git status`, running processes
+
 # HARD CONSTRAINTS — NEVER VIOLATE
 - NEVER open `file:///` paths in browser when a web service was requested
 - NEVER fabricate GitHub URLs or endpoints from folder names
