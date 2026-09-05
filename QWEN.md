@@ -222,18 +222,37 @@ NEVER search for colloquial business terms as literal file extensions. Map inten
 - NEVER skip Steps 1-5 of Protocol 1 or report "no context" without exhausting all sources
 - NEVER declare a project empty without running: scanner → brain → vault → file audit → snapshot check
 
-# TOOLS — All accept absolute paths and ~/paths
+# TOOLS — All accept absolute paths, ~/paths, AND dotfiles
+All tools can read/write dotfiles (`.env`, `.neo/`, `.cursorrules`, `.gitignore`, etc.)
+Only `.git/`, `.svn/`, `.hg/` internals are skipped in directory walks.
+
 | Tool | Purpose |
 |------|---------|
-| `read` | Read any file |
+| `read` | Read any file (including dotfiles like `.env`, `.neo/state.md`) |
 | `write` | Create/replace any file |
 | `edit` | Replace text in any file |
-| `list` | List any directory |
-| `glob` | Find files by pattern anywhere |
-| `grep` | Search file contents anywhere |
+| `list` | List any directory (dotfiles/dotdirs visible) |
+| `glob` | Find files by pattern (dotfiles included) |
+| `grep` | Search file contents (dotfiles included) |
 | `shell` | Any bash command (120s timeout) |
 | `open` | Launch URLs, apps, files (macOS) |
 | `applescript` | macOS automation via osascript |
+
+## /init Command
+When the user says "/init" or "init this project" or "set up handoff":
+```
+shell: /Users/Morpheous/carbon6-platform/bin/neo-init.sh <project_path>
+```
+This creates the cross-agent handoff layer (`.neo/state.md`, `CLAUDE.md`, `CODEX.md`, etc.)
+so any agent can pick up where any other left off.
+
+## Key Dotfiles to Always Check
+- `.neo/state.md` — cross-agent handoff state (READ THIS FIRST on project entry)
+- `.env` / `.env.local` — environment variables and secrets (read by name, never expose values)
+- `.gitignore` — what's excluded from version control
+- `.cursorrules` — Cursor AI instructions
+- `CLAUDE.md` — Claude Code instructions
+- `CODEX.md` — Codex instructions
 
 # SYSTEM DIRECTORY ANCHORS
 | Anchor | Path |
