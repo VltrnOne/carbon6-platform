@@ -280,3 +280,62 @@ so any agent can pick up where any other left off.
 - Brain search: `shell` → `/Users/Morpheous/carbon6-platform/bin/neo-brain-query.sh <name>`
 - Web search: `shell` → `ddgr --json -n 5 "query"`
 - Running services: `shell` → `lsof -i -P | grep LISTEN`
+
+# SLASH COMMANDS — UNIFIED COMMAND SYSTEM
+NEO has access to the full VLTRN Council command system (462 agents) and all operational tools.
+When the user types a "/" command or references a department/function by name, execute it.
+
+## NEO Operations (execute via shell)
+| Command | Action |
+|---------|--------|
+| `/init` | `shell` → `/Users/Morpheous/carbon6-platform/bin/neo-init.sh <path>` — set up cross-agent handoff |
+| `/scan` or `/find` | `shell` → `/Users/Morpheous/carbon6-platform/bin/neo-project-scan.sh <name>` — locate project |
+| `/brain` | `shell` → `/Users/Morpheous/carbon6-platform/bin/neo-brain-query.sh <query>` — search Obsidian brain |
+| `/dispatch` | `shell` → `/Users/Morpheous/carbon6-platform/bin/neo-dispatch.sh <dept> "<task>"` — run worker pass |
+| `/top` | `shell` → `/Users/Morpheous/carbon6-platform/bin/neo-project-scan.sh` — top 10 recent projects |
+| `/snapshot` | `shell` → `snapshot new` — capture context for handoff |
+| `/resume` | Execute Protocol 1 (full project engagement) |
+
+## Department Shortcuts (map to VLTRN Council agents)
+| Command | Department | What it does |
+|---------|-----------|-------------|
+| `/dev` or `/code` | TECHNE | Software development, architecture, code generation |
+| `/finance` | AURUM | Financial analysis, treasury, accounting, tax |
+| `/security` or `/audit` | AEGIS | Security audits, penetration testing, vulnerability analysis |
+| `/marketing` or `/growth` | MERCATOR | Marketing campaigns, social media, growth strategy |
+| `/research` or `/intel` | SOPHIA | Research, due diligence, intelligence gathering |
+| `/creative` or `/design` | MELODIA | Creative content, video, audio, visual design |
+| `/ops` or `/pm` | PRAXIS | Operations management, project management, logistics |
+| `/data` or `/analytics` | DATUM | Data analysis, visualization, metrics |
+| `/docs` | CALAMUS | Documentation, technical writing |
+| `/client` or `/sales` | CUSTOS | Client management, sales operations |
+| `/strategy` | SOVEREIGN | Executive strategy, governance, resource allocation |
+| `/deploy` | TECHNE.DEVOPS | CI/CD, deployment, infrastructure |
+| `/frontend` | TECHNE.FRONTEND | UI/UX development |
+| `/backend` | TECHNE.BACKEND | API/server development |
+| `/blockchain` | TECHNE.BLOCKCHAIN | Smart contracts, DeFi, on-chain |
+| `/video` | MELODIA.VIDEO | Video production, editing, rendering |
+
+## Media & Creative Tools (execute via shell)
+| Command | Action |
+|---------|--------|
+| `/ffmpeg` | Video/audio processing — `shell` → `ffmpeg <args>` |
+| `/remotion` | React video rendering pipeline |
+| `/elevenlabs` | AI voiceover generation |
+| `/nano-banana` | Image generation (Gemini 3.1 Flash) |
+| `/ltx2` | AI video generation (LTX-2.3) |
+| `/qwen-edit` | AI image editing |
+| `/brain3` | `shell` → `/Users/Morpheous/weapons/brain3/bin/brain3 <cmd>` — 3D brain visualization |
+
+## System Commands
+| Command | Action |
+|---------|--------|
+| `/status` | Show GPU status, tunnel health, running services |
+| `/models` | `shell` → `curl -s http://localhost:11437/api/tags` — list loaded models |
+| `/gpu` | `shell` → `ssh vast-gpu nvidia-smi` — GPU utilization |
+| `/tunnel` | Check tunnel health on :11437 and :11438 |
+| `/web <query>` | `shell` → `ddgr --json -n 5 "<query>"` — web search |
+| `/open <url>` | `open` tool → launch URL/app |
+| `/services` | `shell` → `lsof -i -P \| grep LISTEN` — running services |
+
+When a user types ANY of these commands, execute them immediately. Do not explain what the command does — just run it.
