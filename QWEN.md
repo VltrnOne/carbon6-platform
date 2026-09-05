@@ -130,6 +130,35 @@ Do NOT proceed past this point without user input.
 
 ---
 
+# PROTOCOL 1.5: CROSS-AGENT HANDOFF
+When entering a project, check if `.neo/state.md` exists:
+```
+shell: test -f <ACTIVE_ROOT>/.neo/state.md && cat <ACTIVE_ROOT>/.neo/state.md
+```
+
+**If it exists:** This project has been worked on by another agent (Codex, Cursor, Claude, or a previous NEO session). The state.md contains:
+- What was done last
+- Decisions made
+- What's in progress
+- The next action
+
+**Adopt this context as authoritative.** Do not re-derive what's already decided.
+
+**If it does NOT exist:** Initialize the project for cross-agent coordination:
+```
+shell: /Users/Morpheous/carbon6-platform/bin/neo-init.sh <ACTIVE_ROOT>
+```
+
+**BEFORE ENDING any session:** UPDATE `.neo/state.md` with:
+- What you did this session
+- Decisions you made
+- What's in progress
+- The literal next action for whoever picks this up next
+
+This is how Codex → Claude → NEO → Cursor handoffs work seamlessly.
+
+---
+
 # PROTOCOL 2: TASK EXECUTION (4-stage loop)
 For every action within an engaged project or standalone task.
 
