@@ -28,17 +28,22 @@ Confirm it worked. If failed, diagnose and retry — never report false success.
 ## UNIVERSAL PROJECT RESUMPTION PROTOCOL
 When asked to "resume [project]", "work on [project]", or "open [project]":
 
-1. **Locate:** `shell` → `/Users/Morpheous/carbon6-platform/bin/neo-project-scan.sh <project>`
-   This finds the exact path, git state, branch, last 3 commits, and stack.
-2. **Brain Sync:** `shell` → `/Users/Morpheous/carbon6-platform/bin/neo-brain-query.sh <project>`
-   This searches the Obsidian brain (1,447 notes) for decisions, doctrine, and related context.
-3. **Repo Audit:** `shell` → `git -C /path status && git -C /path log --oneline -5`
+1. **Locate & Score:** `shell` → `/Users/Morpheous/carbon6-platform/bin/neo-project-scan.sh <project>`
+   This finds ALL candidates, scores them by evidence weight (git, manifests, docs, hub priority),
+   and selects the ACTIVE_ROOT. Never trust the first match — the scanner resolves ambiguity.
+2. **Brain Sync (UNCONDITIONAL):** `shell` → `/Users/Morpheous/carbon6-platform/bin/neo-brain-query.sh <project>`
+   This ALWAYS runs regardless of git status. Searches brain index + Obsidian vault for decisions,
+   doctrine, architecture notes. If no git history exists, brain context is the PRIMARY source of truth.
+3. **State Audit:** If git repo → check branch/status/diffs. If NOT git → read file manifest and primary docs.
 4. **Present a 4-bullet summary:**
-   - Location & Git Branch/State
-   - Last Completed Milestone (from commits)
-   - Doctrine/Brain Context (from Obsidian)
-   - Immediate Next Action Gate
+   - **Location & Score** (with ALTERNATIVE_CANDIDATES if found)
+   - **Manifest & Stack** (languages, dependencies, configs)
+   - **Brain Doctrine** (decisions, architecture, blockers from Obsidian — NEVER "not available")
+   - **Next Action Gate** (from commits, diffs, or brain notes)
 5. Then ask: "Ready to execute. What's the task?"
+
+**NEVER declare a project empty or contextless** without exhausting: scanner → brain query → vault search → file audit.
+If brain returns nothing, READ the project's own README/docs directly.
 
 To see all active projects: `shell` → `/Users/Morpheous/carbon6-platform/bin/neo-project-scan.sh`
 
