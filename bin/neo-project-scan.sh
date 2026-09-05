@@ -88,7 +88,7 @@ score_candidate() {
 # --- Find ALL candidates for a name across all hubs ---
 find_candidates() {
   local name="$1"
-  local candidates=()
+  local candidates=("")  # seed with empty to avoid unbound
 
   for hub in "${SEARCH_HUBS[@]}"; do
     [[ ! -d "$hub" ]] && continue
@@ -109,16 +109,29 @@ find_candidates() {
       $already || candidates+=("$(score_candidate "$full" "$hub")")
     done < <(ls -1 "$hub" 2>/dev/null | grep -i "^${name}" | grep -iv "^${name}$")
 
-    # Substring match — only if no exact/prefix hits yet
-    if [[ ${#candidates[@]} -eq 0 ]]; then
-      while IFS= read -r match; do
-        [[ -d "$hub/$match" ]] && candidates+=("$(score_candidate "$hub/$match" "$hub")")
-      done < <(ls -1 "$hub" 2>/dev/null | grep -i "$name")
-    fi
+    # Substring match
+    while IFS= read -r match; do
+      local full="$hub/$match"
+      [[ -d "$full" ]] || continue
+      local already=false
+      for c in "${candidates[@]:-}"; do
+        [[ -n "$c" && "$c" == *"|$full|"* ]] && already=true && break
+      done
+      $already || candidates+=("$(score_candidate "$full" "$hub")")
+    done < <(ls -1 "$hub" 2>/dev/null | grep -i "$name" | grep -iv "^${name}$")
   done
 
-  # Sort by score descending
-  printf '%s\n' "${candidates[@]}" | sort -t'|' -k1 -rn
+  # Spotlight fallback — if hub scan found nothing, search the whole drive
+  if [[ ${#candidates[@]} -eq 0 ]]; then
+    while IFS= read -r match; do
+      [[ -d "$match" ]] || continue
+      local parent=$(dirname "$match")
+      candidates+=("$(score_candidate "$match" "$parent")")
+    done < <(mdfind "kMDItemFSName == '${name}*'c && kMDItemContentType == 'public.folder'" 2>/dev/null | head -5)
+  fi
+
+  # Sort by score descending, filter out the empty seed
+  printf '%s\n' "${candidates[@]}" | grep -v '^$' | sort -t'|' -k1 -rn
 }
 
 # --- Full audit of a directory ---
@@ -211,9 +224,21 @@ elif [[ "$target" == "--all" ]]; then
 else
   candidates=$(find_candidates "$target")
   if [[ -z "$candidates" ]]; then
-    echo "Error: No candidates found for '$target'."
-    echo "Searched: ${SEARCH_HUBS[*]}"
-    exit 1
+    echo "=== PROJECT: $target ==="
+    echo "Status: NOT FOUND on this machine"
+    echo ""
+    echo "Searched:"
+    for hub in "${SEARCH_HUBS[@]}"; do echo "  - $hub/"; done
+    echo "  - Spotlight (mdfind)"
+    echo ""
+    echo "This project does not exist locally. Possible actions:"
+    echo "  - Clone it from a remote (git clone <url>)"
+    echo "  - Create it (mkdir /Users/Morpheous/$target)"
+    echo "  - Check spelling or try a different name"
+    echo ""
+    echo "Similar projects on disk:"
+    ls /Users/Morpheous/ 2>/dev/null | grep -i "${target:0:4}" | head -5 || echo "  (none)"
+    exit 0
   fi
 
   count=$(echo "$candidates" | wc -l | tr -d ' ')
