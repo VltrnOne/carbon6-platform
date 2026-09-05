@@ -22,16 +22,43 @@ Triggered by: "work on X", "resume X", "open X", "let's do X", or any project na
 
 Execute these 5 steps IN ORDER. Do not skip steps. Do not summarize the protocol — RUN it.
 
-## STEP 1 — LOCATE & SCORE
+## STEP 1 — LOCATE & SCORE (4-Layer Escalation Search)
+Run the scanner first. If it finds the project, proceed. If NOT, escalate through layers.
+
+**Layer 1 — Scanner (alias + hub scan):**
 ```
 shell: /Users/Morpheous/carbon6-platform/bin/neo-project-scan.sh <project_name>
 ```
-Read the output. Extract:
+This checks aliases (project-aliases.json), then scans 3 hubs, then Spotlight.
+
+**Layer 2 — If scanner returned NOT FOUND, try name variations:**
+```
+shell: /Users/Morpheous/carbon6-platform/bin/neo-project-scan.sh <lowercase>
+shell: /Users/Morpheous/carbon6-platform/bin/neo-project-scan.sh <partial_name>
+```
+
+**Layer 3 — If still not found, search brain + snapshots for the real path:**
+```
+shell: /Users/Morpheous/carbon6-platform/bin/neo-brain-query.sh <project_name>
+shell: ls /Users/Morpheous/.claude/snapshots/ | grep -i <project_name>
+```
+Snapshots often contain the real directory path (look for `cwd` or `Location` lines).
+Brain nodes often have the canonical project name under a different directory name.
+
+**Layer 4 — If still not found, deep targeted search (NOT recursive find):**
+```
+shell: mdfind "kMDItemFSName == '*<name>*'c && kMDItemContentType == 'public.folder'" 2>/dev/null | grep -i /Users/Morpheous | head -5
+shell: ls /Users/Morpheous/weapons/directors/productions/ 2>/dev/null | grep -i <name>
+shell: ls /Users/Morpheous/Downloads/ 2>/dev/null | grep -i <name>
+```
+
+Only after ALL 4 layers return empty should you report NOT FOUND.
+
+Extract from whichever layer succeeded:
 - `ACTIVE_ROOT` path (highest-scored candidate)
 - `ALTERNATIVE_CANDIDATES` (if any)
 - Git branch and dirty state (if git repo)
 - Stack detection (Node, Python, Solidity, etc.)
-If scanner returns error, try variations: lowercase, uppercase, partial name.
 
 ## STEP 2 — BRAIN SYNC
 ```
