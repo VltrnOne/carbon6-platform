@@ -153,7 +153,7 @@ find_candidates() {
   fi
 
   # Sort by score descending, filter out the empty seed
-  printf '%s\n' "${candidates[@]}" | grep -v '^$' | sort -t'|' -k1 -rn
+  printf '%s\n' "${candidates[@]}" | grep -v '^$' | sort -t'|' -k1 -rn || true
 }
 
 # --- Full audit of a directory ---
@@ -244,14 +244,25 @@ if [[ -z "$target" || "$target" == "--top" ]]; then
 elif [[ "$target" == "--all" ]]; then
   top_projects 50
 else
-  # Resolve alias first (e.g. "v-line" → "convoy-email-ops")
+  # Resolve alias first (e.g. "v-line" → "convoy-email-ops", "aria" → "weapons/directors/...")
   resolved=$(resolve_alias "$target")
   if [[ "$resolved" != "$target" ]]; then
     echo "[alias] '$target' → '$resolved'"
   fi
 
-  # Search with both the original name and the resolved alias
-  candidates=$(find_candidates "$resolved")
+  # If the alias resolved to a path with slashes, check it directly
+  candidates=""
+  if [[ "$resolved" == *"/"* ]]; then
+    direct="/Users/Morpheous/$resolved"
+    if [[ -d "$direct" ]]; then
+      candidates=$(score_candidate "$direct" "$(dirname "$direct")")
+    fi
+  fi
+
+  # Search hubs with the resolved name
+  if [[ -z "$candidates" ]]; then
+    candidates=$(find_candidates "$resolved")
+  fi
   if [[ -z "$candidates" && "$resolved" != "$target" ]]; then
     candidates=$(find_candidates "$target")
   fi
@@ -266,7 +277,7 @@ else
   done
   # Check compound snapshot names (e.g. "convoy-v-line")
   if [[ -z "$snapshot_dir" ]]; then
-    snap_match=$(ls /Users/Morpheous/.claude/snapshots/ 2>/dev/null | grep -i "$target" | head -1)
+    snap_match=$(ls /Users/Morpheous/.claude/snapshots/ 2>/dev/null | grep -i "$target" | head -1 || true)
     [[ -n "$snap_match" ]] && snapshot_dir="/Users/Morpheous/.claude/snapshots/$snap_match"
   fi
   if [[ -n "$snapshot_dir" ]]; then
