@@ -15,6 +15,28 @@ SEARCH_HUBS=(
   "/Users/Morpheous/weapons"
 )
 
+SCRIPT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+ALIAS_FILE="$SCRIPT_DIR/config/project-aliases.json"
+
+# Resolve aliases: product name → directory name
+resolve_alias() {
+  local name="$1"
+  if [[ -f "$ALIAS_FILE" ]]; then
+    local resolved
+    resolved=$(python3 -c "
+import json, sys
+aliases = json.load(open(sys.argv[1]))
+key = sys.argv[2].lower()
+print(aliases.get(key, ''))
+" "$ALIAS_FILE" "$name" 2>/dev/null)
+    if [[ -n "$resolved" ]]; then
+      echo "$resolved"
+      return
+    fi
+  fi
+  echo "$name"
+}
+
 # Hub priority bonuses (higher = more likely to be production)
 hub_bonus() {
   case "$1" in
@@ -222,7 +244,43 @@ if [[ -z "$target" || "$target" == "--top" ]]; then
 elif [[ "$target" == "--all" ]]; then
   top_projects 50
 else
-  candidates=$(find_candidates "$target")
+  # Resolve alias first (e.g. "v-line" → "convoy-email-ops")
+  resolved=$(resolve_alias "$target")
+  if [[ "$resolved" != "$target" ]]; then
+    echo "[alias] '$target' → '$resolved'"
+  fi
+
+  # Search with both the original name and the resolved alias
+  candidates=$(find_candidates "$resolved")
+  if [[ -z "$candidates" && "$resolved" != "$target" ]]; then
+    candidates=$(find_candidates "$target")
+  fi
+
+  # Also check snapshots for the original name
+  snapshot_dir=""
+  for snap_name in "$target" "$resolved" "$(echo "$target" | tr '[:upper:]' '[:lower:]')"; do
+    if [[ -d "/Users/Morpheous/.claude/snapshots/$snap_name" ]]; then
+      snapshot_dir="/Users/Morpheous/.claude/snapshots/$snap_name"
+      break
+    fi
+  done
+  # Check compound snapshot names (e.g. "convoy-v-line")
+  if [[ -z "$snapshot_dir" ]]; then
+    snap_match=$(ls /Users/Morpheous/.claude/snapshots/ 2>/dev/null | grep -i "$target" | head -1)
+    [[ -n "$snap_match" ]] && snapshot_dir="/Users/Morpheous/.claude/snapshots/$snap_match"
+  fi
+  if [[ -n "$snapshot_dir" ]]; then
+    echo "[snapshot] Found at: $snapshot_dir"
+    # If scanner found nothing, try to get the project path from the snapshot
+    if [[ -z "$candidates" ]]; then
+      snap_cwd=$(grep -m1 "cwd\|Location\|Path" "$snapshot_dir/latest.md" 2>/dev/null | grep -oE '/Users/[^ ]*' | head -1)
+      if [[ -n "$snap_cwd" && -d "$snap_cwd" ]]; then
+        echo "[snapshot] Project path from snapshot: $snap_cwd"
+        candidates=$(score_candidate "$snap_cwd" "$(dirname "$snap_cwd")")
+      fi
+    fi
+  fi
+
   if [[ -z "$candidates" ]]; then
     echo "=== PROJECT: $target ==="
     echo "Status: NOT FOUND on this machine"
