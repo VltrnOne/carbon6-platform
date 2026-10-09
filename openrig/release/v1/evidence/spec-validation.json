@@ -1,0 +1,14 @@
+{
+  "valid": true,
+  "openrig_version": "0.6.7",
+  "seats": [
+    "command-lead@carbon6-office",
+    "command-continuity@carbon6-office",
+    "office-front@carbon6-office",
+    "office-back@carbon6-office",
+    "delivery-builder@carbon6-office",
+    "delivery-verifier@carbon6-office"
+  ],
+  "launches": 0,
+  "scope": "official schema, AgentSpec resolution, profiles, required files and cwd existence"
+}

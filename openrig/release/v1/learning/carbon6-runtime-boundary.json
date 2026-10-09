@@ -1,0 +1,12 @@
+{
+  "id": "carbon6-runtime-boundary",
+  "lesson": "Run the package with Node 22 through openrig/rig.sh, isolate the runtime HOME from the global skill tree, keep CODEX_HOME explicit, and use the stdin-preserving SSH adapter for the SSH-only vltrn-brain queue endpoint.",
+  "provenance": [
+    "openrig/README.md at candidate commit",
+    "openrig/rig.sh at candidate commit",
+    "verified local and vltrn-brain activation evidence recorded 2026-10-09"
+  ],
+  "revision": 1,
+  "schema_version": 1,
+  "status": "accepted"
+}

@@ -1,0 +1,11 @@
+{
+  "artifact_revision": 1,
+  "candidate_sha": "5cf9a39f92c884c98a36e496c2f213906af8042f",
+  "replacement_rule": "The independent verifier replaces this record with its observed PASS or FAIL evidence. A builder-authored PASS is invalid.",
+  "required_live_host": "vltrn-brain",
+  "required_negative_case": "A packet with stale ancestry, changed candidate/evidence bytes, a revoked grant, or a self-approver is refused.",
+  "required_observer": "delivery-verifier@carbon6-office",
+  "required_outcome": "The deployed candidate reports exactly six declared seats running and startup-ready, accepts one bounded versioned queue slice, and returns an independently observed terminal result tied to this candidate.",
+  "schema_version": 1,
+  "verdict": "UNVERIFIED"
+}

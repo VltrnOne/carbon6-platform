@@ -1,0 +1,51 @@
+
+> @vltrn/slash-commands@1.0.0 test
+> jest --runInBand
+
+  console.log
+    
+    ╔═══════════════════════════════════════════════════════════╗
+
+      at CommandParser.log [as execute] (lib/command-parser.js:239:13)
+
+  console.log
+    ║  Invoking: WORKFLOW_CODE_REVIEW                         ║
+
+      at CommandParser.log [as execute] (lib/command-parser.js:240:13)
+
+  console.log
+    ║  Tier: L3-CONFIDENTIAL                                  ║
+
+      at CommandParser.log [as execute] (lib/command-parser.js:241:13)
+
+  console.log
+    ╚═══════════════════════════════════════════════════════════╝
+
+      at CommandParser.log [as execute] (lib/command-parser.js:242:13)
+
+PASS tests/openrig-adapter.test.js
+  ✓ dispatch preserves literal shell syntax through stdin and returns a queue receipt (56 ms)
+  ✓ workflow routes to its owner while preserving canonical workflow intent (72 ms)
+  ✓ parser preserves multiline payloads and resolves existing aliases (1 ms)
+  ✓ managed source wins and declared source is not forwarded (51 ms)
+  ✓ unmanaged caller must supply an honest declared source (9 ms)
+  ✓ unmapped commands fail unless an explicit destination is selected (52 ms)
+  ✓ custom route files override shipped mappings (51 ms)
+  ✓ refuse does not produce a success receipt or auto retry (52 ms)
+  ✓ malformed does not produce a success receipt or auto retry (50 ms)
+  ✓ mismatch does not produce a success receipt or auto retry (49 ms)
+  ✓ warning does not produce a success receipt or auto retry (52 ms)
+  ✓ lost response preserves retry identity and does not duplicate durable work (154 ms)
+  ✓ timeout gives an unknown-outcome recovery identity (154 ms)
+  ✓ missing rig executable is explicit (1 ms)
+  ✓ empty task rejected before calling rig (1 ms)
+  ✓ empty task rejected before calling rig (1 ms)
+  ✓ invalid request IDs and malformed route configuration fail locally (1 ms)
+  ✓ CLI exec and direct modes emit receipts and failure exit codes (514 ms)
+  ✓ SSH transport preserves stdin and runs the remote rig without shell-interpolating the task (103 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       19 passed, 19 total
+Snapshots:   0 total
+Time:        1.585 s, estimated 2 s
+Ran all test suites.

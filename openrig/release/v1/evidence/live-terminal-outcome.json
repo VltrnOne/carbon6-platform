@@ -1,0 +1,23 @@
+{
+  "artifact_revision": 1,
+  "candidate_sha": "5cf9a39f92c884c98a36e496c2f213906af8042f",
+  "observer": "delivery-verifier@carbon6-office",
+  "prior_denial": {
+    "qitem_id": "qitem-20261009111405-a3062b96",
+    "reason": "Four one-byte deployment mismatches were detected and refused before owner correction.",
+    "transition_id": 19
+  },
+  "schema_version": 1,
+  "source": {
+    "closure_reason": "no-follow-on",
+    "host": "vltrn-brain",
+    "identity_provenance": "transport:v1",
+    "kind": "openrig_queue_transition",
+    "qitem_id": "carbon6-release-5cf9a39-r1-reverify",
+    "state": "done",
+    "transition_at": "2026-10-09T11:21:47.034Z",
+    "transition_id": 23
+  },
+  "terminal_result": "Independent re-verification verdict PASS for assigned seven terminal gates, observed 2026-10-09T11:20:43Z through 11:21:20Z. Candidate 5cf9a39f92c884c98a36e496c2f213906af8042f; manifest artifact revision1 SHA256 2a9fa08762415cd748bf6ced4325e6287291ab8c91b61c54f2bea80ae594856f; grant grant-carbon6-release-5cf9a39-r1 revision1 SHA256 ded598457dba2e00dc5b5bb5657e665d6c92f5fa6e2d337741ea39ca76f5c762. Gate1 PASS: Python pathlib/read_bytes/hashlib.sha256 compared all37 manifest entries, raw hashes AND byte counts, mismatch count0; manifest hash matches. Project/mission/slice r1 source hashes remain exact as row; learning source hash matches. Gate2 PASS: rig ps --nodes --rig carbon6-office --json shows exactly six declared Codex running/startup-ready/lifecycle-running seats command.lead, command.continuity, delivery.builder, delivery.verifier, office.back, office.front. Gate3 PASS: tmux capture-pane -p on observed panes %33,%34,%35,%36,%37,%38 after closing warning panel shows no visible permission prompt; lead/continuity/builder/back/front normal input prompt, verifier working. Gate4 PASS: explicit tmux send-keys F2 to each of those six observed panes, capture-pane inspected exact Warnings panel; ALL SIX say No warnings, including verifier. Escape returned to original view; no settings changed. Gate5 PASS: node openrig/validate-packet.mjs openrig/release/v1/acceptance-packet.proposed.json openrig/release/v1/current-state.proposed.json openrig/release/v1 /home/brainops/.npm-global/lib/node_modules/@openrig/cli exits1 accepted=false for pending decision, absent ledger approval and UNVERIFIED/missing terminal PASS evidence; digest9e9cf01d5193abdc9451ff13253be459abeee7f0f205f31b567526044fffa8df. Gate6 PASS: node --input-type=module using exported validatePacket/loadSchemaValidator/packetDigest, in-memory structuredClone only: project revision2 against r1 returns accepted=false with Stale or missing objective: carbon6-autonomous-office; self-approval clone uses actor as approver, approved decision, matching in-memory approval mirror and intentionally overbroad approver grant, still accepted=false with Independent acceptance requires an approver other than the actor. Assertions pass; no files written. Gate7 PASS: explicit independent PASS recorded and own row closed. This PASS supersedes prior observed byte defect only for these fresh observations; prior denial retained. Limits: deployed root has no Git metadata, commit identity is manifest-declared; byte check proves listed deployed content only. Proposed state/grant is not protected authoritative export. This is independent evidence PASS, NOT a formal approval/accepted release; operator must generate evidence and obtain fresh trusted ledger/approval then validate final packet. No provider/external acceptance, future readiness, automatic recovery or undeclared content coverage claimed. Product/release files remain unchanged by verifier. Startup nudge on row was unroutable but manual prompt and live tmux bindings enabled pickup; no transport configuration changed.",
+  "verdict": "PASS"
+}

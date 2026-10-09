@@ -1,0 +1,118 @@
+TAP version 13
+# Subtest: accepts an exact candidate with current authority, independent ledger approval and terminal evidence
+ok 1 - accepts an exact candidate with current authority, independent ledger approval and terminal evidence
+  ---
+  duration_ms: 5.457291
+  type: 'test'
+  ...
+# Subtest: rejects schema drift instead of silently ignoring it
+ok 2 - rejects schema drift instead of silently ignoring it
+  ---
+  duration_ms: 0.993417
+  type: 'test'
+  ...
+# Subtest: parent revision change invalidates a descendant packet
+ok 3 - parent revision change invalidates a descendant packet
+  ---
+  duration_ms: 1.274125
+  type: 'test'
+  ...
+# Subtest: broken chain is refused even if local records match
+ok 4 - broken chain is refused even if local records match
+  ---
+  duration_ms: 1.666417
+  type: 'test'
+  ...
+# Subtest: changed artifact bytes invalidate approval
+ok 5 - changed artifact bytes invalidate approval
+  ---
+  duration_ms: 1.857208
+  type: 'test'
+  ...
+# Subtest: evidence for a different candidate refuses acceptance
+ok 6 - evidence for a different candidate refuses acceptance
+  ---
+  duration_ms: 2.368667
+  type: 'test'
+  ...
+# Subtest: passing unit evidence alone is not terminal completion
+ok 7 - passing unit evidence alone is not terminal completion
+  ---
+  duration_ms: 1.157417
+  type: 'test'
+  ...
+# Subtest: revocation defeats a previously valid approval
+ok 8 - revocation defeats a previously valid approval
+  ---
+  duration_ms: 0.898958
+  type: 'test'
+  ...
+# Subtest: wrong approver is refused even with a matching packet digest and ledger row
+ok 9 - wrong approver is refused even with a matching packet digest and ledger row
+  ---
+  duration_ms: 1.1125
+  type: 'test'
+  ...
+# Subtest: a self-authored approval absent from current ledger is refused
+ok 10 - a self-authored approval absent from current ledger is refused
+  ---
+  duration_ms: 0.9815
+  type: 'test'
+  ...
+# Subtest: self approval cannot pass an overbroad grant
+ok 11 - self approval cannot pass an overbroad grant
+  ---
+  duration_ms: 0.874834
+  type: 'test'
+  ...
+# Subtest: expired grant and unknown expiry fail closed
+ok 12 - expired grant and unknown expiry fail closed
+  ---
+  duration_ms: 0.974417
+  type: 'test'
+  ...
+# Subtest: withdrawn or revised learning invalidates its dependent packet
+ok 13 - withdrawn or revised learning invalidates its dependent packet
+  ---
+  duration_ms: 2.841708
+  type: 'test'
+  ...
+# Subtest: changing the proposed action without reapproval fails binding
+ok 14 - changing the proposed action without reapproval fails binding
+  ---
+  duration_ms: 0.991792
+  type: 'test'
+  ...
+# Subtest: path traversal and symlink escape are refused
+ok 15 - path traversal and symlink escape are refused
+  ---
+  duration_ms: 1.261959
+  type: 'test'
+  ...
+# Subtest: missing current maps fail closed
+ok 16 - missing current maps fail closed
+  ---
+  duration_ms: 0.659458
+  type: 'test'
+  ...
+# Subtest: whitespace-only outcome is not an acceptance criterion
+ok 17 - whitespace-only outcome is not an acceptance criterion
+  ---
+  duration_ms: 1.0305
+  type: 'test'
+  ...
+# Subtest: future decision and changed evidence are refused
+ok 18 - future decision and changed evidence are refused
+  ---
+  duration_ms: 1.715875
+  type: 'test'
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 221.615708

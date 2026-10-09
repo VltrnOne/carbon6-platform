@@ -1,0 +1,13 @@
+{
+  "artifact_revision": 1,
+  "candidate_object_type": "commit",
+  "candidate_sha": "5cf9a39f92c884c98a36e496c2f213906af8042f",
+  "candidate_tree": "682aac3541c742cb0aa21dc7f61ec0d5e6a5a9b5",
+  "checked_file_count": 37,
+  "manifest_file_count": 37,
+  "method": "Each path was read from the candidate Git object with git show and compared to the manifest SHA-256.",
+  "mismatches": [],
+  "schema_version": 1,
+  "verdict": "PASS",
+  "verified_at": "2026-10-09T11:09:25Z"
+}

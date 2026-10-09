@@ -1,0 +1,113 @@
+{
+  "artifact": {
+    "candidate_sha": "5cf9a39f92c884c98a36e496c2f213906af8042f",
+    "path": "artifact/carbon6-openrig-5cf9a39.manifest.json",
+    "revision": 1,
+    "sha256": "2a9fa08762415cd748bf6ced4325e6287291ab8c91b61c54f2bea80ae594856f"
+  },
+  "authority": {
+    "action": "internal.carbon6.release.accept.5cf9a39f92c884c98a36e496c2f213906af8042f",
+    "actor": "delivery-builder@carbon6-office",
+    "grant_id": "grant-carbon6-release-5cf9a39-r1",
+    "revision": 1,
+    "sha256": "ded598457dba2e00dc5b5bb5657e665d6c92f5fa6e2d337741ea39ca76f5c762"
+  },
+  "decision": {
+    "approver": "delivery-verifier@carbon6-office",
+    "decided_at": "2026-10-09T11:09:25Z",
+    "packet_sha256": "9e9cf01d5193abdc9451ff13253be459abeee7f0f205f31b567526044fffa8df",
+    "status": "pending"
+  },
+  "evidence": [
+    {
+      "artifact_revision": 1,
+      "candidate_sha": "5cf9a39f92c884c98a36e496c2f213906af8042f",
+      "kind": "test",
+      "path": "evidence/candidate-integrity.json",
+      "sha256": "a4e4fe856d7e5e2b064d0f75e91ba0a40d5230e742d6f79f279103c4bad799c2",
+      "verdict": "PASS"
+    },
+    {
+      "artifact_revision": 1,
+      "candidate_sha": "5cf9a39f92c884c98a36e496c2f213906af8042f",
+      "kind": "test",
+      "path": "evidence/packet-tests.tap",
+      "sha256": "5a9660243bb058ec7151df3f8739b82ec1102ff5a0bcdcf0e68df57fd1a2ad32",
+      "verdict": "PASS"
+    },
+    {
+      "artifact_revision": 1,
+      "candidate_sha": "5cf9a39f92c884c98a36e496c2f213906af8042f",
+      "kind": "test",
+      "path": "evidence/slash-tests.txt",
+      "sha256": "d3f6c1f471c9b8d9d9eeec1540b5d4ae21734bda9963b9848443d03db6527aee",
+      "verdict": "PASS"
+    },
+    {
+      "artifact_revision": 1,
+      "candidate_sha": "5cf9a39f92c884c98a36e496c2f213906af8042f",
+      "kind": "test",
+      "path": "evidence/slash-lint.txt",
+      "sha256": "1bfc9c75c7a351ff609e2dec9e268e6bf80871f7c1b3718ae0222949752d7e14",
+      "verdict": "PASS"
+    },
+    {
+      "artifact_revision": 1,
+      "candidate_sha": "5cf9a39f92c884c98a36e496c2f213906af8042f",
+      "kind": "test",
+      "path": "evidence/spec-validation.json",
+      "sha256": "2bb607da61fe056e5406a83fb21efccd80e781da69e8201701ddae966003c657",
+      "verdict": "PASS"
+    },
+    {
+      "artifact_revision": 1,
+      "candidate_sha": "5cf9a39f92c884c98a36e496c2f213906af8042f",
+      "kind": "terminal_outcome",
+      "path": "evidence/live-terminal-outcome.pending.json",
+      "sha256": "57c28f3c9ceb283b857df4f2867dbb1ba90a9f29edbf13d3a8e085682b78974b",
+      "verdict": "UNVERIFIED"
+    }
+  ],
+  "id": "carbon6-openrig-5cf9a39-r1",
+  "learning": [
+    {
+      "id": "carbon6-runtime-boundary",
+      "revision": 1,
+      "sha256": "98b499be25857677208f918d27d18bb1d21822a3316fe41aeb83960f844123ff"
+    }
+  ],
+  "objective_chain": [
+    {
+      "id": "carbon6-autonomous-office",
+      "kind": "project",
+      "parent_id": null,
+      "parent_revision": null,
+      "revision": 1,
+      "sha256": "867ae34547d9b39d8967cd070cd239d9b21ab270d20ae85a92173c78dbd53cd4"
+    },
+    {
+      "id": "carbon6-openrig-production-baseline",
+      "kind": "mission",
+      "parent_id": "carbon6-autonomous-office",
+      "parent_revision": 1,
+      "revision": 1,
+      "sha256": "b59d685f7b7f8cd6aa096abbd3ffa57814f0b8bd951c6199b14c627dffc700e7"
+    },
+    {
+      "id": "carbon6-openrig-release-5cf9a39-r1",
+      "kind": "slice",
+      "parent_id": "carbon6-openrig-production-baseline",
+      "parent_revision": 1,
+      "revision": 1,
+      "sha256": "57ddbc9478560dcf238886e53f3379b94f4a382fe47c3eb792eda5affd8eb5da"
+    }
+  ],
+  "schema_version": 1,
+  "terminal_gate": {
+    "criterion": "On vltrn-brain, all six declared seats are running/startup-ready; one queue item carrying this exact project, mission, slice, artifact revision and candidate reaches a terminal outcome; delivery-verifier independently records PASS; the negative stale-or-self-approved packet remains refused.",
+    "evidence_paths": [
+      "evidence/live-terminal-outcome.pending.json"
+    ],
+    "outcome": "Operate the exact Carbon6 baseline as a six-seat durable office and close one versioned slice with independent evidence."
+  }
+}

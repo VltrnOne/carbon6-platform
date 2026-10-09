@@ -1,0 +1,9 @@
+{
+  "id": "carbon6-autonomous-office",
+  "kind": "project",
+  "objective": "Operate Carbon6 as a durable six-seat front and back office with versioned work, independent verification, explicit authority, and evidence-bound acceptance.",
+  "parent_id": null,
+  "parent_revision": null,
+  "revision": 1,
+  "schema_version": 1
+}

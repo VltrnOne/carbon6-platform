@@ -1,0 +1,9 @@
+{
+  "id": "carbon6-openrig-production-baseline",
+  "kind": "mission",
+  "objective": "Release and independently verify the Carbon6 OpenRig package at the exact candidate commit before it becomes the production operating baseline.",
+  "parent_id": "carbon6-autonomous-office",
+  "parent_revision": 1,
+  "revision": 1,
+  "schema_version": 1
+}

@@ -1,0 +1,65 @@
+{
+  "approvals": {},
+  "artifacts": {
+    "artifact/carbon6-openrig-5cf9a39.manifest.json": {
+      "candidate_sha": "5cf9a39f92c884c98a36e496c2f213906af8042f",
+      "revision": 1,
+      "sha256": "2a9fa08762415cd748bf6ced4325e6287291ab8c91b61c54f2bea80ae594856f"
+    }
+  },
+  "grants": {
+    "grant-carbon6-release-5cf9a39-r1": {
+      "actions": [
+        "internal.carbon6.release.accept.5cf9a39f92c884c98a36e496c2f213906af8042f"
+      ],
+      "actors": [
+        "delivery-builder@carbon6-office"
+      ],
+      "approvers": [
+        "delivery-verifier@carbon6-office"
+      ],
+      "candidate_shas": [
+        "5cf9a39f92c884c98a36e496c2f213906af8042f"
+      ],
+      "enabled": true,
+      "expires_at": "2026-10-16T23:59:59Z",
+      "packet_ids": [
+        "carbon6-openrig-5cf9a39-r1"
+      ],
+      "revision": 1,
+      "sha256": "ded598457dba2e00dc5b5bb5657e665d6c92f5fa6e2d337741ea39ca76f5c762",
+      "status": "proposed"
+    }
+  },
+  "learning": {
+    "carbon6-runtime-boundary": {
+      "revision": 1,
+      "sha256": "98b499be25857677208f918d27d18bb1d21822a3316fe41aeb83960f844123ff",
+      "status": "accepted"
+    }
+  },
+  "objectives": {
+    "carbon6-autonomous-office": {
+      "kind": "project",
+      "parent_id": null,
+      "parent_revision": null,
+      "revision": 1,
+      "sha256": "867ae34547d9b39d8967cd070cd239d9b21ab270d20ae85a92173c78dbd53cd4"
+    },
+    "carbon6-openrig-production-baseline": {
+      "kind": "mission",
+      "parent_id": "carbon6-autonomous-office",
+      "parent_revision": 1,
+      "revision": 1,
+      "sha256": "b59d685f7b7f8cd6aa096abbd3ffa57814f0b8bd951c6199b14c627dffc700e7"
+    },
+    "carbon6-openrig-release-5cf9a39-r1": {
+      "kind": "slice",
+      "parent_id": "carbon6-openrig-production-baseline",
+      "parent_revision": 1,
+      "revision": 1,
+      "sha256": "57ddbc9478560dcf238886e53f3379b94f4a382fe47c3eb792eda5affd8eb5da"
+    }
+  },
+  "schema_version": 1
+}

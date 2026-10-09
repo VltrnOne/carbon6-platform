@@ -1,0 +1,9 @@
+{
+  "id": "carbon6-openrig-release-5cf9a39-r1",
+  "kind": "slice",
+  "objective": "Bind candidate 5cf9a39f92c884c98a36e496c2f213906af8042f to a complete file manifest, package checks, a live terminal outcome, and an independent ledger decision.",
+  "parent_id": "carbon6-openrig-production-baseline",
+  "parent_revision": 1,
+  "revision": 1,
+  "schema_version": 1
+}

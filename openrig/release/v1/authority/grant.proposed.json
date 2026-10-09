@@ -1,0 +1,28 @@
+{
+  "actions": [
+    "internal.carbon6.release.accept.5cf9a39f92c884c98a36e496c2f213906af8042f"
+  ],
+  "actors": [
+    "delivery-builder@carbon6-office"
+  ],
+  "approvers": [
+    "delivery-verifier@carbon6-office"
+  ],
+  "candidate_shas": [
+    "5cf9a39f92c884c98a36e496c2f213906af8042f"
+  ],
+  "constraints": [
+    "Internal Carbon6 baseline acceptance only.",
+    "No external sending, publishing, payment, infrastructure mutation, or credential action.",
+    "Approval requires exact candidate evidence and an independent verifier identity."
+  ],
+  "enabled": true,
+  "expires_at": "2026-10-16T23:59:59Z",
+  "id": "grant-carbon6-release-5cf9a39-r1",
+  "packet_ids": [
+    "carbon6-openrig-5cf9a39-r1"
+  ],
+  "revision": 1,
+  "schema_version": 1,
+  "status": "proposed"
+}
