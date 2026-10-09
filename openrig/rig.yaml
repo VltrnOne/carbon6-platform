@@ -1,0 +1,92 @@
+version: "0.2"
+name: carbon6-office
+summary: Carbon6 delivery team with stable ownership and evidence-bound acceptance.
+culture_file: CULTURE.md
+permission_policy: builtin:yolo
+non_interruptive: false
+workspace:
+  workspace_root: ..
+  repos:
+    - name: carbon6-office
+      path: .
+      kind: project
+  default_repo: carbon6-office
+startup:
+  files:
+    - path: ACCEPTANCE.md
+      delivery_hint: send_text
+      required: true
+    - path: REFOCUS.md
+      delivery_hint: send_text
+      required: true
+  actions: []
+pods:
+  - id: command
+    label: Coordination and learning
+    continuity_policy:
+      enabled: true
+      sync_triggers: [pre_compaction, pre_shutdown, milestone]
+      artifacts: {session_log: true, restore_brief: true}
+      restore_protocol: {peer_driven: true, verify_via_quiz: false}
+    members:
+      - id: lead
+        label: Carbon6 lead
+        role: lead
+        agent_ref: local:agents/lead
+        profile: default
+        runtime: codex
+        cwd: ..
+        restore_policy: resume_if_possible
+      - id: continuity
+        label: Learning and refocus
+        role: learning
+        agent_ref: local:agents/learning
+        profile: default
+        runtime: codex
+        cwd: ..
+        restore_policy: resume_if_possible
+    edges:
+      - {kind: delegates_to, from: lead, to: continuity}
+  - id: office
+    label: Front and back office
+    members:
+      - id: front
+        label: Front office
+        role: front-office
+        agent_ref: local:agents/front
+        profile: default
+        runtime: codex
+        cwd: ..
+      - id: back
+        label: Back office
+        role: back-office
+        agent_ref: local:agents/back
+        profile: default
+        runtime: codex
+        cwd: ..
+    edges: []
+  - id: delivery
+    label: Build and independent verification
+    members:
+      - id: builder
+        label: Builder and automation
+        role: builder
+        agent_ref: local:agents/builder
+        profile: default
+        runtime: codex
+        cwd: ..
+      - id: verifier
+        label: Independent verifier
+        role: verifier
+        agent_ref: local:agents/verifier
+        profile: default
+        runtime: codex
+        cwd: ..
+    edges:
+      - {kind: can_observe, from: verifier, to: builder}
+edges:
+  - {kind: delegates_to, from: command.lead, to: office.front}
+  - {kind: delegates_to, from: command.lead, to: office.back}
+  - {kind: delegates_to, from: command.lead, to: delivery.builder}
+  - {kind: delegates_to, from: command.lead, to: delivery.verifier}
+  - {kind: collaborates_with, from: command.continuity, to: delivery.verifier}

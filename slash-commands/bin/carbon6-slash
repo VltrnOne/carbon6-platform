@@ -1,0 +1,16 @@
+#!/bin/sh
+set -eu
+
+carbon6_script=$0
+while [ -L "$carbon6_script" ]; do
+  carbon6_link=$(readlink "$carbon6_script")
+  case "$carbon6_link" in
+    /*) carbon6_script=$carbon6_link ;;
+    *) carbon6_script=$(dirname "$carbon6_script")/$carbon6_link ;;
+  esac
+done
+carbon6_bin_dir=$(CDPATH= cd -- "$(dirname -- "$carbon6_script")" && pwd)
+export CARBON_OPENRIG_BIN=${CARBON_OPENRIG_BIN:-"$carbon6_bin_dir/rig-ssh"}
+export CARBON_OPENRIG_SSH_TARGET=${CARBON_OPENRIG_SSH_TARGET:-vltrn-brain}
+export CARBON_OPENRIG_SOURCE=${CARBON_OPENRIG_SOURCE:-operator-human@kernel}
+exec "$carbon6_bin_dir/slash" "$@"

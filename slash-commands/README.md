@@ -1,6 +1,94 @@
 # VLTRN Council Slash Commands
 
-Complete slash command system for all 462 VLTRN Council agents.
+Council command registry with durable OpenRig queue dispatch.
+
+## OpenRig execution adapter
+
+The slash CLI now queues agent and workflow requests through the installed `rig`
+CLI. It does not instantiate every named Council agent or execute a workflow DAG
+itself. The mapped OpenRig seat owns the resulting durable queue item and performs
+the task under that seat's existing authority. Registry tier labels grant no new
+permissions.
+
+## Configure and dispatch
+
+Start the intended OpenRig topology through its normal deployment procedure.
+`openrig-routes.json` maps Council agents and named workflows to the
+`carbon6-office` seats: `lead`, `front-office`, `back-office`, `builder`, `verifier`
+and `continuity`. Unmapped provider/other commands fail until explicitly routed.
+
+Inside a managed seat the CLI inherits `OPENRIG_SESSION_NAME`; it never overrides
+that identity. From an ordinary terminal, explicitly declare the source:
+
+```sh
+export CARBON_OPENRIG_SOURCE=operator-human@kernel
+slash exec --request-id carbon-review-001 /workflow.code-review "Review the implementation and record evidence"
+slash /techne "Implement the accepted slice"
+```
+
+Outside a managed seat, the source is a declared attribution, not authentication.
+To configure another topology set `CARBON_OPENRIG_ROUTES` to a JSON file with
+`agents` (agent ID → seat address) and `workflows` (workflow name → seat address)
+maps. `CARBON_OPENRIG_DESTINATION=command-lead@carbon6-office` explicitly overrides the
+mapping for that invocation, including unmapped commands. Host-qualified
+destinations (`seat@rig@registered-host`) are forwarded unchanged to OpenRig.
+`CARBON_OPENRIG_BIN` selects another installed `rig` executable.
+
+For an SSH registered server, use the included stdin-preserving transport and
+the server-local two-part seat address. This runs the same durable create on the
+remote daemon without putting the task body in a shell command:
+
+```sh
+export CARBON_OPENRIG_BIN=/Users/Morpheous/carbon6-openrig/slash-commands/bin/rig-ssh
+export CARBON_OPENRIG_SSH_TARGET=vltrn-brain
+export CARBON_OPENRIG_DESTINATION=command-lead@carbon6-office
+export CARBON_OPENRIG_SOURCE=operator-human@kernel
+slash exec --request-id carbon-server-001 /genesis "Audit server readiness"
+```
+
+`CARBON_OPENRIG_REMOTE_RIG` may name another remote `rig` path. The SSH target
+must already be trusted and noninteractive. A host-qualified destination through
+the local CLI requires an HTTP-registered host; it does not substitute for this
+SSH transport.
+
+For the installed Carbon6 server pilot, `bin/carbon6-slash` supplies the SSH
+transport, `vltrn-brain` target and operator source while retaining each command's
+specialist route. Override any of those environment variables when deliberately
+addressing another host or source.
+
+## Receipts and retries
+
+Every create gets an ID before the write; it is printed to stderr. The complete
+body goes over stdin to `rig queue create --body-file -`, with argument arrays
+and no shell interpolation. JSON success reports **queued**, not execution,
+delivery, readership or acceptance. A daemon refusal, missing executable,
+timeout, invalid receipt or unsaved-body warning is an explicit nonzero failure.
+
+If an outcome is uncertain, reconcile that ID at the same OpenRig endpoint/host.
+Retry only the unchanged task, source and routing with the original ID:
+
+```sh
+rig queue show carbon-review-001 --full --json
+slash exec --request-id carbon-review-001 /workflow.code-review "Review the implementation and record evidence"
+# Direct /command syntax can use CARBON_OPENRIG_REQUEST_ID instead.
+```
+
+The adapter never automatically retries, raw-types into a terminal, approves a
+prompt or starts a daemon. Queue persistence is the handoff receipt; use OpenRig
+queue/proof surfaces to inspect subsequent execution and acceptance.
+
+## Adapter verification
+
+`npm test -- --runInBand` exercises the actual subprocess/CLI boundary with a
+temporary fake `rig`, including persistence followed by a lost response, stable
+retry, collision refusal, shell syntax, identity, routing and error exits.
+`npm run lint` checks the package. These tests make no live provider calls.
+
+---
+
+## Council registry reference
+
+The historical catalog below describes named roles and commands. Runtime availability depends on the installed topology and explicit mappings above; catalog counts are not running-worker counts.
 
 ```
 ╔═══════════════════════════════════════════════════════════╗

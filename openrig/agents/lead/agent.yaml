@@ -1,0 +1,36 @@
+{
+  "name": "carbon6-lead",
+  "version": "1.0",
+  "description": "Lead and default coordinator",
+  "defaults": {
+    "runtime": "codex",
+    "lifecycle": {
+      "execution_mode": "interactive_resident",
+      "compaction_strategy": "default-compaction",
+      "restore_policy": "resume_if_possible"
+    }
+  },
+  "profiles": {
+    "default": {
+      "uses": {
+        "skills": [],
+        "guidance": [],
+        "subagents": [],
+        "plugins": [],
+        "runtime_resources": []
+      }
+    }
+  },
+  "resources": {},
+  "startup": {
+    "files": [
+      {
+        "path": "ROLE.md",
+        "orientation": "role",
+        "delivery_hint": "send_text",
+        "required": true
+      }
+    ],
+    "actions": []
+  }
+}

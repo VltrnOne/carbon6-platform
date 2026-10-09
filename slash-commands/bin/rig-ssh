@@ -1,0 +1,40 @@
+#!/usr/bin/env node
+'use strict';
+
+const { spawn } = require('child_process');
+
+const target = process.env.CARBON_OPENRIG_SSH_TARGET;
+const ssh = process.env.CARBON_OPENRIG_SSH_BIN || 'ssh';
+const remoteRig = process.env.CARBON_OPENRIG_REMOTE_RIG || 'rig';
+
+if (!target || !/^[A-Za-z0-9_.@:-]+$/.test(target) || target.startsWith('-')) {
+  console.error('CARBON_OPENRIG_SSH_TARGET must be a safe SSH host or alias.');
+  process.exit(2);
+}
+
+function shellQuote(value) {
+  return `'${String(value).replace(/'/g, `'\\''`)}'`;
+}
+
+const remoteArgv = [remoteRig, ...process.argv.slice(2)].map(shellQuote).join(' ');
+const remoteCommand = `sh -lc ${shellQuote(remoteArgv)}`;
+const child = spawn(ssh, ['-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10', target, remoteCommand], {
+  stdio: ['pipe', 'pipe', 'pipe'],
+  shell: false
+});
+
+process.stdin.pipe(child.stdin);
+child.stdout.pipe(process.stdout);
+child.stderr.pipe(process.stderr);
+child.on('error', error => {
+  console.error(`SSH transport failed: ${error.message}`);
+  process.exitCode = 127;
+});
+child.on('exit', (code, signal) => {
+  if (signal) {
+    console.error(`SSH transport ended by signal ${signal}.`);
+    process.exitCode = 1;
+  } else {
+    process.exitCode = code == null ? 1 : code;
+  }
+});

@@ -1,0 +1,298 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://carbon6.local/openrig/packet.schema.json",
+  "title": "Carbon6 acceptance packet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "objective_chain",
+    "artifact",
+    "evidence",
+    "authority",
+    "learning",
+    "terminal_gate",
+    "decision"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "objective_chain": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "$ref": "#/definitions/objective"
+      }
+    },
+    "artifact": {
+      "$ref": "#/definitions/artifact"
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/evidence"
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "grant_id",
+        "revision",
+        "sha256",
+        "actor",
+        "action"
+      ],
+      "properties": {
+        "grant_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "revision": {
+          "$ref": "#/definitions/revision"
+        },
+        "sha256": {
+          "$ref": "#/definitions/hash"
+        },
+        "actor": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "action": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      }
+    },
+    "learning": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/reference"
+      }
+    },
+    "terminal_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "outcome",
+        "criterion",
+        "evidence_paths"
+      ],
+      "properties": {
+        "outcome": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "criterion": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "evidence_paths": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "approver",
+        "decided_at",
+        "packet_sha256"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "approved",
+            "rejected",
+            "pending"
+          ]
+        },
+        "approver": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "decided_at": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "packet_sha256": {
+          "$ref": "#/definitions/hash"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "candidate": {
+      "type": "string",
+      "pattern": "^([a-f0-9]{40}|[a-f0-9]{64})$"
+    },
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "sha256"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "revision": {
+          "$ref": "#/definitions/revision"
+        },
+        "sha256": {
+          "$ref": "#/definitions/hash"
+        }
+      }
+    },
+    "objective": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "revision",
+        "sha256",
+        "parent_id",
+        "parent_revision"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "kind": {
+          "enum": [
+            "project",
+            "mission",
+            "slice"
+          ]
+        },
+        "revision": {
+          "$ref": "#/definitions/revision"
+        },
+        "sha256": {
+          "$ref": "#/definitions/hash"
+        },
+        "parent_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "parent_revision": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "revision",
+        "sha256",
+        "candidate_sha"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "revision": {
+          "$ref": "#/definitions/revision"
+        },
+        "sha256": {
+          "$ref": "#/definitions/hash"
+        },
+        "candidate_sha": {
+          "$ref": "#/definitions/candidate"
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256",
+        "candidate_sha",
+        "artifact_revision",
+        "verdict",
+        "kind"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "sha256": {
+          "$ref": "#/definitions/hash"
+        },
+        "candidate_sha": {
+          "$ref": "#/definitions/candidate"
+        },
+        "artifact_revision": {
+          "$ref": "#/definitions/revision"
+        },
+        "verdict": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "UNVERIFIED"
+          ]
+        },
+        "kind": {
+          "enum": [
+            "terminal_outcome",
+            "test",
+            "review",
+            "provider_receipt"
+          ]
+        }
+      }
+    }
+  }
+}

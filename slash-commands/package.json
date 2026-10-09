@@ -4,7 +4,8 @@
   "description": "Slash command system for VLTRN Council agents",
   "main": "lib/index.js",
   "bin": {
-    "slash": "bin/slash"
+    "slash": "bin/slash",
+    "carbon6-slash": "bin/carbon6-slash"
   },
   "scripts": {
     "test": "jest",

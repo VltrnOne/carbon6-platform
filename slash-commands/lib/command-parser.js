@@ -21,7 +21,7 @@ class CommandParser {
     const map = new Map();
 
     // Add all tier commands
-    Object.entries(this.registry.tiers).forEach(([tierKey, tier]) => {
+    Object.values(this.registry.tiers).forEach(tier => {
       Object.entries(tier.commands).forEach(([command, config]) => {
         map.set(command, {
           ...config,
@@ -96,9 +96,9 @@ class CommandParser {
     const cleanInput = input.startsWith('/') ? input.slice(1) : input;
 
     // Split command and arguments
-    const parts = cleanInput.split(/\s+/);
-    const commandPart = parts[0];
-    const args = parts.slice(1).join(' ');
+    const parts = /^(\S+)(?:\s+([\s\S]*))?$/.exec(cleanInput.trimStart());
+    const commandPart = parts ? parts[1] : '';
+    const args = parts ? parts[2] || '' : '';
 
     // Check for alias
     const resolvedCommand = this.aliasMap.get(commandPart) || commandPart;
@@ -217,7 +217,7 @@ class CommandParser {
    * @param {string} input - Full command input
    * @returns {Promise} Execution result
    */
-  async execute(input) {
+  async execute(input, options = {}) {
     const parsed = this.parse(input);
 
     if (!parsed.valid) {
@@ -242,7 +242,9 @@ class CommandParser {
     console.log(chalk.blue(`╚═══════════════════════════════════════════════════════════╝\n`));
 
     try {
-      const result = await this.invokeAgent(parsed.agent, parsed.args);
+      const result = await this.invokeAgent(parsed.agent, parsed.args, {
+        command: parsed.command, tier: parsed.tier, requestId: options.requestId
+      });
       return {
         success: true,
         agent: parsed.agent,
@@ -318,12 +320,12 @@ class CommandParser {
    * @param {string} payload - Payload for the agent
    * @returns {Promise} Execution result
    */
-  async invokeAgent(agentId, payload) {
+  async invokeAgent(agentId, payload, context) {
     // Assuming there is an SDK instance available
     if (!this.sdk) {
       throw new Error('SDK instance not available');
     }
-    return this.sdk.invokeAgent(agentId, payload);
+    return this.sdk.invokeAgent(agentId, payload, context);
   }
 
   /**
@@ -341,7 +343,7 @@ class CommandParser {
     };
 
     // Count by tier
-    for (const [command, config] of this.commandMap.entries()) {
+    for (const config of this.commandMap.values()) {
       const tier = config.tier || 'unknown';
       stats.byTier[tier] = (stats.byTier[tier] || 0) + 1;
     }

@@ -1,0 +1,17 @@
+[Unit]
+Description=Carbon6 OpenRig daemon monitor
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/carbon6-openrig
+Environment=CARBON6_REPO=%h/carbon6-openrig
+Environment=CARBON6_NODE_BIN=%h/.local/opt/node-v22.23.3-linux-x64/bin
+Environment=CODEX_HOME=%h/.codex-openrig
+ExecStart=/bin/sh %h/carbon6-openrig/openrig/server-daemon.sh
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=default.target

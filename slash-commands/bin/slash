@@ -7,9 +7,19 @@
 const { program } = require('commander');
 const chalk = require('chalk');
 const CommandParser = require('../lib/command-parser');
+const OpenRigAdapter = require('../lib/openrig-adapter');
 const pkg = require('../package.json');
 
-const parser = new CommandParser();
+const parser = new CommandParser(new OpenRigAdapter());
+
+async function execute(input, options = {}) {
+  const result = await parser.execute(input, options);
+  if (!result.success) {
+    process.exitCode = 1;
+    return;
+  }
+  console.log(JSON.stringify(result.result, null, 2));
+}
 
 // Display banner
 console.log(chalk.blue(`
@@ -17,7 +27,7 @@ console.log(chalk.blue(`
 ║                                                           ║
 ║     SLASH COMMAND SYSTEM                                 ║
 ║                                                           ║
-║     ${chalk.white('Direct Access to 462 Council Agents')}                 ║
+║     ${chalk.white('Council Requests → OpenRig Work Queue')}               ║
 ║                                                           ║
 ╚═══════════════════════════════════════════════════════════╝
 `));
@@ -32,9 +42,10 @@ program
   .command('exec <command...>')
   .alias('e')
   .description('Execute a slash command')
-  .action(async (commandParts) => {
+  .option('--request-id <id>', 'Reuse the same request ID only for an unchanged dispatch retry')
+  .action(async (commandParts, options) => {
     const input = commandParts.join(' ');
-    await parser.execute(input);
+    await execute(input, options);
   });
 
 // List commands
@@ -164,12 +175,13 @@ program
 if (process.argv[2] && process.argv[2].startsWith('/')) {
   // Direct slash command
   const input = process.argv.slice(2).join(' ');
-  parser.execute(input).then(() => {
-    process.exit(0);
-  }).catch(err => {
+  execute(input).catch(err => {
     console.error(chalk.red(err.message));
-    process.exit(1);
+    process.exitCode = 1;
   });
 } else {
-  program.parse();
+  program.parseAsync().catch(err => {
+    console.error(chalk.red(err.message));
+    process.exitCode = 1;
+  });
 }
