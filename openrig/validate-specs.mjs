@@ -19,6 +19,22 @@ try {
   const result = validateRigSpecImport(yaml);
   if (!result.valid) throw new Error(JSON.stringify(result));
   const rig = parse(yaml);
+  const oraclePod = rig.pods.find(pod => pod.id === 'oracle');
+  const oracleFragment = parse(readFileSync(resolve(root, 'oracle-pod.fragment.yaml'), 'utf8'));
+  const expansionPod = oraclePod && {
+    id: oraclePod.id,
+    label: oraclePod.label,
+    members: oraclePod.members,
+    edges: oraclePod.edges
+  };
+  const oracleCrossPodEdges = rig.edges.filter(edge => edge.from.startsWith('oracle.') || edge.to.startsWith('oracle.'));
+  if (!oraclePod || JSON.stringify(expansionPod) !== JSON.stringify(oracleFragment.pod)
+      || JSON.stringify(oracleCrossPodEdges) !== JSON.stringify(oracleFragment.crossPodEdges)) {
+    throw new Error('Oracle live-expansion fragment does not match the supported Oracle pod and cross-pod fields');
+  }
+  if (!existsSync(resolve(root, 'workflows/oracle-supervision.workflow.yaml'))) {
+    throw new Error('Missing Oracle supervision workflow');
+  }
   const checkFiles = (block, base) => {
     for (const file of block?.files ?? []) if (!existsSync(resolve(base, file.path))) throw new Error(`Missing startup file: ${file.path}`);
   };
@@ -42,6 +58,22 @@ try {
       seats.push(`${pod.id}-${member.id}@${rig.name}`);
     }
   }
-  if (seats.length !== 6 || !seats.includes('command-lead@carbon6-office')) throw new Error('Unexpected topology cardinality or lead address');
-  console.log(JSON.stringify({ valid: true, openrig_version: pkg.version, seats, launches: 0, scope: 'official schema, AgentSpec resolution, profiles, required files and cwd existence' }, null, 2));
+  const requiredSeats = [
+    'oracle-chair@carbon6-office',
+    'oracle-strategic-validator@carbon6-office',
+    'oracle-financial-validator@carbon6-office',
+    'oracle-legal-validator@carbon6-office',
+    'oracle-asset-ip-validator@carbon6-office',
+    'oracle-technology-validator@carbon6-office',
+    'command-lead@carbon6-office',
+    'command-continuity@carbon6-office',
+    'office-front@carbon6-office',
+    'office-back@carbon6-office',
+    'delivery-builder@carbon6-office',
+    'delivery-verifier@carbon6-office'
+  ];
+  if (seats.length !== requiredSeats.length || requiredSeats.some(seat => !seats.includes(seat))) {
+    throw new Error('Unexpected topology cardinality or required seat address');
+  }
+  console.log(JSON.stringify({ valid: true, openrig_version: pkg.version, seats, launches: 0, scope: 'official schema, AgentSpec resolution, profiles, required files, cwd existence and supported Oracle expansion fragment parity' }, null, 2));
 } catch (err) { console.error(err.message); process.exitCode = 1; }

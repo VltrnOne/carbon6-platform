@@ -1,0 +1,127 @@
+workflow:
+  id: carbon6-oracle-supervision
+  version: 1
+  objective: >
+    Turn one versioned Morpheous objective into evidence-backed council advice,
+    delegated delivery, independent verification and an exact mission-specific
+    acceptance packet without allowing Oracle self-approval.
+  target:
+    rig: carbon6-office
+  entry:
+    role: oracle_chair
+  coordination_terminal_turn_rule: hot_potato
+  exception_routing:
+    default: orchestrator
+    orchestrator_role: oracle_chair
+    classes:
+      stuck_overdue: orchestrator
+      unmapped_failed: orchestrator
+  roles:
+    oracle_chair:
+      preferred_targets: [oracle-chair@carbon6-office]
+    strategic_validator:
+      preferred_targets: [oracle-strategic-validator@carbon6-office]
+    financial_validator:
+      preferred_targets: [oracle-financial-validator@carbon6-office]
+    legal_validator:
+      preferred_targets: [oracle-legal-validator@carbon6-office]
+    asset_ip_validator:
+      preferred_targets: [oracle-asset-ip-validator@carbon6-office]
+    technology_validator:
+      preferred_targets: [oracle-technology-validator@carbon6-office]
+    command_lead:
+      preferred_targets: [command-lead@carbon6-office]
+    builder:
+      preferred_targets: [delivery-builder@carbon6-office]
+    independent_verifier:
+      preferred_targets: [delivery-verifier@carbon6-office]
+  steps:
+    - id: frame_objective
+      actor_role: oracle_chair
+      depends_on: []
+      objective: >
+        Bind the instruction to exact project, mission and slice revisions,
+        authority scope, requested action and decision deadline. Create the
+        durable council packet; do not seed a recommendation or approval.
+      allowed_exits: [handoff, waiting, failed]
+    - id: strategic_review
+      actor_role: strategic_validator
+      depends_on: [frame_objective]
+      objective: >
+        Evaluate strategy against the framed revision; cite durable peer answers
+        and return evidence, assumptions, confidence, risks and an explicit vote.
+      allowed_exits: [handoff, waiting, failed]
+    - id: financial_review
+      actor_role: financial_validator
+      depends_on: [frame_objective]
+      objective: >
+        Evaluate cost, exposure and return against the framed revision; cite
+        durable peer answers and return evidence, assumptions and an explicit vote.
+      allowed_exits: [handoff, waiting, failed]
+    - id: legal_review
+      actor_role: legal_validator
+      depends_on: [frame_objective]
+      objective: >
+        Evaluate legal, privacy and compliance constraints against the framed
+        revision; cite durable peer answers and return an explicit vote.
+      allowed_exits: [handoff, waiting, failed]
+    - id: asset_ip_review
+      actor_role: asset_ip_validator
+      depends_on: [frame_objective]
+      objective: >
+        Evaluate ownership, provenance, confidentiality and asset value against
+        the framed revision; cite durable peer answers and return an explicit vote.
+      allowed_exits: [handoff, waiting, failed]
+    - id: technology_review
+      actor_role: technology_validator
+      depends_on: [frame_objective]
+      objective: >
+        Evaluate architecture, security, reliability, rollback and evidence gaps
+        against the framed revision; cite durable peer answers and return a vote.
+      allowed_exits: [handoff, waiting, failed]
+    - id: council_synthesis
+      actor_role: oracle_chair
+      depends_on: [strategic_review, financial_review, legal_review, asset_ip_review, technology_review]
+      objective: >
+        Fan in all five records. Preserve every vote, dissent, abstention and
+        condition; issue one reasoned recommendation and delegate only an
+        authorized slice. This is not artifact approval.
+      allowed_exits: [handoff, waiting, failed]
+    - id: execution_plan
+      actor_role: command_lead
+      depends_on: [council_synthesis]
+      objective: >
+        Convert the recommendation into owned delivery queue rows with exact
+        paths, candidate rule, terminal outcome and rollback. Keep dissent and
+        conditions attached; route implementation to the builder.
+      allowed_exits: [handoff, waiting, failed]
+    - id: build_candidate
+      actor_role: builder
+      depends_on: [execution_plan]
+      objective: >
+        Produce the assigned candidate and record exact commit, artifact hashes,
+        tests, live checks and rollback. Do not approve the candidate.
+      allowed_exits: [handoff, waiting, failed]
+    - id: independent_verification
+      actor_role: independent_verifier
+      depends_on: [build_candidate]
+      objective: >
+        Independently test the exact candidate and material negative cases.
+        Record terminal-outcome evidence without editing or approving the candidate.
+      allowed_exits: [handoff, waiting, failed]
+    - id: assemble_acceptance_packet
+      actor_role: command_lead
+      depends_on: [independent_verification]
+      objective: >
+        Generate the mission-specific packet from current objective ancestry,
+        candidate and artifact hashes, verifier evidence, learning revisions and
+        current grant. Run validate-packet.mjs against a freshly read trusted
+        state. Route the digest to an authorized independent approver outside the
+        Oracle authors and candidate author; never synthesize an approval.
+      allowed_exits: [done, waiting, failed]
+      next_hop:
+        mode: forbid
+  invariants:
+    allowed_exits: [handoff, waiting, done, failed]
+  loop_guards:
+    max_hops: 24

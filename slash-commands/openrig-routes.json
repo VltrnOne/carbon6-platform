@@ -1,16 +1,16 @@
 {
   "version": 1,
   "agents": {
-    "GENESIS": "command-lead@carbon6-office",
-    "GENESIS-OMEGA": "command-lead@carbon6-office",
-    "GENESIS-ALPHA": "command-lead@carbon6-office",
+    "GENESIS": "oracle-chair@carbon6-office",
+    "GENESIS-OMEGA": "oracle-chair@carbon6-office",
+    "GENESIS-ALPHA": "oracle-chair@carbon6-office",
     "GENESIS-PRIME": "delivery-verifier@carbon6-office",
-    "GENESIS-ELITE": "command-lead@carbon6-office",
-    "SOVEREIGN": "command-lead@carbon6-office",
-    "SOVEREIGN-STRATEGY": "command-lead@carbon6-office",
-    "SOVEREIGN-GOVERNANCE": "command-lead@carbon6-office",
-    "SOVEREIGN-RESOURCES": "command-lead@carbon6-office",
-    "SOVEREIGN-VISION": "command-lead@carbon6-office",
+    "GENESIS-ELITE": "oracle-chair@carbon6-office",
+    "SOVEREIGN": "oracle-chair@carbon6-office",
+    "SOVEREIGN-STRATEGY": "oracle-chair@carbon6-office",
+    "SOVEREIGN-GOVERNANCE": "oracle-chair@carbon6-office",
+    "SOVEREIGN-RESOURCES": "oracle-chair@carbon6-office",
+    "SOVEREIGN-VISION": "oracle-chair@carbon6-office",
     "MNEMOS": "command-continuity@carbon6-office",
     "MNEMOS-TRIVIUM": "command-continuity@carbon6-office",
     "MNEMOS-QUADRIVIUM": "command-continuity@carbon6-office",
@@ -111,7 +111,13 @@
     "SCOUT": "command-lead@carbon6-office",
     "FORMA": "command-lead@carbon6-office",
     "NUNTIUS": "office-front@carbon6-office",
-    "VERBUM": "command-lead@carbon6-office"
+    "VERBUM": "command-lead@carbon6-office",
+    "ORACLE_COUNCIL": "oracle-chair@carbon6-office",
+    "ORACLE_STRATEGIC": "oracle-strategic-validator@carbon6-office",
+    "ORACLE_FINANCIAL": "oracle-financial-validator@carbon6-office",
+    "ORACLE_LEGAL": "oracle-legal-validator@carbon6-office",
+    "ORACLE_ASSET": "oracle-asset-ip-validator@carbon6-office",
+    "ORACLE_TECHNOLOGY": "oracle-technology-validator@carbon6-office"
   },
   "workflows": {
     "month-end-close": "office-back@carbon6-office",
@@ -159,6 +165,7 @@
     "proposal-generation": "office-front@carbon6-office",
     "sow-creation": "office-front@carbon6-office",
     "change-order": "office-front@carbon6-office",
-    "satisfaction-survey": "office-front@carbon6-office"
+    "satisfaction-survey": "office-front@carbon6-office",
+    "oracle-supervision": "oracle-chair@carbon6-office"
   }
 }

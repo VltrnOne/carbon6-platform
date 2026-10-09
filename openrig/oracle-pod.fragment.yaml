@@ -1,0 +1,84 @@
+pod:
+  id: oracle
+  label: Oracle governance council
+  members:
+  - id: chair
+    label: Oracle chair
+    role: oracle-chair
+    agent_ref: local:agents/oracle-chair
+    profile: default
+    runtime: codex
+    cwd: ..
+    restore_policy: resume_if_possible
+  - id: strategic-validator
+    label: Strategic validator
+    role: oracle-strategic
+    agent_ref: local:agents/oracle-strategic
+    profile: default
+    runtime: codex
+    cwd: ..
+    restore_policy: resume_if_possible
+  - id: financial-validator
+    label: Financial validator
+    role: oracle-financial
+    agent_ref: local:agents/oracle-financial
+    profile: default
+    runtime: codex
+    cwd: ..
+    restore_policy: resume_if_possible
+  - id: legal-validator
+    label: Legal validator
+    role: oracle-legal
+    agent_ref: local:agents/oracle-legal
+    profile: default
+    runtime: codex
+    cwd: ..
+    restore_policy: resume_if_possible
+  - id: asset-ip-validator
+    label: Asset and IP validator
+    role: oracle-asset-ip
+    agent_ref: local:agents/oracle-asset-ip
+    profile: default
+    runtime: codex
+    cwd: ..
+    restore_policy: resume_if_possible
+  - id: technology-validator
+    label: Technology validator
+    role: oracle-technology
+    agent_ref: local:agents/oracle-technology
+    profile: default
+    runtime: codex
+    cwd: ..
+    restore_policy: resume_if_possible
+  edges:
+  - kind: delegates_to
+    from: chair
+    to: strategic-validator
+  - kind: delegates_to
+    from: chair
+    to: financial-validator
+  - kind: delegates_to
+    from: chair
+    to: legal-validator
+  - kind: delegates_to
+    from: chair
+    to: asset-ip-validator
+  - kind: delegates_to
+    from: chair
+    to: technology-validator
+  - kind: collaborates_with
+    from: strategic-validator
+    to: financial-validator
+  - kind: collaborates_with
+    from: legal-validator
+    to: asset-ip-validator
+crossPodEdges:
+- kind: delegates_to
+  from: oracle.chair
+  to: command.lead
+- kind: collaborates_with
+  from: oracle.technology-validator
+  to: command.lead
+- kind: can_observe
+  from: oracle.chair
+  to: delivery.verifier

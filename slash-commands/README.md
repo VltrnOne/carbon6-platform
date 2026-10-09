@@ -14,8 +14,17 @@ permissions.
 
 Start the intended OpenRig topology through its normal deployment procedure.
 `openrig-routes.json` maps Council agents and named workflows to the
-`carbon6-office` seats: `lead`, `front-office`, `back-office`, `builder`, `verifier`
-and `continuity`. Unmapped provider/other commands fail until explicitly routed.
+`carbon6-office` operating and Oracle seats. `/genesis`, `/oracle`, and the
+`oracle-supervision` workflow enter through `oracle-chair`; each `/oracle.*`
+validator command addresses its dedicated validator seat. `GENESIS-PRIME`
+continues to route to `delivery-verifier` for independent quality review.
+Unmapped provider/other commands fail until explicitly routed.
+
+```sh
+carbon6-slash exec --request-id oracle-mission-001 /oracle "Convene the council and supervise this mission"
+carbon6-slash exec --request-id oracle-tech-001 /oracle.technology "Validate the architecture evidence"
+carbon6-slash exec --request-id oracle-flow-001 /workflow.oracle-supervision "Supervise execution through acceptance"
+```
 
 Inside a managed seat the CLI inherits `OPENRIG_SESSION_NAME`; it never overrides
 that identity. From an ordinary terminal, explicitly declare the source:

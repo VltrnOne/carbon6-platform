@@ -849,6 +849,9 @@
       "audit-trail",
       "incident-response"
     ],
+    "governance": [
+      "oracle-supervision"
+    ],
     "client": [
       "client-onboarding",
       "requirement-gathering",
@@ -886,6 +889,7 @@
   },
 
   "oracle": {
+    "council": "Oracle council chair - supervised governance and consensus",
     "strategic": "Strategic validator - SOVEREIGN",
     "financial": "Financial validator - AURUM",
     "legal": "Legal validator - TRUST_DIRECTOR",
@@ -894,6 +898,7 @@
   },
 
   "aliases": {
+    "oracle": "oracle.council",
     "finance": "aurum",
     "accounting": "aurum.controller",
     "fpa": "aurum.analyst",

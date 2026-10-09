@@ -13,6 +13,8 @@
 4. The authorized approver receives objective ancestry, exact artifact,
    evidence, learning dependencies and action scope. The authority ledger
    records the decision against the packet digest; self-approval is rejected.
+   Oracle recommendations, votes and synthesis are inputs to this decision and
+   cannot authorize or approve their own output.
 5. Run `validate-packet.mjs` against a freshly read authoritative state and the
    actual artifact/evidence files. At an execution boundary, the application
    must revalidate and execute atomically or use version preconditions. This
@@ -85,7 +87,9 @@ operationalize its claims and the owner's extracted requirements:
 | Learning validity | Evidence-backed lesson revision and provenance survive handoff; withdrawal invalidates dependent acceptance | 06:01–06:16; owner-extracted requirement |
 | Refocus | Compaction/handoff/objective change produces a checkpoint showing current intent and a justified next action | 18:24–19:36 |
 | Useful throughput | Report accepted outcomes separately from transitions, handoffs and approvals; investigate ceremony without progress | 11:16–12:15; 22:06–23:11 |
-| Bounded operation | Six declared seats; at most two admitted delivery items, no overlapping writer, no unauthorized growth | Carbon6 operating policy |
+| Oracle deliberation | Five validators receive the same objective revision; durable packets preserve every vote, question, answer, condition and dissent through chair synthesis | Carbon6 governance policy |
+| Independent delivery review | Delivery verifier exercises the exact candidate and negative cases; no Oracle seat or candidate author can substitute its own approval | Carbon6 governance policy |
+| Bounded operation | Twelve declared seats; at most two admitted delivery items, no overlapping writer, no unauthorized growth | Carbon6 operating policy |
 
 The talk calls APM **agent productivity monitoring** at 22:19–22:23. Exported
 queue/event telemetry can supply activity counts; acceptance records supply

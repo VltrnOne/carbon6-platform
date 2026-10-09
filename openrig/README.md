@@ -1,13 +1,19 @@
 # Carbon6 OpenRig package
 
-Six stable Codex seats, current official OpenRig **0.6.7** schema, an explicit
+Twelve stable Codex seats, current official OpenRig **0.6.7** schema, an explicit
 delivery contract and a read-only acceptance checker. No models, provider
 credentials, real tasks or acceptance records are fabricated. Runtime/model
 selection inherits the working Codex account; model availability is a live gate.
 
 | Address | Ownership |
 | --- | --- |
-| `command-lead@carbon6-office` | Default coordinator; objectives, assignments, admission and outcomes |
+| `oracle-chair@carbon6-office` | Governing coordinator; objective framing, council fan-out, dissent ledger, synthesis and delegation |
+| `oracle-strategic-validator@carbon6-office` | Strategy, sequencing, stakeholders and measurable outcomes |
+| `oracle-financial-validator@carbon6-office` | Cost, capacity, downside and financial return |
+| `oracle-legal-validator@carbon6-office` | Legal, privacy, consent, compliance and enforceability |
+| `oracle-asset-ip-validator@carbon6-office` | Ownership, provenance, confidentiality, defensibility and asset value |
+| `oracle-technology-validator@carbon6-office` | Architecture, security, reliability, rollback and technical evidence |
+| `command-lead@carbon6-office` | Delivery coordinator; execution assignments, admission and outcomes |
 | `office-front@carbon6-office` | Intake, requirements, customer-facing drafts |
 | `office-back@carbon6-office` | Records, reconciliation, operations and dependencies |
 | `delivery-builder@carbon6-office` | Assigned implementation and automation |
@@ -86,7 +92,7 @@ daemon; report that dependency, never silently start one during validation.
    sh openrig/rig.sh up openrig/rig.yaml --plan --json
    ```
 
-3. **Seat readiness:** `up` starts all six declared seats; it is not a subset
+3. **Seat readiness:** `up` starts all twelve declared seats; it is not a subset
    launch. Seats acknowledge identity/context and wait for owned work. Inspect
    readiness and provider acceptance before assigning a task.
 
@@ -101,8 +107,8 @@ daemon; report that dependency, never silently start one during validation.
    independent verifier and a terminal gate. Demonstrate the packet and stale
    approval refusal. A message alone is not a queue row.
 5. **Bounded parallel work:** after that result is accepted, lead may admit a
-   second nonconflicting delivery item. Six seated conversations do not imply
-   six simultaneous implementation jobs. No nested spawning or automatic growth.
+   second nonconflicting delivery item. Twelve seated conversations do not imply
+   twelve simultaneous implementation jobs. No nested spawning or automatic growth.
 6. **Continuity:** write checkpoints; exercise controlled handoff/recovery and
    confirm stable addresses, retained ownership and current objective refocus.
    Failed/partial restore remains visible. Do not expand throughput until these
@@ -155,6 +161,23 @@ an approver, verify evidence semantics or make external actions atomic.
   mapping includes timestamps in ACCEPTANCE.md. Temporary source availability
   is not guaranteed; no private source URL is embedded.
 
+## Oracle supervision
+
+`ORACLE.md` defines the council's authority boundary and durable deliberation
+rules. `workflows/oracle-supervision.workflow.yaml` is the supported dependency
+DAG: the chair frames one revision, five validators fan out, the chair fans in
+their preserved votes and dissent, then command lead routes delivery through the
+builder and independent verifier. The final workflow step assembles the exact
+mission packet but cannot approve it. A current independent approver named by the
+authority ledger remains mandatory.
+
+The standalone `oracle-pod.fragment.yaml` mirrors the expansion-supported pod
+fields and Oracle cross-pod edges in `rig.yaml`; live `rig expand` adds the six
+Oracle seats without restarting the existing office pods. OpenRig 0.6.7's
+expansion ingress does not carry `continuity_policy`, so the full spec retains
+that policy for clean launches while each expanded seat still has its explicit
+`restore_policy`. The workflow provides runtime chair-to-office routing.
+
 Package validation is distinct from live operation. Record actual launch,
 provider acceptance, terminal outcome and recovery results before claiming
-the six-seat team is operational or production accepted.
+the twelve-seat team is operational or production accepted.

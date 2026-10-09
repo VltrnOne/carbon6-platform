@@ -69,6 +69,52 @@ test('workflow routes to its owner while preserving canonical workflow intent', 
   expect(body.kind).toBe('workflow-request');
 });
 
+test.each([
+  ['/genesis Govern this mission', 'GENESIS', 'oracle-chair@carbon6-office'],
+  ['/genesis-omega Compare strategies', 'GENESIS-OMEGA', 'oracle-chair@carbon6-office'],
+  ['/genesis-alpha Coordinate execution', 'GENESIS-ALPHA', 'oracle-chair@carbon6-office'],
+  ['/genesis-elite Direct crisis response', 'GENESIS-ELITE', 'oracle-chair@carbon6-office'],
+  ['/sovereign Decide allocation', 'SOVEREIGN', 'oracle-chair@carbon6-office'],
+  ['/sovereign.strategy Set direction', 'SOVEREIGN-STRATEGY', 'oracle-chair@carbon6-office'],
+  ['/sovereign.governance Review policy', 'SOVEREIGN-GOVERNANCE', 'oracle-chair@carbon6-office'],
+  ['/sovereign.resources Allocate capacity', 'SOVEREIGN-RESOURCES', 'oracle-chair@carbon6-office'],
+  ['/sovereign.vision Define the horizon', 'SOVEREIGN-VISION', 'oracle-chair@carbon6-office'],
+  ['/genesis-prime Verify release', 'GENESIS-PRIME', 'delivery-verifier@carbon6-office'],
+])('%s routes governance intake to the intended supervisory seat', async (input, agentId, destination) => {
+  const p = new CommandParser(adapter());
+  const result = await p.execute(input, { requestId: `route-${agentId.toLowerCase()}` });
+  expect(result.success).toBe(true);
+  expect(result.agent).toBe(agentId);
+  expect(result.result.destination).toBe(destination);
+});
+
+test.each([
+  ['/oracle Convene the council', 'oracle.council', 'ORACLE_COUNCIL', 'oracle-chair@carbon6-office'],
+  ['/oracle.council Resolve the decision', 'oracle.council', 'ORACLE_COUNCIL', 'oracle-chair@carbon6-office'],
+  ['/oracle.strategic Validate strategy', 'oracle.strategic', 'ORACLE_STRATEGIC', 'oracle-strategic-validator@carbon6-office'],
+  ['/oracle.financial Validate economics', 'oracle.financial', 'ORACLE_FINANCIAL', 'oracle-financial-validator@carbon6-office'],
+  ['/oracle.legal Validate legal posture', 'oracle.legal', 'ORACLE_LEGAL', 'oracle-legal-validator@carbon6-office'],
+  ['/oracle.asset Validate IP', 'oracle.asset', 'ORACLE_ASSET', 'oracle-asset-ip-validator@carbon6-office'],
+  ['/oracle.technology Validate architecture', 'oracle.technology', 'ORACLE_TECHNOLOGY', 'oracle-technology-validator@carbon6-office'],
+])('%s maps each Oracle command to its exact seat', async (input, command, agentId, destination) => {
+  const p = new CommandParser(adapter());
+  const result = await p.execute(input, { requestId: `oracle-${agentId.toLowerCase()}` });
+  expect(result.success).toBe(true);
+  expect(result.command).toBe(command);
+  expect(result.agent).toBe(agentId);
+  expect(result.result.destination).toBe(destination);
+});
+
+test('oracle supervision workflow routes to the Oracle chair', async () => {
+  const p = new CommandParser(adapter());
+  const result = await p.execute('/workflow.oracle-supervision Supervise this mission', { requestId: 'oracle-supervision-1' });
+  expect(result.success).toBe(true);
+  expect(result.result.destination).toBe('oracle-chair@carbon6-office');
+  const body = JSON.parse(JSON.parse(fs.readFileSync(env.CALL_FILE)).body);
+  expect(body.agentId).toBe('WORKFLOW_ORACLE_SUPERVISION');
+  expect(body.kind).toBe('workflow-request');
+});
+
 test('parser preserves multiline payloads and resolves existing aliases', () => {
   const p = new CommandParser(adapter());
   const [alias, canonical] = Object.entries(p.registry.aliases)[0];
