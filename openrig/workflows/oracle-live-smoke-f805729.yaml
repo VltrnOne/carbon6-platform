@@ -1,0 +1,144 @@
+workflow:
+  id: "oracle-mission-6cb7ff43857b28fdd2148296"
+  version: "1-6cb7ff43857b28fd"
+  objective: "Prove the live Carbon6 Oracle council can frame one objective, fan out to five validators, fan in their preserved votes and dissent, obtain independent exact-candidate verification, and issue a final consolidation for the deployed twelve-seat rig."
+  context_refs:
+    - "openrig/release/v2/evidence/oracle-live-smoke.json"
+  target:
+    rig: "carbon6-office"
+  entry:
+    role: "oracle_chair"
+  coordination_terminal_turn_rule: "hot_potato"
+  exception_routing:
+    default: "orchestrator"
+    orchestrator_role: "oracle_chair"
+  roles:
+    oracle_chair:
+      preferred_targets:
+        - "oracle-chair@carbon6-office"
+    strategic_validator:
+      preferred_targets:
+        - "oracle-strategic-validator@carbon6-office"
+    financial_validator:
+      preferred_targets:
+        - "oracle-financial-validator@carbon6-office"
+    legal_validator:
+      preferred_targets:
+        - "oracle-legal-validator@carbon6-office"
+    asset_ip_validator:
+      preferred_targets:
+        - "oracle-asset-ip-validator@carbon6-office"
+    technology_validator:
+      preferred_targets:
+        - "oracle-technology-validator@carbon6-office"
+    independent_verifier:
+      preferred_targets:
+        - "delivery-verifier@carbon6-office"
+  steps:
+    -
+      id: "oracle_intake"
+      actor_role: "oracle_chair"
+      objective: "Frame the mission, preserve the exact release candidate f805729506de40bf78bdaace11ec84f4ad61f4e2, and dispatch all five Oracle reviews without changing scope."
+      allowed_exits:
+        - "handoff"
+        - "waiting"
+        - "failed"
+    -
+      id: "oracle_strategic_validation"
+      actor_role: "strategic_validator"
+      objective: "Assess strategic fit, mission alignment, second-order effects, and operating priorities. Record a clear PASS, REJECT, or BLOCKED recommendation with evidence for candidate f805729506de40bf78bdaace11ec84f4ad61f4e2."
+      allowed_exits:
+        - "handoff"
+        - "waiting"
+        - "failed"
+      depends_on:
+        - "oracle_intake"
+    -
+      id: "oracle_financial_validation"
+      actor_role: "financial_validator"
+      objective: "Assess cost, value, resource constraints, financial exposure, and measurable return. Record a clear PASS, REJECT, or BLOCKED recommendation with evidence for candidate f805729506de40bf78bdaace11ec84f4ad61f4e2."
+      allowed_exits:
+        - "handoff"
+        - "waiting"
+        - "failed"
+      depends_on:
+        - "oracle_intake"
+    -
+      id: "oracle_legal_validation"
+      actor_role: "legal_validator"
+      objective: "Assess legal, contractual, privacy, compliance, and governance obligations. Record a clear PASS, REJECT, or BLOCKED recommendation with evidence for candidate f805729506de40bf78bdaace11ec84f4ad61f4e2."
+      allowed_exits:
+        - "handoff"
+        - "waiting"
+        - "failed"
+      depends_on:
+        - "oracle_intake"
+    -
+      id: "oracle_asset_ip_validation"
+      actor_role: "asset_ip_validator"
+      objective: "Assess ownership, provenance, intellectual property, data rights, and asset protection. Record a clear PASS, REJECT, or BLOCKED recommendation with evidence for candidate f805729506de40bf78bdaace11ec84f4ad61f4e2."
+      allowed_exits:
+        - "handoff"
+        - "waiting"
+        - "failed"
+      depends_on:
+        - "oracle_intake"
+    -
+      id: "oracle_technology_validation"
+      actor_role: "technology_validator"
+      objective: "Assess architecture, security, reliability, operability, and technical acceptance evidence. Record a clear PASS, REJECT, or BLOCKED recommendation with evidence for candidate f805729506de40bf78bdaace11ec84f4ad61f4e2."
+      allowed_exits:
+        - "handoff"
+        - "waiting"
+        - "failed"
+      depends_on:
+        - "oracle_intake"
+    -
+      id: "oracle_synthesis"
+      actor_role: "oracle_chair"
+      objective: "Synthesize all five validator records, resolve disagreements explicitly, and prepare one evidence-backed recommendation for independent acceptance."
+      allowed_exits:
+        - "handoff"
+        - "waiting"
+        - "failed"
+      depends_on:
+        - "oracle_strategic_validation"
+        - "oracle_financial_validation"
+        - "oracle_legal_validation"
+        - "oracle_asset_ip_validation"
+        - "oracle_technology_validation"
+    -
+      id: "independent_acceptance"
+      actor_role: "independent_verifier"
+      objective: "Independently verify the synthesized decision against exact candidate f805729506de40bf78bdaace11ec84f4ad61f4e2 and evidence openrig/release/v2/evidence/oracle-live-smoke.json. Do not accept delivery, liveness, or unsupported claims as proof."
+      allowed_exits:
+        - "handoff"
+        - "waiting"
+        - "failed"
+      depends_on:
+        - "oracle_synthesis"
+      acceptance:
+        candidate: "f805729506de40bf78bdaace11ec84f4ad61f4e2"
+        verdicts:
+          - "PASS"
+        evidence_ref: "openrig/release/v2/evidence/oracle-live-smoke.json"
+    -
+      id: "oracle_consolidation"
+      actor_role: "oracle_chair"
+      objective: "Issue the final Oracle record for candidate f805729506de40bf78bdaace11ec84f4ad61f4e2, incorporating the independent verdict and citing openrig/release/v2/evidence/oracle-live-smoke.json."
+      allowed_exits:
+        - "done"
+        - "waiting"
+        - "failed"
+      depends_on:
+        - "independent_acceptance"
+      next_hop:
+        mode: "forbid"
+  invariants:
+    allowed_exits:
+      - "handoff"
+      - "waiting"
+      - "done"
+      - "failed"
+  loop_guards:
+    max_hops: 20
