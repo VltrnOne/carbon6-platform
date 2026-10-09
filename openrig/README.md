@@ -171,6 +171,12 @@ builder and independent verifier. The final workflow step assembles the exact
 mission packet but cannot approve it. A current independent approver named by the
 authority ledger remains mandatory.
 
+Workflow version 2 requires each validator to persist its complete signed review
+under `openrig/shared-state/oracle/<workflow-instance-id>/reviews/` and project that unique file as
+the step's `--evidence-ref`. Result-note text and the shared frame evidence are
+insufficient. Chair must read the trace and all five files, then route or resume
+any missing validator packet before synthesis.
+
 The standalone `oracle-pod.fragment.yaml` mirrors the expansion-supported pod
 fields and Oracle cross-pod edges in `rig.yaml`; live `rig expand` adds the six
 Oracle seats without restarting the existing office pods. OpenRig 0.6.7's

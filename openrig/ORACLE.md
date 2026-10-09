@@ -12,12 +12,24 @@ Chat and terminal text are coordination aids and never the decision record.
    decision deadline and authority boundary before fan-out.
 2. Strategic, financial, legal, asset/IP and technology validators work from that
    same revision. They may send targeted questions to peers, but every answer used
-   in a decision is cited in their durable packet.
+   in a decision is cited in their durable packet. Each validator writes its full
+   signed review to one unique shared workspace file:
+   `openrig/shared-state/oracle/<workflow-instance-id>/reviews/<domain>-review.md`. The signature block
+   records the validator seat, workflow instance, objective revisions, UTC time and
+   explicit vote.
 3. Validators explicitly state `support`, `support-with-conditions`, `dissent` or
-   `abstain`. Chair preserves every dissent and unresolved condition verbatim in
-   the synthesis; silence is never a vote.
-4. Chair produces one recommendation with the vote ledger, competing options and
-   named conditions, then delegates the authorized delivery slice to
+   `abstain`. Each validator projects its workflow step with its own review path as
+   `--evidence-ref`. Reusing the frame packet, council base file or another
+   validator's evidence reference is invalid. A result-note body is helpful but is
+   not the review record. Chair preserves every dissent and unresolved condition
+   verbatim in the synthesis; silence is never a vote.
+4. Before synthesis, chair reads `rig workflow trace` and all five unique evidence
+   references. Chair verifies that every review file exists, is readable, names the
+   expected validator and current objective revisions, and contains a vote. A
+   missing, duplicated or shared-base reference blocks synthesis; chair routes or
+   resumes the affected packet and records recovery. Only after all five reviews
+   pass does chair produce one recommendation with the vote ledger, competing
+   options and named conditions, then delegate the authorized delivery slice to
    `command-lead@carbon6-office`. Command lead owns execution routing.
 5. `delivery-verifier@carbon6-office` independently tests the exact candidate and
    negative cases. It must not edit the candidate it reviews.

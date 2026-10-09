@@ -1,6 +1,6 @@
 workflow:
   id: carbon6-oracle-supervision
-  version: 1
+  version: 2
   objective: >
     Turn one versioned Morpheous objective into evidence-backed council advice,
     delegated delivery, independent verification and an exact mission-specific
@@ -48,44 +48,75 @@ workflow:
       actor_role: strategic_validator
       depends_on: [frame_objective]
       objective: >
-        Evaluate strategy against the framed revision; cite durable peer answers
-        and return evidence, assumptions, confidence, risks and an explicit vote.
+        Evaluate strategy against the framed revision. Write the complete signed
+        review to `openrig/shared-state/oracle/<workflow-instance-id>/reviews/strategic-review.md`,
+        then project this step with that exact unique path as `--evidence-ref`.
+        Include evidence, assumptions, confidence, risks, peer answers and vote.
+        Never reuse the frame or shared base evidence reference as this review.
       allowed_exits: [handoff, waiting, failed]
     - id: financial_review
       actor_role: financial_validator
       depends_on: [frame_objective]
       objective: >
-        Evaluate cost, exposure and return against the framed revision; cite
-        durable peer answers and return evidence, assumptions and an explicit vote.
+        Evaluate cost, exposure and return against the framed revision. Write the
+        complete signed review to `openrig/shared-state/oracle/<workflow-instance-id>/reviews/financial-review.md`,
+        then project this step with that exact unique path as `--evidence-ref`.
+        Include sources, assumptions, confidence, risks, peer answers and vote.
+        Never reuse the frame or shared base evidence reference as this review.
       allowed_exits: [handoff, waiting, failed]
     - id: legal_review
       actor_role: legal_validator
       depends_on: [frame_objective]
       objective: >
         Evaluate legal, privacy and compliance constraints against the framed
-        revision; cite durable peer answers and return an explicit vote.
+        revision. Write the complete signed review to
+        `openrig/shared-state/oracle/<workflow-instance-id>/reviews/legal-review.md`, then project
+        this step with that exact unique path as `--evidence-ref`. Include sources,
+        assumptions, confidence, risks, peer answers and vote. Never reuse the
+        frame or shared base evidence reference as this review.
       allowed_exits: [handoff, waiting, failed]
     - id: asset_ip_review
       actor_role: asset_ip_validator
       depends_on: [frame_objective]
       objective: >
         Evaluate ownership, provenance, confidentiality and asset value against
-        the framed revision; cite durable peer answers and return an explicit vote.
+        the framed revision. Write the complete signed review to
+        `openrig/shared-state/oracle/<workflow-instance-id>/reviews/asset-ip-review.md`, then project
+        this step with that exact unique path as `--evidence-ref`. Include sources,
+        assumptions, confidence, risks, peer answers and vote. Never reuse the
+        frame or shared base evidence reference as this review.
       allowed_exits: [handoff, waiting, failed]
     - id: technology_review
       actor_role: technology_validator
       depends_on: [frame_objective]
       objective: >
         Evaluate architecture, security, reliability, rollback and evidence gaps
-        against the framed revision; cite durable peer answers and return a vote.
+        against the framed revision. Write the complete signed review to
+        `openrig/shared-state/oracle/<workflow-instance-id>/reviews/technology-review.md`, then project
+        this step with that exact unique path as `--evidence-ref`. Include tests,
+        assumptions, confidence, risks, peer answers and vote. Never reuse the
+        frame or shared base evidence reference as this review.
       allowed_exits: [handoff, waiting, failed]
     - id: council_synthesis
       actor_role: oracle_chair
       depends_on: [strategic_review, financial_review, legal_review, asset_ip_review, technology_review]
       objective: >
-        Fan in all five records. Preserve every vote, dissent, abstention and
-        condition; issue one reasoned recommendation and delegate only an
-        authorized slice. This is not artifact approval.
+        Run `rig workflow trace` for this instance and verify that each validator
+        projected its assigned unique evidence reference. Read all five files:
+        - openrig/shared-state/oracle/<workflow-instance-id>/reviews/strategic-review.md
+        - openrig/shared-state/oracle/<workflow-instance-id>/reviews/financial-review.md
+        - openrig/shared-state/oracle/<workflow-instance-id>/reviews/legal-review.md
+        - openrig/shared-state/oracle/<workflow-instance-id>/reviews/asset-ip-review.md
+        - openrig/shared-state/oracle/<workflow-instance-id>/reviews/technology-review.md
+        Reject a missing, unreadable, empty, unsigned, duplicate, wrong-seat or
+        wrong-revision review, and reject any shared base evidence reference as a
+        substitute. For every failure, use `rig queue create` to address a durable
+        targeted recovery item to that validator, then exit this synthesis step
+        waiting with `--blocked-on` a live recovery qitem; do not hand off. After
+        all five pass, preserve every vote, dissent, abstention and condition,
+        write `openrig/shared-state/oracle/<workflow-instance-id>/synthesis.md`,
+        verify it is readable, and project handoff with that path as
+        `--evidence-ref`. This recommendation is not artifact approval.
       allowed_exits: [handoff, waiting, failed]
     - id: execution_plan
       actor_role: command_lead

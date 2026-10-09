@@ -67,6 +67,49 @@ test('uses native dependency-DAG completion exits', () => {
   assert.deepEqual(terminal.next_hop, { mode: 'forbid' });
 });
 
+test('requires five unique durable signed review files and projects each as evidence', () => {
+  const workflow = build().workflow;
+  const validatorSteps = workflow.steps.slice(1, 6);
+  const expectedSeats = [
+    'oracle-strategic-validator@carbon6-office',
+    'oracle-financial-validator@carbon6-office',
+    'oracle-legal-validator@carbon6-office',
+    'oracle-asset-ip-validator@carbon6-office',
+    'oracle-technology-validator@carbon6-office',
+  ];
+  const reviewRefs = validatorSteps.map(step => {
+    const match = step.objective.match(/unique durable shared-state file (openrig\/shared-state\/oracle\/[^ ]+\/reviews\/[^.]+\.md)/);
+    assert.ok(match, `${step.id} must name its unique review file`);
+    return match[1];
+  });
+
+  assert.equal(new Set(reviewRefs).size, 5);
+  validatorSteps.forEach((step, index) => {
+    const reviewRef = reviewRefs[index];
+    assert.match(reviewRef, new RegExp(`^openrig/shared-state/oracle/${workflow.id}/reviews/`));
+    assert.match(step.objective, new RegExp(`signed_by ${expectedSeats[index].replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`));
+    assert.match(step.objective, /signed_at_utc/);
+    assert.match(step.objective, /full reasoning/);
+    assert.match(step.objective, new RegExp(`--evidence-ref ${reviewRef.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`));
+    assert.doesNotMatch(step.objective, new RegExp(`--evidence-ref ${evidenceRef.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?:\\s|$)`));
+  });
+});
+
+test('chair synthesis verifies trace and all reviews, then creates durable recovery work on failure', () => {
+  const workflow = build().workflow;
+  const validators = workflow.steps.slice(1, 6);
+  const synthesis = workflow.steps.find(step => step.id === 'oracle_synthesis');
+  const reviewRefs = validators.map(step => step.objective.match(/unique durable shared-state file (openrig\/shared-state\/oracle\/[^ ]+\/reviews\/[^.]+\.md)/)[1]);
+
+  assert.match(synthesis.objective, /rig workflow trace/);
+  assert.match(synthesis.objective, /rig queue create/);
+  assert.match(synthesis.objective, /exit this synthesis step waiting with --blocked-on a live recovery qitem/);
+  assert.match(synthesis.objective, /do not hand off/);
+  assert.match(synthesis.objective, /missing, unreadable, empty, unsigned/);
+  for (const reviewRef of reviewRefs) assert.ok(synthesis.objective.includes(`- ${reviewRef}`));
+  assert.match(synthesis.objective, new RegExp(`--evidence-ref openrig/shared-state/oracle/${workflow.id}/synthesis\\.md`));
+});
+
 test('binds acceptance to the exact candidate and evidence reference', () => {
   const acceptance = build().workflow.steps.find(step => step.id === 'independent_acceptance').acceptance;
   assert.deepEqual(acceptance, { candidate, verdicts: ['PASS'], evidence_ref: evidenceRef });

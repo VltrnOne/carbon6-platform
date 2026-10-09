@@ -99,19 +99,23 @@ function missionDigest(input) {
 }
 
 export function buildOracleWorkflow({ objective, candidate, evidenceRef }) {
-  const digest = missionDigest({ objective, candidate, evidenceRef, topologyVersion: 2 });
+  const digest = missionDigest({ objective, candidate, evidenceRef, topologyVersion: 3 });
+  const workflowId = `oracle-mission-${digest.slice(0, 24)}`;
+  const reviewRoot = `openrig/shared-state/oracle/${workflowId}`;
   const validatorSteps = [
-    ['oracle_strategic_validation', 'strategic_validator', 'Assess strategic fit, mission alignment, second-order effects, and operating priorities.'],
-    ['oracle_financial_validation', 'financial_validator', 'Assess cost, value, resource constraints, financial exposure, and measurable return.'],
-    ['oracle_legal_validation', 'legal_validator', 'Assess legal, contractual, privacy, compliance, and governance obligations.'],
-    ['oracle_asset_ip_validation', 'asset_ip_validator', 'Assess ownership, provenance, intellectual property, data rights, and asset protection.'],
-    ['oracle_technology_validation', 'technology_validator', 'Assess architecture, security, reliability, operability, and technical acceptance evidence.'],
+    ['oracle_strategic_validation', 'strategic_validator', 'oracle-strategic-validator@carbon6-office', 'strategic', 'Assess strategic fit, mission alignment, second-order effects, and operating priorities.'],
+    ['oracle_financial_validation', 'financial_validator', 'oracle-financial-validator@carbon6-office', 'financial', 'Assess cost, value, resource constraints, financial exposure, and measurable return.'],
+    ['oracle_legal_validation', 'legal_validator', 'oracle-legal-validator@carbon6-office', 'legal', 'Assess legal, contractual, privacy, compliance, and governance obligations.'],
+    ['oracle_asset_ip_validation', 'asset_ip_validator', 'oracle-asset-ip-validator@carbon6-office', 'asset-ip', 'Assess ownership, provenance, intellectual property, data rights, and asset protection.'],
+    ['oracle_technology_validation', 'technology_validator', 'oracle-technology-validator@carbon6-office', 'technology', 'Assess architecture, security, reliability, operability, and technical acceptance evidence.'],
   ];
   const validatorIds = validatorSteps.map(([id]) => id);
+  const reviewPaths = validatorSteps.map(([, , , domain]) => `${reviewRoot}/reviews/${domain}.md`);
+  const synthesisPath = `${reviewRoot}/synthesis.md`;
 
   return {
     workflow: {
-      id: `oracle-mission-${digest.slice(0, 24)}`,
+      id: workflowId,
       version: `1-${digest.slice(0, 16)}`,
       objective,
       context_refs: [evidenceRef],
@@ -135,17 +139,29 @@ export function buildOracleWorkflow({ objective, candidate, evidenceRef }) {
           objective: `Frame the mission, preserve the exact release candidate ${candidate}, and dispatch all five Oracle reviews without changing scope.`,
           allowed_exits: ['handoff', 'waiting', 'failed'],
         },
-        ...validatorSteps.map(([id, actorRole, stepObjective]) => ({
-          id,
-          actor_role: actorRole,
-          objective: `${stepObjective} Record a clear PASS, REJECT, or BLOCKED recommendation with evidence for candidate ${candidate}.`,
-          allowed_exits: ['handoff', 'waiting', 'failed'],
-          depends_on: ['oracle_intake'],
-        })),
+        ...validatorSteps.map(([id, actorRole, seat, domain, stepObjective]) => {
+          const reviewPath = `${reviewRoot}/reviews/${domain}.md`;
+          return {
+            id,
+            actor_role: actorRole,
+            objective: `${stepObjective}
+
+Write the full signed review to the unique durable shared-state file ${reviewPath}. The file must contain review_schema carbon6.oracle-review.v1, mission_id ${workflowId}, step_id ${id}, candidate ${candidate}, signed_by ${seat}, a zoned signed_at_utc timestamp, materials inspected with durable citations, questions and peer answers relied upon, assumptions, confidence, risks, conditions, full reasoning, and exactly one vote: SUPPORT, SUPPORT_WITH_CONDITIONS, DISSENT, or ABSTAIN. The signature block is the author's explicit attestation that the file is their complete review of this exact candidate.
+
+The common context evidence ${evidenceRef} is input only. It is prohibited as this review's output evidence reference. Do not put the substantive review only in result-note, chat, or terminal text. Before handoff, verify ${reviewPath} is readable and non-empty, then project this step with --evidence-ref ${reviewPath}. If the durable file or signature is incomplete, exit waiting or failed instead of handoff.`,
+            allowed_exits: ['handoff', 'waiting', 'failed'],
+            depends_on: ['oracle_intake'],
+          };
+        }),
         {
           id: 'oracle_synthesis',
           actor_role: 'oracle_chair',
-          objective: 'Synthesize all five validator records, resolve disagreements explicitly, and prepare one evidence-backed recommendation for independent acceptance.',
+          objective: `Run rig workflow trace for the current instance and inspect the complete trail. Confirm that each validator closure projects its assigned unique evidence reference, then read all five durable reviews:
+${reviewPaths.map(path => `- ${path}`).join('\n')}
+
+Reject the fan-in as substantively incomplete if any file is missing, unreadable, empty, unsigned, signed by the wrong seat, bound to another mission or candidate, lacks durable citations or reasoning, omits its explicit vote, or contradicts its trail evidence reference. The common context evidence ${evidenceRef} cannot substitute for any review.
+
+For every failure, create a durable targeted recovery qitem with rig queue create addressed to that validator seat. The request must identify the failed check, exact review path, candidate, source trail packet, required correction, and return route. Record the recovery qitem ids, exit this synthesis step waiting with --blocked-on a live recovery qitem (or failed for a substantive rejection), and do not hand off. After all five reviews pass, preserve every vote, dissent, abstention, condition, and cited peer answer; write the evidence-backed synthesis to ${synthesisPath}, verify it is readable and non-empty, and project handoff with --evidence-ref ${synthesisPath}.`,
           allowed_exits: ['handoff', 'waiting', 'failed'],
           depends_on: validatorIds,
         },
