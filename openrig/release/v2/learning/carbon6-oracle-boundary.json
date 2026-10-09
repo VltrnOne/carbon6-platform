@@ -1,0 +1,13 @@
+{
+  "id": "carbon6-oracle-authority-boundary",
+  "lesson": "OpenRig delegated mode authorizes bounded continuation but grantsAuthority remains false. Direct user authority must be represented separately and narrowly. Oracle votes, synthesis and workflow completion are advisory evidence; delivery-verifier remains the independent approver and external effects require their own authority and receipts.",
+  "provenance": [
+    "Morpheous directive on 2026-10-09: lets get that done",
+    "rig mode effective for rig 01M4G4TD4YE8FERFRRVPRHEJN4 reported delegated with grantsAuthority=false",
+    "openrig/ACCEPTANCE.md at candidate commit",
+    "workflow instance 01M4GP7CYBDG0DPE3Y0EVAS7MS"
+  ],
+  "revision": 1,
+  "schema_version": 1,
+  "status": "accepted"
+}

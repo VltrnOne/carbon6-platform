@@ -1,0 +1,9 @@
+{
+  "id": "carbon6-oracle-release-f805729-r1",
+  "kind": "slice",
+  "objective": "Bind candidate f805729506de40bf78bdaace11ec84f4ad61f4e2 to the complete candidate file manifest, live twelve-seat coordination evidence, bounded direct user authority, and an independent verifier decision.",
+  "parent_id": "carbon6-oracle-supervision-baseline",
+  "parent_revision": 1,
+  "revision": 1,
+  "schema_version": 1
+}

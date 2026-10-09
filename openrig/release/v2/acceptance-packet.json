@@ -1,0 +1,105 @@
+{
+  "artifact": {
+    "candidate_sha": "f805729506de40bf78bdaace11ec84f4ad61f4e2",
+    "path": "artifact/carbon6-oracle-f805729.manifest.json",
+    "revision": 1,
+    "sha256": "0160af0c51e3289b5d7a6329e908fd44e0c939c548b252a9da3c61414e6fcdd9"
+  },
+  "authority": {
+    "action": "internal.carbon6.oracle-coordination.accept.f805729506de40bf78bdaace11ec84f4ad61f4e2",
+    "actor": "oracle-chair@carbon6-office",
+    "grant_id": "grant-carbon6-oracle-f805729-r1",
+    "revision": 1,
+    "sha256": "38303d0f12c41b04c7dc2ea2db0c3820b952597d78a023ba1fe54dec7a8acaa4"
+  },
+  "decision": {
+    "approver": "delivery-verifier@carbon6-office",
+    "decided_at": "2026-10-09T16:15:44.823Z",
+    "packet_sha256": "1186d179df7bfebdf61795aad044cdd591359e09a329545ac20c9f906c9081fc",
+    "status": "approved"
+  },
+  "evidence": [
+    {
+      "artifact_revision": 1,
+      "candidate_sha": "f805729506de40bf78bdaace11ec84f4ad61f4e2",
+      "kind": "test",
+      "path": "evidence/oracle-candidate-manifest.json",
+      "sha256": "e2055c8f443244f1017cd210275c7161e5593ac5576a79f3fbb56b4d0b122942",
+      "verdict": "PASS"
+    },
+    {
+      "artifact_revision": 1,
+      "candidate_sha": "f805729506de40bf78bdaace11ec84f4ad61f4e2",
+      "kind": "test",
+      "path": "evidence/oracle-live-smoke.json",
+      "sha256": "8d69e01afe943f2136d951c3936f42e75410222408e1269fd1ee7d77a2efdade",
+      "verdict": "PASS"
+    },
+    {
+      "artifact_revision": 1,
+      "candidate_sha": "f805729506de40bf78bdaace11ec84f4ad61f4e2",
+      "kind": "review",
+      "path": "evidence/oracle-workflow-trace.json",
+      "sha256": "ccbd47c082e095e3958eb21508bd1e921ec7abd6fdfe1cb4d8c40c2eb6413564",
+      "verdict": "PASS"
+    },
+    {
+      "artifact_revision": 1,
+      "candidate_sha": "f805729506de40bf78bdaace11ec84f4ad61f4e2",
+      "kind": "review",
+      "path": "evidence/oracle-verifier-transitions.json",
+      "sha256": "afe785c28c48e714aff5b8703bc62aeca54eb37f35edf48d36893287554f690a",
+      "verdict": "PASS"
+    },
+    {
+      "artifact_revision": 1,
+      "candidate_sha": "f805729506de40bf78bdaace11ec84f4ad61f4e2",
+      "kind": "terminal_outcome",
+      "path": "evidence/oracle-coordination-terminal.json",
+      "sha256": "27bc738ec23ab7ec1a0115caea0264d7045563daacdd169e3617687704d8df9e",
+      "verdict": "PASS"
+    }
+  ],
+  "id": "carbon6-oracle-f805729-r1",
+  "learning": [
+    {
+      "id": "carbon6-oracle-authority-boundary",
+      "revision": 1,
+      "sha256": "ccbd9019f1a6192a6f7c782a18a3f19e772a73fe3413805ae43a4283be374227"
+    }
+  ],
+  "objective_chain": [
+    {
+      "id": "carbon6-autonomous-office",
+      "kind": "project",
+      "parent_id": null,
+      "parent_revision": null,
+      "revision": 2,
+      "sha256": "3a2f1761d9c9224795b57b4a1e085957e4ba8896d1e53cd71b030a77b7919c10"
+    },
+    {
+      "id": "carbon6-oracle-supervision-baseline",
+      "kind": "mission",
+      "parent_id": "carbon6-autonomous-office",
+      "parent_revision": 2,
+      "revision": 1,
+      "sha256": "3afff5df4d4a21134c389b96b39d4196b1e86a56f9813652104e7e4ff9ba31c3"
+    },
+    {
+      "id": "carbon6-oracle-release-f805729-r1",
+      "kind": "slice",
+      "parent_id": "carbon6-oracle-supervision-baseline",
+      "parent_revision": 1,
+      "revision": 1,
+      "sha256": "18f43cbaf0007c2b633ef82e6f7eaf3e89f2e43d94d54e21cd1edf973e92180e"
+    }
+  ],
+  "schema_version": 1,
+  "terminal_gate": {
+    "criterion": "On vltrn-brain, all twelve declared seats are running/startup-ready; Oracle chair projects the same objective and candidate to five domain validators; all five durable returns converge before chair synthesis; the chair preserves every condition and dissent and hands the exact candidate/evidence to delivery-verifier; delivery-verifier independently rechecks the complete candidate manifest, current direct-user grant and negative packet cases before recording approval or rejection. Oracle advice and delegated mode do not authorize acceptance.",
+    "evidence_paths": [
+      "evidence/oracle-coordination-terminal.json"
+    ],
+    "outcome": "Operate the twelve-seat Oracle council through five-way deliberation, synthesis and an independent authority-bound verifier boundary for the exact candidate."
+  }
+}

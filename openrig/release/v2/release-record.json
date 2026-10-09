@@ -1,0 +1,16 @@
+{
+  "artifact_sha256": "0160af0c51e3289b5d7a6329e908fd44e0c939c548b252a9da3c61414e6fcdd9",
+  "candidate_sha": "f805729506de40bf78bdaace11ec84f4ad61f4e2",
+  "created_at": "2026-10-09T16:12:00Z",
+  "decision_status": "approved",
+  "grant_sha256": "38303d0f12c41b04c7dc2ea2db0c3820b952597d78a023ba1fe54dec7a8acaa4",
+  "learning_sha256": "ccbd9019f1a6192a6f7c782a18a3f19e772a73fe3413805ae43a4283be374227",
+  "packet_sha256": "1186d179df7bfebdf61795aad044cdd591359e09a329545ac20c9f906c9081fc",
+  "terminal_evidence_sha256": "27bc738ec23ab7ec1a0115caea0264d7045563daacdd169e3617687704d8df9e",
+  "verifier_frontier_qitem": "qitem-20261009160550-b8f3998d",
+  "workflow_instance": "01M4GP7CYBDG0DPE3Y0EVAS7MS",
+  "approver": "delivery-verifier@carbon6-office",
+  "decided_at": "2026-10-09T16:15:44.823Z",
+  "approval_qitem": "oracle-v2-authority-ready-f805729",
+  "approval_transition": 108
+}

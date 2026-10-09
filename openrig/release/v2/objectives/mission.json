@@ -1,0 +1,9 @@
+{
+  "id": "carbon6-oracle-supervision-baseline",
+  "kind": "mission",
+  "objective": "Operate and independently verify the twelve-seat Carbon6 Oracle council path from chair intake through five-validator fan-out and synthesis to the independent delivery-verifier boundary.",
+  "parent_id": "carbon6-autonomous-office",
+  "parent_revision": 2,
+  "revision": 1,
+  "schema_version": 1
+}

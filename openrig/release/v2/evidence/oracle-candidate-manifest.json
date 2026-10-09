@@ -1,0 +1,15 @@
+{
+  "schema": "carbon6.candidate-evidence/v1",
+  "candidate": "f805729506de40bf78bdaace11ec84f4ad61f4e2",
+  "deployment_commit": "de40ea72e206bed3ac58a02341a36af396d178cd",
+  "bundle_ref": "openrig/release/v2/evidence/oracle-candidate-history.bundle",
+  "bundle_sha256": "27a6c025d570e889c469ec44bdcdf148763450f4e5fd6bd253c51858c0583f0f",
+  "bundle_tip": "de40ea72e206bed3ac58a02341a36af396d178cd",
+  "verification": [
+    "Create an empty temporary Git repository.",
+    "Run git bundle verify against bundle_ref.",
+    "Fetch bundle_tip from the bundle.",
+    "Verify candidate exists with git cat-file -t candidate.",
+    "Inspect candidate with git show --stat --oneline candidate."
+  ]
+}

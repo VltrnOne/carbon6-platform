@@ -1,0 +1,47 @@
+{
+  "effective": {
+    "binding": {
+      "id": "rig:01M4G4TD4YE8FERFRRVPRHEJN4",
+      "mode": "delegated",
+      "record": {
+        "autonomy_scope": "bounded_continuation",
+        "heartbeat_cadence": "normal",
+        "inspection_depth": "normal",
+        "update_detail": "normal",
+        "escalation_threshold": "normal",
+        "concurrency_limit": "unlimited",
+        "permission_prompt_posture": "normal",
+        "scope": "rig",
+        "expiry_or_stale_rule": "re_confirm_on_long_gap",
+        "evidence_citation": "Morpheous authorized Oracle-led autonomous collaboration on 2026-10-09: lets get that done"
+      },
+      "qualifier": "01M4G4TD4YE8FERFRRVPRHEJN4",
+      "setAt": "2026-10-09T15:56:44.939Z",
+      "setBy": "operator"
+    },
+    "resolvedScope": "rig"
+  },
+  "posture": "known",
+  "operatingPosture": {
+    "posture": "delegated",
+    "source": "binding",
+    "context": {
+      "rigId": "01M4G4TD4YE8FERFRRVPRHEJN4",
+      "phase": {
+        "value": null,
+        "source": null
+      },
+      "sources": [
+        "rig:01M4G4TD4YE8FERFRRVPRHEJN4"
+      ]
+    },
+    "binding": {
+      "id": "rig:01M4G4TD4YE8FERFRRVPRHEJN4",
+      "scope": "rig",
+      "setAt": "2026-10-09T15:56:44.939Z",
+      "evidence": "Morpheous authorized Oracle-led autonomous collaboration on 2026-10-09: lets get that done"
+    },
+    "reason": "Explicit operating posture at the most specific applicable scope.",
+    "grantsAuthority": false
+  }
+}

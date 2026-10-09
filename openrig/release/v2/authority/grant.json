@@ -1,0 +1,31 @@
+{
+  "actions": [
+    "internal.carbon6.oracle-coordination.accept.f805729506de40bf78bdaace11ec84f4ad61f4e2"
+  ],
+  "actors": [
+    "oracle-chair@carbon6-office"
+  ],
+  "approvers": [
+    "delivery-verifier@carbon6-office"
+  ],
+  "candidate_shas": [
+    "f805729506de40bf78bdaace11ec84f4ad61f4e2"
+  ],
+  "constraints": [
+    "Internal acceptance of the bounded Carbon6 Oracle coordination proof only.",
+    "The direct user directive is the authority source; delegated operating mode grants no authority.",
+    "Oracle chair and validator votes are advisory and cannot approve this packet.",
+    "No external sending, publishing, payment, credential use, provider action, infrastructure mutation, or customer acceptance is authorized.",
+    "Approval requires exact candidate and evidence verification by delivery-verifier@carbon6-office."
+  ],
+  "enabled": true,
+  "expires_at": "2026-10-17T23:59:59Z",
+  "id": "grant-carbon6-oracle-f805729-r1",
+  "packet_ids": [
+    "carbon6-oracle-f805729-r1"
+  ],
+  "revision": 1,
+  "schema_version": 1,
+  "source": "Morpheous direct instruction on 2026-10-09 to get the Oracle-led collaboration operating",
+  "status": "active"
+}

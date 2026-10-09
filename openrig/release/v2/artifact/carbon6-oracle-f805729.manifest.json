@@ -1,0 +1,525 @@
+{
+  "artifact": "Carbon6 Oracle coordination candidate package",
+  "artifact_revision": 1,
+  "candidate_sha": "f805729506de40bf78bdaace11ec84f4ad61f4e2",
+  "candidate_tree": "4ca07d23a52fcf12d6089e32a3ae75ddd15662ec",
+  "file_count": 73,
+  "files": [
+    {
+      "bytes": 6857,
+      "git_blob": "f995b60823dcb01de8b809a052bf5d2267175cf0",
+      "mode": "100644",
+      "path": "openrig/ACCEPTANCE.md",
+      "sha256": "3ad135439e9b3985f673596e5b8b683869079ad0b0a1018f48cf97e755fa8aaf"
+    },
+    {
+      "bytes": 3874,
+      "git_blob": "ae78754aaffc584d17042a7576e67bb040293747",
+      "mode": "100644",
+      "path": "openrig/CULTURE.md",
+      "sha256": "b1e9a4bdbcddc691c0854fb53c0381a5d36a63d7353fb90940c4a9cd7c8a034a"
+    },
+    {
+      "bytes": 2743,
+      "git_blob": "30ac4d2bf8d624be9558292b1feda614ea6acc86",
+      "mode": "100644",
+      "path": "openrig/ORACLE.md",
+      "sha256": "da4b4ae33dbce768a11672538cd730d3ccb67d8b5d7a1aad2536a583bb3d4da9"
+    },
+    {
+      "bytes": 10503,
+      "git_blob": "fba304d297700af0dfb3ecceae664543e190989d",
+      "mode": "100644",
+      "path": "openrig/README.md",
+      "sha256": "977fdcc2d3a99a1db5d2813977a16a014e34821d6fb06885a4063e3b1b6becbe"
+    },
+    {
+      "bytes": 2201,
+      "git_blob": "7099242d9d1ab576505031643ac5b720b62d3f9f",
+      "mode": "100644",
+      "path": "openrig/REFOCUS.md",
+      "sha256": "811c0e818cc8bdcce9248cc40de33d5182643ebb1278125be71cb920c94be80f"
+    },
+    {
+      "bytes": 709,
+      "git_blob": "d0c051e801f06c8dfc6767d16fe63bd6b6d0879e",
+      "mode": "100644",
+      "path": "openrig/agents/back/ROLE.md",
+      "sha256": "79c0adaf3ad56683e4878706f09cf272884c66e32dc2a2a34085f1ed5fbeed2f"
+    },
+    {
+      "bytes": 705,
+      "git_blob": "ed750f2b932b2c45527278c40e9380acadc077e2",
+      "mode": "100644",
+      "path": "openrig/agents/back/agent.yaml",
+      "sha256": "94634252b8475e2a8f1fde549284d662e00cfe10f5cc79cdcb284707f6c66794"
+    },
+    {
+      "bytes": 759,
+      "git_blob": "5eaa8fc870b65fb6e1640defd5fd7a83cc24bca8",
+      "mode": "100644",
+      "path": "openrig/agents/builder/ROLE.md",
+      "sha256": "e8afde69071ee3cc55c95be706dd18e22f703fc944f2ffe964efa298e8cbd89a"
+    },
+    {
+      "bytes": 719,
+      "git_blob": "a859cd2a645f35e8004a1142aba53a0e32cc8fa0",
+      "mode": "100644",
+      "path": "openrig/agents/builder/agent.yaml",
+      "sha256": "acafeefeac8fa4eabcbd8a8540507b9ad0eb9be6d095dd25a4bd6d2fbb16f76c"
+    },
+    {
+      "bytes": 742,
+      "git_blob": "7f42e8d90d68eaae29f1fd3974ab9d98dfd04525",
+      "mode": "100644",
+      "path": "openrig/agents/front/ROLE.md",
+      "sha256": "fc6147bdb5174a015f093dd0291f7a94152dcae27ae581b7371eacb3d283b103"
+    },
+    {
+      "bytes": 707,
+      "git_blob": "c92c50d373987c17ab1d7ad0ac322e0d31ee1ed4",
+      "mode": "100644",
+      "path": "openrig/agents/front/agent.yaml",
+      "sha256": "0f9a02359e839cad4107b88360ae00a99bec310456e979de083f1e20437d28b5"
+    },
+    {
+      "bytes": 788,
+      "git_blob": "8c0bc0fa277f23a144cdc134f4307fb4f422e09f",
+      "mode": "100644",
+      "path": "openrig/agents/lead/ROLE.md",
+      "sha256": "b287fe3883f34e960c61c2473dcee60e15d599a46ff7f181d5a540386156a94a"
+    },
+    {
+      "bytes": 722,
+      "git_blob": "b89825fc30ba8453df7821cc7bce4ea33179d28f",
+      "mode": "100644",
+      "path": "openrig/agents/lead/agent.yaml",
+      "sha256": "7b5f19572a4c4215a0caad80a8524a42c812b1990399dfa15297b6f77e639d8b"
+    },
+    {
+      "bytes": 833,
+      "git_blob": "bade6c429bcf6f89b616e149b4cc290dd1fe2985",
+      "mode": "100644",
+      "path": "openrig/agents/learning/ROLE.md",
+      "sha256": "d6a53da9a68b2885be5686c60fe100ca9d21c740f72de22582ea829f55a38647"
+    },
+    {
+      "bytes": 718,
+      "git_blob": "6585c1d0beff7b3c6e766f8c4c614255bb6e4e6a",
+      "mode": "100644",
+      "path": "openrig/agents/learning/agent.yaml",
+      "sha256": "5ab2ffb7793daf82348bb82683a8225d8b21ad752d47e9c48abc8ce5b779f618"
+    },
+    {
+      "bytes": 947,
+      "git_blob": "58175e57b0eb6a857255b413946c8858b93288e5",
+      "mode": "100644",
+      "path": "openrig/agents/oracle-asset-ip/ROLE.md",
+      "sha256": "db6aa011956c6e92e6439c9914aa0fd40236d8b2a28be48e40a1984909b758e9"
+    },
+    {
+      "bytes": 734,
+      "git_blob": "7eefeb8755d1f5bad0db998a56d93d487e1cdfa1",
+      "mode": "100644",
+      "path": "openrig/agents/oracle-asset-ip/agent.yaml",
+      "sha256": "97832258138a6e931535d0d76907f9931580edbe7e441afdb19b1ebc2e931550"
+    },
+    {
+      "bytes": 1224,
+      "git_blob": "e9f2856a7498bb5ff8148c1d82deff92bce0fa39",
+      "mode": "100644",
+      "path": "openrig/agents/oracle-chair/ROLE.md",
+      "sha256": "7a2f9aa3fb5e602b81636768234d94023e70c2224d29acebd2b7109caf85f17b"
+    },
+    {
+      "bytes": 741,
+      "git_blob": "24d94ac937038ee4bd17bb3e785e572400b54cf0",
+      "mode": "100644",
+      "path": "openrig/agents/oracle-chair/agent.yaml",
+      "sha256": "57fc38308db4a37d66d49bd13b551d808a290fe62e7102eeb726ce73219be578"
+    },
+    {
+      "bytes": 894,
+      "git_blob": "42d935ce5ec5acaae2038d1ff83423965221bc56",
+      "mode": "100644",
+      "path": "openrig/agents/oracle-financial/ROLE.md",
+      "sha256": "5f52ab50c3cfaa226eeccb9fd77cd4be839407900f04b5dc9c14894a3d268e68"
+    },
+    {
+      "bytes": 732,
+      "git_blob": "997ed198055b376470a4cab1f2a9d672917c2e93",
+      "mode": "100644",
+      "path": "openrig/agents/oracle-financial/agent.yaml",
+      "sha256": "7e2025ba99ab8fb30155fe5cfe59aca9775f047cf11119834c5b007141d083be"
+    },
+    {
+      "bytes": 1012,
+      "git_blob": "2cc33ed4fd3078f95e7398181a138cdcbdffbafb",
+      "mode": "100644",
+      "path": "openrig/agents/oracle-legal/ROLE.md",
+      "sha256": "2ca3e2de236565c0ea4318ec9f79057daae2bc56b8fbcfb316a45b6da5fa251b"
+    },
+    {
+      "bytes": 739,
+      "git_blob": "b32275d505b7ed0fa490d574442ff8c568e9d1e4",
+      "mode": "100644",
+      "path": "openrig/agents/oracle-legal/agent.yaml",
+      "sha256": "9b80bc8ee212d5ef726e8a31119d90bd1982a8525f4a8cd20ec471d62b1ca41e"
+    },
+    {
+      "bytes": 924,
+      "git_blob": "5338d81f551137ce41fc833abaf25c81066e3a7d",
+      "mode": "100644",
+      "path": "openrig/agents/oracle-strategic/ROLE.md",
+      "sha256": "3978a295bb82a31fd241c427560b26eac174cb73ffc72a88325414f43a99fdd3"
+    },
+    {
+      "bytes": 732,
+      "git_blob": "3d24a71a66fbe380049d5ed59addaa85c902d483",
+      "mode": "100644",
+      "path": "openrig/agents/oracle-strategic/agent.yaml",
+      "sha256": "c6911dad1ac59631ca4a2861c29f3b529852c32d48a7b35abd35cccdebf2dd26"
+    },
+    {
+      "bytes": 960,
+      "git_blob": "29c96f563d73f7d5404eb1b58bb1d6b4004d6901",
+      "mode": "100644",
+      "path": "openrig/agents/oracle-technology/ROLE.md",
+      "sha256": "1546f9aa1b74e96378f834a6b8f70e627beb3546d95183d011adc39b7a8c44af"
+    },
+    {
+      "bytes": 734,
+      "git_blob": "cc637b40b40317e2d00a721b0f6136c99e0d34a5",
+      "mode": "100644",
+      "path": "openrig/agents/oracle-technology/agent.yaml",
+      "sha256": "48286bb600f9b1083802835bc2c773db5172f72b5607814c1baf7297394c16fe"
+    },
+    {
+      "bytes": 841,
+      "git_blob": "f9cc690cf55f120cd53efcd58233ee743635a3f8",
+      "mode": "100644",
+      "path": "openrig/agents/verifier/ROLE.md",
+      "sha256": "47892d49683e6b29dfeeaabd9f492630fd3dd6490799173efc5109d2269ca688"
+    },
+    {
+      "bytes": 725,
+      "git_blob": "6aad6408b76956a2599d1b354c3dd87fc1fb458a",
+      "mode": "100644",
+      "path": "openrig/agents/verifier/agent.yaml",
+      "sha256": "c855217a629b3eb0605426c3646f4709493d38f1b8c35d7e1d19c119c6fdd44e"
+    },
+    {
+      "bytes": 451,
+      "git_blob": "45e85473860e646e9dea597e4b64c2e0d344d827",
+      "mode": "100644",
+      "path": "openrig/carbon6-openrig.service",
+      "sha256": "bc966d04aa29f14f2af36a3e2d6891f1348191ce0b4fd960ecbac97b9c4bb53a"
+    },
+    {
+      "bytes": 9951,
+      "git_blob": "596e0b2332a65c344e9e76dfe7b13cef96d52868",
+      "mode": "100755",
+      "path": "openrig/create-oracle-mission.mjs",
+      "sha256": "6528942ba505e7f2f9b6da63dc6ca978ffb5c3413528fc2da8f5350c8f9f8405"
+    },
+    {
+      "bytes": 6700,
+      "git_blob": "378111d0432f7636dca98e38dc920aaf6bda1a4c",
+      "mode": "100644",
+      "path": "openrig/oracle-mission.test.mjs",
+      "sha256": "b1d15c7f6fd9ceee65dd39f3cad90af7b228ee62f80ce59edf759db254baec62"
+    },
+    {
+      "bytes": 2084,
+      "git_blob": "2a49b7e59eadbbb8d39d2991c9abe4c984ce2592",
+      "mode": "100644",
+      "path": "openrig/oracle-pod.fragment.yaml",
+      "sha256": "2189e2e0b7180c823749ffdd07e321d2702ea558836b9354d8b0739a8586b01e"
+    },
+    {
+      "bytes": 6151,
+      "git_blob": "f452ef3db7c7f7ffd39593f4c47b94fca3d836f7",
+      "mode": "100644",
+      "path": "openrig/packet.schema.json",
+      "sha256": "c69cd9dcf6cc256dd8820e625448f08623561adf17100e4359e7729a12583d0e"
+    },
+    {
+      "bytes": 7524,
+      "git_blob": "27edf9f31d464f3a32bb441971926a1bf44ae4f9",
+      "mode": "100644",
+      "path": "openrig/packet.test.mjs",
+      "sha256": "6e6fec359d11485b9635902282ac554bf5dcc85bc6cb04a0eac501d32b08c3de"
+    },
+    {
+      "bytes": 3755,
+      "git_blob": "3b87894e9cc543c6791247c31b44541442c79473",
+      "mode": "100644",
+      "path": "openrig/release/v1/README.md",
+      "sha256": "42df87b323f3325fb3aec6809586e41874a0edb65c9cba9276c0e21c6a899533"
+    },
+    {
+      "bytes": 4145,
+      "git_blob": "9f19c89def80fdbf8562113b37e898158d878c94",
+      "mode": "100644",
+      "path": "openrig/release/v1/acceptance-packet.json",
+      "sha256": "dcf9ae772767f61b7e4eeb394b2d32dd7180087dbbd552686af31db392f8a5eb"
+    },
+    {
+      "bytes": 4162,
+      "git_blob": "2e9c956faa1f73db3f9f8242c0d98634f4feb5a7",
+      "mode": "100644",
+      "path": "openrig/release/v1/acceptance-packet.proposed.json",
+      "sha256": "e4323d383f0a70f7b0c611d128f86935c34ce64dcbde00c38428cc73ebcf521b"
+    },
+    {
+      "bytes": 9539,
+      "git_blob": "99b3e23689f2fe2fb052c885dbe245b7a1b4c60d",
+      "mode": "100644",
+      "path": "openrig/release/v1/artifact/carbon6-openrig-5cf9a39.manifest.json",
+      "sha256": "2a9fa08762415cd748bf6ced4325e6287291ab8c91b61c54f2bea80ae594856f"
+    },
+    {
+      "bytes": 774,
+      "git_blob": "187b830e677c6490dc9ef247d759c28fbd1ec50d",
+      "mode": "100644",
+      "path": "openrig/release/v1/authority/grant.proposed.json",
+      "sha256": "ded598457dba2e00dc5b5bb5657e665d6c92f5fa6e2d337741ea39ca76f5c762"
+    },
+    {
+      "bytes": 2780,
+      "git_blob": "598d3b020ea5c22254d90ef91f28ed28897d60b7",
+      "mode": "100644",
+      "path": "openrig/release/v1/current-state.json",
+      "sha256": "012b8ec6829b3894fc6188814fddab004c9269328d703d9d7a50f94d846815dc"
+    },
+    {
+      "bytes": 1936,
+      "git_blob": "265e330ad8ecdcda82040c9a66d40c56e8b36ab9",
+      "mode": "100644",
+      "path": "openrig/release/v1/current-state.proposed.json",
+      "sha256": "a982176dd70b3286cdccf7c21fbc8dc26f854b4e1f9425f71ecf598dad6a152f"
+    },
+    {
+      "bytes": 471,
+      "git_blob": "9c7831269c6b2ad0444ec3ec77702016a490d88d",
+      "mode": "100644",
+      "path": "openrig/release/v1/evidence/candidate-integrity.json",
+      "sha256": "a4e4fe856d7e5e2b064d0f75e91ba0a40d5230e742d6f79f279103c4bad799c2"
+    },
+    {
+      "bytes": 3786,
+      "git_blob": "8aaec9d6967953db36e6622624f5d8de37360ef3",
+      "mode": "100644",
+      "path": "openrig/release/v1/evidence/live-terminal-outcome.json",
+      "sha256": "5d66d9bd7b6c4607217a618e5f89476e0d009b41762ed13a83273107fa9780cf"
+    },
+    {
+      "bytes": 762,
+      "git_blob": "16e5587bef03e7929fdc7559492f7146b1dcfceb",
+      "mode": "100644",
+      "path": "openrig/release/v1/evidence/live-terminal-outcome.pending.json",
+      "sha256": "57c28f3c9ceb283b857df4f2867dbb1ba90a9f29edbf13d3a8e085682b78974b"
+    },
+    {
+      "bytes": 3361,
+      "git_blob": "01b0314d6c4ac673dcacdff469a703ca88c05092",
+      "mode": "100644",
+      "path": "openrig/release/v1/evidence/packet-tests.tap",
+      "sha256": "5a9660243bb058ec7151df3f8739b82ec1102ff5a0bcdcf0e68df57fd1a2ad32"
+    },
+    {
+      "bytes": 48,
+      "git_blob": "dc90662028915fb4c4ace7d6bbb3cb66c691c82f",
+      "mode": "100644",
+      "path": "openrig/release/v1/evidence/slash-lint.txt",
+      "sha256": "1bfc9c75c7a351ff609e2dec9e268e6bf80871f7c1b3718ae0222949752d7e14"
+    },
+    {
+      "bytes": 2496,
+      "git_blob": "4c87eef76dde41987ebb908245240ddf1f75b1ea",
+      "mode": "100644",
+      "path": "openrig/release/v1/evidence/slash-tests.txt",
+      "sha256": "d3f6c1f471c9b8d9d9eeec1540b5d4ae21734bda9963b9848443d03db6527aee"
+    },
+    {
+      "bytes": 404,
+      "git_blob": "f092980f67cd68535964109704e80bf14caf4d71",
+      "mode": "100644",
+      "path": "openrig/release/v1/evidence/spec-validation.json",
+      "sha256": "2bb607da61fe056e5406a83fb21efccd80e781da69e8201701ddae966003c657"
+    },
+    {
+      "bytes": 523,
+      "git_blob": "698ddc5d9b091e6bf90874d069ebfbe6d82dd3f3",
+      "mode": "100644",
+      "path": "openrig/release/v1/learning/carbon6-runtime-boundary.json",
+      "sha256": "98b499be25857677208f918d27d18bb1d21822a3316fe41aeb83960f844123ff"
+    },
+    {
+      "bytes": 341,
+      "git_blob": "309ed46e3ac14d10b5e05b65ac968c2ec1a12e4e",
+      "mode": "100644",
+      "path": "openrig/release/v1/objectives/mission.json",
+      "sha256": "b59d685f7b7f8cd6aa096abbd3ffa57814f0b8bd951c6199b14c627dffc700e7"
+    },
+    {
+      "bytes": 325,
+      "git_blob": "fe7f4f102195bcdaccc266f49f92aa1929d769bb",
+      "mode": "100644",
+      "path": "openrig/release/v1/objectives/project.json",
+      "sha256": "867ae34547d9b39d8967cd070cd239d9b21ab270d20ae85a92173c78dbd53cd4"
+    },
+    {
+      "bytes": 366,
+      "git_blob": "102dd751c318a7bc92e52f2206a16cf946bb9a20",
+      "mode": "100644",
+      "path": "openrig/release/v1/objectives/slice.json",
+      "sha256": "57ddbc9478560dcf238886e53f3379b94f4a382fe47c3eb792eda5affd8eb5da"
+    },
+    {
+      "bytes": 714,
+      "git_blob": "a2ca53cced1c853c0f6630aecaab3fa9e89e2603",
+      "mode": "100644",
+      "path": "openrig/release/v1/release-record.json",
+      "sha256": "34f72a457d7c868c09e7f19aacbf33641f3c60544c25bd063fde6534455ad6c7"
+    },
+    {
+      "bytes": 2236,
+      "git_blob": "47369f68ea4788854304e2b6de33091cf06485c2",
+      "mode": "100644",
+      "path": "openrig/rig.sh",
+      "sha256": "9877e8f225e5a49aaf2fb12e656695fb9ac417de4a7859d2d83e9908f3798549"
+    },
+    {
+      "bytes": 5185,
+      "git_blob": "721e90f99b6a825fe7ba64a240e9840d918cf2d5",
+      "mode": "100644",
+      "path": "openrig/rig.yaml",
+      "sha256": "ecf0c71e681bc4c78df3426fff6f57353f5040ca62af006a59536d1b6036aae1"
+    },
+    {
+      "bytes": 781,
+      "git_blob": "4542d2d3c1d6c36d260cf1e41bb62287fc7ced5d",
+      "mode": "100755",
+      "path": "openrig/server-daemon.sh",
+      "sha256": "87d08c9842ed6661979883651704e9118a45764c22b27daae1e1a45e97d954a6"
+    },
+    {
+      "bytes": 7959,
+      "git_blob": "53369ecd9d8a94c734ef6ca4a38fbed159ebbadb",
+      "mode": "100644",
+      "path": "openrig/validate-packet.mjs",
+      "sha256": "90479539bbf3559df8e2613dd4c7edccf0feb96effc7dc94db35c5e358c59d18"
+    },
+    {
+      "bytes": 4589,
+      "git_blob": "8bebbc91652e335319578f1507c519704833ff74",
+      "mode": "100644",
+      "path": "openrig/validate-specs.mjs",
+      "sha256": "ea9156152daa7687c873a1ff118491d98b4a74f1ff989c19d85caa4bfa733a81"
+    },
+    {
+      "bytes": 5531,
+      "git_blob": "306643d297f400f99a99df33827c15e305e82cac",
+      "mode": "100644",
+      "path": "openrig/workflows/oracle-supervision.workflow.yaml",
+      "sha256": "84452dbd1d0bce541971f6fd5a3a7de48c39344ea9cee6eb0dd5935643fd6d72"
+    },
+    {
+      "bytes": 178,
+      "git_blob": "7b990f0a16c63d3cbb8b61b6f3fd8c24cd61c25b",
+      "mode": "100644",
+      "path": "slash-commands/.eslintrc.json",
+      "sha256": "7715cc5e7d7273411c3fb09d3fdd18cf11212ce1348cb14707a331b9c7067eea"
+    },
+    {
+      "bytes": 8094,
+      "git_blob": "1386e481c7ae0a4e72d130dd65fc6c18f3a30ed4",
+      "mode": "100644",
+      "path": "slash-commands/QUICK_START.md",
+      "sha256": "65f50b6e6c88525f8ea1145e775033016b942c121b77e1a47567f3584fdbaa9f"
+    },
+    {
+      "bytes": 26537,
+      "git_blob": "4f319510de5a69d9b548bc60eeca3ff5d64dca3b",
+      "mode": "100644",
+      "path": "slash-commands/README.md",
+      "sha256": "f01763a9a32f0de9f82a173651de5dc44f4b9a427b17a3b98d2fdccb2088e7dc"
+    },
+    {
+      "bytes": 600,
+      "git_blob": "4a715f4294607bc8fee676e474ff61e7abc532b0",
+      "mode": "100755",
+      "path": "slash-commands/bin/carbon6-slash",
+      "sha256": "d3b1f8539534377a0bbc0935d4d78d69d7ef3af6730825115b313e097c4877c3"
+    },
+    {
+      "bytes": 1255,
+      "git_blob": "31e54c7b8c82d1f6eacbf78613789afc8475f95a",
+      "mode": "100755",
+      "path": "slash-commands/bin/rig-ssh",
+      "sha256": "4d637f0cedee4916d578182f2d5486da20941b3cb996eb499a310df997f28afb"
+    },
+    {
+      "bytes": 6710,
+      "git_blob": "23613aea4d21cffec6bfc115ced5db9b3410233e",
+      "mode": "100755",
+      "path": "slash-commands/bin/slash",
+      "sha256": "b3926d9104bbc5991b9e0230d0e8471dc4cbb9fbb32a3ff29301b595fa10cc08"
+    },
+    {
+      "bytes": 28535,
+      "git_blob": "058cee0bd26fc8153f6d5d8488eb8cd35aefc58a",
+      "mode": "100644",
+      "path": "slash-commands/command-registry.json",
+      "sha256": "af28f12c16631d05fcea0d5945bafce6582647397afa8ca9b0411201d74a02e7"
+    },
+    {
+      "bytes": 11768,
+      "git_blob": "d99d865d4452b2f8470aa3c723ef1806223666b2",
+      "mode": "100644",
+      "path": "slash-commands/lib/command-parser.js",
+      "sha256": "5c9dec071739c812745cf9fbd053b332e14e2035bd7d381109049941a65df576"
+    },
+    {
+      "bytes": 5100,
+      "git_blob": "d807be47843a0e48613b1d417eecd6c3aef4675a",
+      "mode": "100644",
+      "path": "slash-commands/lib/openrig-adapter.js",
+      "sha256": "4cab0108bd25faf66b071a01c21720966513214625005a423fbf0f140cad0955"
+    },
+    {
+      "bytes": 8962,
+      "git_blob": "50c25c4f84b33fe850d7cad2cb61cbbb5e6440f4",
+      "mode": "100644",
+      "path": "slash-commands/openrig-routes.json",
+      "sha256": "a4740afc32a2065a1f8fd09cc74a11da93b3f399091d245bb7c73614ff0f8f31"
+    },
+    {
+      "bytes": 187887,
+      "git_blob": "dbe6cf65c222c1678775d37beeae1e7f749726b6",
+      "mode": "100644",
+      "path": "slash-commands/package-lock.json",
+      "sha256": "79e73307ed102d7c20f8edb4c8a6d6cc7c5c8c8e43963042935e9c8351fc0c30"
+    },
+    {
+      "bytes": 684,
+      "git_blob": "9cd3870903867fcc7c998d1d4e264b9dca295219",
+      "mode": "100644",
+      "path": "slash-commands/package.json",
+      "sha256": "d4edbe87ab6d1b07639f6680b010e9feec3c64fda778f64ed89ffe7554abb363"
+    },
+    {
+      "bytes": 12588,
+      "git_blob": "320447fae1e33296174a7af3ccbc2c0deca74672",
+      "mode": "100644",
+      "path": "slash-commands/tests/openrig-adapter.test.js",
+      "sha256": "2dc6eb903cd24043dc7378aba6169629bbca07b96d3553a14ab2e63adfab2118"
+    }
+  ],
+  "schema_version": 1,
+  "scope": [
+    "openrig/**",
+    "slash-commands/**"
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "schema": "carbon6.oracle-coordination-terminal/v1",
+  "candidate": "f805729506de40bf78bdaace11ec84f4ad61f4e2",
+  "deployment_commit": "de40ea72e206bed3ac58a02341a36af396d178cd",
+  "captured_through": "2026-10-09T16:11:28.533Z",
+  "bounded_outcome": "PASS_FOR_INDEPENDENT_REVIEW",
+  "formal_acceptance": "PENDING_INDEPENDENT_DECISION",
+  "checks": [
+    {
+      "check": "twelve declared seats running and startup-ready",
+      "result": "PASS",
+      "source": "evidence/oracle-live-smoke.json"
+    },
+    {
+      "check": "daemon active on OpenRig 0.6.7 with zero restarts",
+      "result": "PASS",
+      "source": "evidence/oracle-live-smoke.json"
+    },
+    {
+      "check": "delegated posture recorded without granting authority",
+      "result": "PASS",
+      "source": "evidence/oracle-live-smoke.json"
+    },
+    {
+      "check": "chair intake projected five parallel validator packets before synthesis",
+      "result": "PASS",
+      "source": "evidence/oracle-workflow-trace.json"
+    },
+    {
+      "check": "five validator branches converged to chair synthesis and independent verifier frontier",
+      "result": "PASS",
+      "source": "evidence/oracle-workflow-trace.json"
+    },
+    {
+      "check": "candidate bundle complete and candidate object is ancestor of recorded deployment commit",
+      "result": "PASS",
+      "source": "evidence/oracle-verifier-transitions.json",
+      "transition": 81
+    },
+    {
+      "check": "previously detected slash test mismatch corrected to candidate hash; Jest 37/37 and ESLint pass",
+      "result": "PASS",
+      "source": "evidence/oracle-verifier-transitions.json",
+      "transition": 96
+    }
+  ],
+  "limits": [
+    "The workflow is waiting at the independent acceptance step and is not a completed acceptance.",
+    "The post-correction observation rechecked the corrected file and tests; the independent verifier must rerun the complete manifest before deciding.",
+    "The correcting actor, write authorization record and before-byte backup were not established in the verifier record.",
+    "Delegated mode reports grantsAuthority=false.",
+    "Council votes and synthesis are advisory and do not approve this packet.",
+    "No external provider, customer, publication, payment or infrastructure outcome is claimed."
+  ],
+  "source_hashes": {
+    "evidence/oracle-live-smoke.json": "8d69e01afe943f2136d951c3936f42e75410222408e1269fd1ee7d77a2efdade",
+    "evidence/oracle-candidate-manifest.json": "e2055c8f443244f1017cd210275c7161e5593ac5576a79f3fbb56b4d0b122942",
+    "evidence/oracle-workflow-trace.json": "ccbd47c082e095e3958eb21508bd1e921ec7abd6fdfe1cb4d8c40c2eb6413564",
+    "evidence/oracle-verifier-transitions.json": "afe785c28c48e714aff5b8703bc62aeca54eb37f35edf48d36893287554f690a"
+  }
+}

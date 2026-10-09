@@ -1,0 +1,43 @@
+{
+  "schema": "carbon6.oracle-live-proof/v1",
+  "captured_at": "2026-10-09T15:56:49Z",
+  "candidate": "f805729506de40bf78bdaace11ec84f4ad61f4e2",
+  "deployment_commit": "de40ea72e206bed3ac58a02341a36af396d178cd",
+  "host": "vltrn-brain-01.us-east1-b.c.vltrn-system.internal",
+  "transport": "Tailscale SSH alias vltrn-brain",
+  "rig": {
+    "id": "01M4G4TD4YE8FERFRRVPRHEJN4",
+    "name": "carbon6-office",
+    "seat_count": 12,
+    "running_count": 12,
+    "startup_ready_count": 12,
+    "pre_expansion_snapshot": "01M4GNYPS8STCYAH12P022TTQB"
+  },
+  "authority": {
+    "mode": "delegated",
+    "scope": "rig",
+    "qualifier": "01M4G4TD4YE8FERFRRVPRHEJN4",
+    "grants_authority": false,
+    "note": "Delegated posture permits bounded continuation; formal acceptance remains independently authority-bound."
+  },
+  "daemon": {
+    "service": "carbon6-openrig.service",
+    "state": "active",
+    "restart_count": 0,
+    "openrig_version": "0.6.7"
+  },
+  "validation": {
+    "topology": "PASS",
+    "rig_spec": "PASS",
+    "workflow_spec": "PASS",
+    "core_tests": "26/26 PASS",
+    "slash_route_tests": "37/37 PASS",
+    "eslint": "PASS"
+  },
+  "workflow": {
+    "spec": "openrig/workflows/oracle-live-smoke-f805729.yaml",
+    "instance_id": null,
+    "status": "PENDING_LIVE_RUN",
+    "trace_ref": null
+  }
+}

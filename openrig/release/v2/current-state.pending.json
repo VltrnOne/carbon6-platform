@@ -1,0 +1,74 @@
+{
+  "approvals": {},
+  "artifacts": {
+    "artifact/carbon6-oracle-f805729.manifest.json": {
+      "candidate_sha": "f805729506de40bf78bdaace11ec84f4ad61f4e2",
+      "revision": 1,
+      "sha256": "0160af0c51e3289b5d7a6329e908fd44e0c939c548b252a9da3c61414e6fcdd9"
+    }
+  },
+  "export_metadata": {
+    "authority_source": "Direct user instruction in this session on 2026-10-09 to get Oracle-led collaboration operating",
+    "delegated_mode_grants_authority": false,
+    "evidence_frontier_qitem": "qitem-20261009160550-b8f3998d",
+    "export_status": "pending independent verifier decision",
+    "exported_at": "2026-10-09T16:12:00Z",
+    "exported_by": "operator-human@kernel",
+    "workflow_instance": "01M4GP7CYBDG0DPE3Y0EVAS7MS"
+  },
+  "grants": {
+    "grant-carbon6-oracle-f805729-r1": {
+      "actions": [
+        "internal.carbon6.oracle-coordination.accept.f805729506de40bf78bdaace11ec84f4ad61f4e2"
+      ],
+      "actors": [
+        "oracle-chair@carbon6-office"
+      ],
+      "approvers": [
+        "delivery-verifier@carbon6-office"
+      ],
+      "candidate_shas": [
+        "f805729506de40bf78bdaace11ec84f4ad61f4e2"
+      ],
+      "enabled": true,
+      "expires_at": "2026-10-17T23:59:59Z",
+      "packet_ids": [
+        "carbon6-oracle-f805729-r1"
+      ],
+      "revision": 1,
+      "sha256": "38303d0f12c41b04c7dc2ea2db0c3820b952597d78a023ba1fe54dec7a8acaa4",
+      "status": "active"
+    }
+  },
+  "learning": {
+    "carbon6-oracle-authority-boundary": {
+      "revision": 1,
+      "sha256": "ccbd9019f1a6192a6f7c782a18a3f19e772a73fe3413805ae43a4283be374227",
+      "status": "accepted"
+    }
+  },
+  "objectives": {
+    "carbon6-autonomous-office": {
+      "kind": "project",
+      "parent_id": null,
+      "parent_revision": null,
+      "revision": 2,
+      "sha256": "3a2f1761d9c9224795b57b4a1e085957e4ba8896d1e53cd71b030a77b7919c10"
+    },
+    "carbon6-oracle-supervision-baseline": {
+      "kind": "mission",
+      "parent_id": "carbon6-autonomous-office",
+      "parent_revision": 2,
+      "revision": 1,
+      "sha256": "3afff5df4d4a21134c389b96b39d4196b1e86a56f9813652104e7e4ff9ba31c3"
+    },
+    "carbon6-oracle-release-f805729-r1": {
+      "kind": "slice",
+      "parent_id": "carbon6-oracle-supervision-baseline",
+      "parent_revision": 1,
+      "revision": 1,
+      "sha256": "18f43cbaf0007c2b633ef82e6f7eaf3e89f2e43d94d54e21cd1edf973e92180e"
+    }
+  },
+  "schema_version": 1
+}
